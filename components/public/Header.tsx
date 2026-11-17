@@ -21,14 +21,14 @@ export default function PublicHeader() {
   return (
     <>
       {/* Top Auspicious Gold Strip */}
-      <div className="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-amber-50 text-[11px] py-1.5 px-4 text-center font-cinzel tracking-widest flex items-center justify-center gap-2 shadow-inner">
+      <div className="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-amber-50 text-[10px] sm:text-[11px] py-1 px-4 text-center font-cinzel tracking-widest flex items-center justify-center gap-2 shadow-inner">
         <span>✦</span>
         <span>शुभ विवाह &bull; Royal Digital Wedding Patrika &amp; Guest Management</span>
         <span>✦</span>
       </div>
 
       <header className="bg-[#FDFBF7]/90 backdrop-blur-md border-b border-amber-900/10 sticky top-0 z-50 transition-all">
-        <div className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-15 sm:h-16 flex items-center justify-between">
           {/* Brand Logo with Indian Royal Flourish */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-700 via-rose-800 to-amber-900 flex items-center justify-center text-amber-300 shadow-sm border border-amber-400/30 group-hover:scale-105 transition">

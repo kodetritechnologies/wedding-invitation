@@ -70,39 +70,39 @@ export default function HomePage() {
       <PublicHeader />
 
       <main className="flex-1">
-        {/* HERO SECTION: Authentic Indian Voice & Interactive Mobile Preview */}
-        <section className="relative overflow-hidden pt-12 pb-20 px-6 sm:px-8 border-b border-amber-900/10 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFEB]">
+        {/* HERO SECTION: Authentic Indian Voice & Viewport-Fitted Interactive Mobile Preview */}
+        <section className="relative overflow-hidden lg:h-[calc(100vh-4.5rem)] lg:min-h-[580px] lg:max-h-[760px] flex items-center px-6 sm:px-8 border-b border-amber-900/10 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFEB] py-8 lg:py-0">
           {/* Subtle Royal Motif Background Pattern */}
           <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
+          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative">
             {/* Left Column: Human Relatable Copy */}
-            <div className="lg:col-span-7 space-y-6 text-left">
+            <div className="lg:col-span-7 space-y-4 lg:space-y-4.5 text-left">
               {/* Regional Cultural Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-[11px] font-semibold shadow-2xs">
                 <span className="text-amber-600 font-serif">ॐ</span>
                 <span>Designed with Cultural Reverence in Indore, Madhya Pradesh</span>
               </div>
 
               {/* Punchy Headline (The Real Pain Point) */}
-              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-serif font-bold text-stone-900 leading-[1.18] tracking-tight">
+              <h1 className="text-2xl sm:text-4xl lg:text-[2.5rem] xl:text-[2.85rem] font-serif font-bold text-stone-900 leading-[1.16] tracking-tight">
                 WhatsApp par PDF card bhejna purana ho gaya.{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1.5">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
                   Bhejiye ek shandar Royal Digital Patrika.
                 </span>
               </h1>
 
               {/* Relatable Subheading */}
-              <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-xl font-sans">
+              <p className="text-xs sm:text-sm lg:text-[15px] text-stone-700 leading-relaxed max-w-lg font-sans">
                 Haldi, Mehendi, Sangeet aur Vivah ka poora schedule ek jagah. Google Maps se 1-click direct venue navigation aur live RSVP headcount tracking — <strong className="text-stone-900 font-semibold">bina kisi app download ke</strong>.
               </p>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
                 <Link
                   href="/w/aarav-diya"
                   target="_blank"
-                  className="px-6 py-3.5 bg-gradient-to-r from-rose-700 via-rose-800 to-amber-900 hover:from-rose-800 hover:to-amber-950 text-amber-50 font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 text-sm border border-amber-400/30 group"
+                  className="px-5 py-2.5 bg-gradient-to-r from-rose-700 via-rose-800 to-amber-900 hover:from-rose-800 hover:to-amber-950 text-amber-50 font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 text-xs sm:text-sm border border-amber-400/30 group"
                 >
                   <Eye className="w-4 h-4 text-amber-300 group-hover:scale-110 transition" />
                   <span>See Live Sample Patrika</span>
@@ -110,7 +110,7 @@ export default function HomePage() {
 
                 <Link
                   href="/register"
-                  className="px-6 py-3.5 bg-white hover:bg-stone-50 text-stone-800 font-bold rounded-xl border border-stone-300 shadow-xs transition text-sm text-center flex items-center justify-center gap-2"
+                  className="px-5 py-2.5 bg-white hover:bg-stone-50 text-stone-800 font-bold rounded-xl border border-stone-300 shadow-xs transition text-xs sm:text-sm text-center flex items-center justify-center gap-2"
                 >
                   <span>Create Free Workspace</span>
                   <ArrowRight className="w-4 h-4 text-stone-500" />
@@ -118,15 +118,15 @@ export default function HomePage() {
               </div>
 
               {/* WhatsApp Distribution Snippet Highlight */}
-              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-stone-600 font-medium">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+              <div className="pt-2 flex flex-wrap items-center gap-5 text-[11px] text-stone-600 font-medium">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4.5 h-4.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">
                     ✓
                   </div>
                   <span>Instant WhatsApp 1-Click Sharing</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4.5 h-4.5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">
                     ✓
                   </div>
                   <span>Papa ji ko call par address nahi samjhana padega</span>
@@ -136,60 +136,54 @@ export default function HomePage() {
 
             {/* Right Column: Realistic iPhone Mobile Simulator & WhatsApp Chat Preview */}
             <div className="lg:col-span-5 flex flex-col items-center relative">
-              {/* Realistic WhatsApp Chat Bubble Popup */}
-              <div className="w-full max-w-sm mb-4 bg-white rounded-2xl p-3.5 shadow-lg border border-emerald-100 flex items-start gap-3 relative z-10 animate-fade-in">
-                <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                  <MessageCircle className="w-5 h-5" />
+              {/* Sleek WhatsApp Invite Pill */}
+              <div className="w-full max-w-[310px] mb-2.5 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 shadow-md border border-emerald-200/80 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                  <MessageCircle className="w-4 h-4" />
                 </div>
-                <div className="space-y-1 text-xs">
+                <div className="min-w-0 text-left space-y-0.5">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-emerald-950">WhatsApp Invite Preview</span>
-                    <span className="text-[10px] text-stone-400">Just now</span>
+                    <span className="font-bold text-[11px] text-emerald-950">WhatsApp Invite Preview</span>
+                    <span className="text-[9px] text-stone-400">Just now</span>
                   </div>
-                  <p className="text-stone-700 leading-snug">
-                    💌 <em>&ldquo;Pranaam Sharma Ji! You are cordially invited to Diya &amp; Aarav&apos;s Wedding in Indore. Tap to open the digital patrika &amp; maps:&rdquo;</em>
+                  <p className="text-stone-600 text-[10px] truncate leading-tight">
+                    💌 <em>&ldquo;Pranaam Sharma Ji! Tap to open digital patrika &amp; maps&rdquo;</em>
                   </p>
-                  <span className="text-[11px] font-mono text-emerald-700 font-semibold block pt-0.5">
-                    shaadiconnect.in/w/aarav-diya
-                  </span>
                 </div>
               </div>
 
-              {/* Realistic Luxury Mobile Frame */}
-              <div className="w-full max-w-[340px] bg-stone-900 p-3 rounded-[42px] shadow-2xl border-4 border-stone-800 relative ring-1 ring-amber-400/30">
+              {/* Realistic Luxury Mobile Frame (Fitted Viewport) */}
+              <div className="w-full max-w-[310px] bg-stone-900 p-2.5 rounded-[36px] shadow-2xl border-2 border-stone-800 relative ring-1 ring-amber-400/30">
                 {/* Speaker Notch */}
-                <div className="w-28 h-4 bg-stone-900 rounded-b-xl mx-auto absolute top-3 left-1/2 -translate-x-1/2 z-20" />
+                <div className="w-20 h-3 bg-stone-900 rounded-b-lg mx-auto absolute top-2.5 left-1/2 -translate-x-1/2 z-20" />
 
                 {/* Mobile Screen Surface */}
-                <div className="bg-[#FAF7F2] rounded-[34px] overflow-hidden text-stone-800 font-serif border border-stone-200">
+                <div className="bg-[#FAF7F2] rounded-[28px] overflow-hidden text-stone-800 font-serif border border-stone-200">
                   {/* Phone Header Strip */}
-                  <div className="bg-gradient-to-b from-rose-950 via-rose-900 to-rose-950 text-amber-50 pt-8 pb-5 px-4 text-center relative">
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-amber-300 font-cinzel font-bold block mb-1">
+                  <div className="bg-gradient-to-b from-rose-950 via-rose-900 to-rose-950 text-amber-50 pt-5 pb-3 px-3 text-center relative">
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-amber-300 font-cinzel font-bold block mb-0.5">
                       || श्री गणेशाय नमः ||
                     </span>
-                    <h2 className="text-2xl font-bold tracking-wide font-serif text-amber-100">
-                      Diya <span className="text-rose-300 font-serif italic text-xl">&amp;</span> Aarav
+                    <h2 className="text-xl font-bold tracking-wide font-serif text-amber-100">
+                      Diya <span className="text-rose-300 font-serif italic text-base">&amp;</span> Aarav
                     </h2>
-                    <p className="text-[10px] text-amber-200/90 font-cinzel tracking-wider mt-0.5">
+                    <p className="text-[9px] text-amber-200/90 font-cinzel tracking-wider mt-0.5">
                       15 December 2026 &bull; Indore, MP
                     </p>
 
-                    <div className="mt-2 inline-block px-3 py-0.5 rounded-full bg-white/10 backdrop-blur-xs text-[9px] text-amber-200 font-sans border border-amber-300/20">
+                    <div className="mt-1.5 inline-block px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-xs text-[8px] text-amber-200 font-sans border border-amber-300/20">
                       Honoured Guest: <strong>Mr. Rajesh Sharma &amp; Family</strong>
                     </div>
                   </div>
 
                   {/* Interactive Ceremony Tabs Inside Phone */}
-                  <div className="p-3 bg-white border-b border-stone-100">
-                    <p className="text-[10px] font-sans font-bold uppercase tracking-wider text-rose-800 text-center mb-1.5">
-                      Tap Ceremony to Preview Schedule
-                    </p>
-                    <div className="grid grid-cols-4 gap-1 text-[10px] font-sans font-semibold">
+                  <div className="px-2.5 py-1.5 bg-white border-b border-stone-100">
+                    <div className="grid grid-cols-4 gap-1 text-[9px] font-sans font-semibold">
                       {(["haldi", "sangeet", "vivah", "reception"] as const).map((tab) => (
                         <button
                           key={tab}
                           onClick={() => setActiveTab(tab)}
-                          className={`py-1.5 rounded-lg capitalize transition cursor-pointer text-center ${
+                          className={`py-1 rounded-md capitalize transition cursor-pointer text-center ${
                             activeTab === tab
                               ? "bg-rose-700 text-white shadow-2xs font-bold"
                               : "bg-stone-100 text-stone-600 hover:bg-stone-200"
@@ -202,30 +196,30 @@ export default function HomePage() {
                   </div>
 
                   {/* Selected Event Card Inside Phone */}
-                  <div className="p-4 space-y-3 bg-[#FAF7F2]">
-                    <div className="bg-white rounded-xl p-3.5 shadow-2xs border border-stone-200/80 space-y-2">
+                  <div className="p-2.5 space-y-2 bg-[#FAF7F2]">
+                    <div className="bg-white rounded-xl p-2.5 shadow-2xs border border-stone-200/80 space-y-1.5 text-left">
                       <div className="flex items-center justify-between">
                         <span
-                          className={`text-[9px] font-bold uppercase font-sans px-2 py-0.5 rounded-full border ${eventPreview[activeTab].badgeColor}`}
+                          className={`text-[8px] font-bold uppercase font-sans px-2 py-0.5 rounded-full border ${eventPreview[activeTab].badgeColor}`}
                         >
                           {eventPreview[activeTab].badge}
                         </span>
-                        <span className="text-[10px] font-sans text-stone-500 font-medium">
+                        <span className="text-[9px] font-sans text-stone-500 font-medium">
                           {eventPreview[activeTab].date}
                         </span>
                       </div>
 
-                      <h3 className="font-bold text-stone-900 text-sm">
+                      <h3 className="font-bold text-stone-900 text-xs leading-tight">
                         {eventPreview[activeTab].title}
                       </h3>
 
-                      <div className="font-sans text-[11px] text-stone-600 space-y-1 pt-1 border-t border-stone-100">
+                      <div className="font-sans text-[10px] text-stone-600 space-y-0.5 pt-1 border-t border-stone-100">
                         <p className="flex items-center gap-1.5">
-                          <Clock className="w-3 h-3 text-rose-700 shrink-0" />
+                          <Clock className="w-2.5 h-2.5 text-rose-700 shrink-0" />
                           <span>{eventPreview[activeTab].time}</span>
                         </p>
                         <p className="flex items-center gap-1.5">
-                          <MapPin className="w-3 h-3 text-rose-700 shrink-0" />
+                          <MapPin className="w-2.5 h-2.5 text-rose-700 shrink-0" />
                           <span className="truncate">{eventPreview[activeTab].venue}</span>
                         </p>
                       </div>
@@ -235,22 +229,22 @@ export default function HomePage() {
                         href="https://maps.google.com/?q=Brilliant+Convention+Centre+Indore"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-800 font-sans font-bold text-[10px] rounded-lg flex items-center justify-center gap-1.5 transition border border-rose-200"
+                        className="w-full py-1 bg-rose-50 hover:bg-rose-100 text-rose-800 font-sans font-bold text-[9px] rounded-md flex items-center justify-center gap-1 transition border border-rose-200"
                       >
-                        <MapPin className="w-3 h-3 text-rose-700" />
-                        <span>Open Exact Location in Google Maps</span>
+                        <MapPin className="w-2.5 h-2.5 text-rose-700" />
+                        <span>Open Location in Google Maps</span>
                       </a>
                     </div>
 
                     {/* Quick RSVP Bar Inside Phone */}
-                    <div className="bg-emerald-50 rounded-xl p-2.5 border border-emerald-200 flex items-center justify-between font-sans text-[11px]">
-                      <div>
-                        <span className="font-bold text-emerald-950 block text-[10px]">
-                          Quick Attendance RSVP
+                    <div className="bg-emerald-50 rounded-lg p-2 border border-emerald-200 flex items-center justify-between font-sans text-[10px]">
+                      <div className="text-left">
+                        <span className="font-bold text-emerald-950 block text-[9px]">
+                          Live Attendance RSVP
                         </span>
-                        <span className="text-[10px] text-emerald-700">Sharma Family &bull; 3 Attending</span>
+                        <span className="text-[8px] text-emerald-700">Sharma Family &bull; 3 Attending</span>
                       </div>
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-bold text-[9px]">
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-bold text-[8px]">
                         ✓ Confirmed
                       </span>
                     </div>
