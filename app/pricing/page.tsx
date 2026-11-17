@@ -10,6 +10,11 @@ import {
   Shield,
   Heart,
   Building,
+  Crown,
+  Zap,
+  PhoneCall,
+  MessageCircle,
+  IndianRupee,
 } from "lucide-react";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
@@ -17,366 +22,393 @@ import PublicFooter from "@/components/public/Footer";
 export default function PricingPage() {
   const [billingType, setBillingType] = useState<"onetime" | "subscription">("onetime");
 
+  const oneTimePlans = [
+    {
+      id: "basic",
+      name: "Shubh Aarambh",
+      tier: "Essential",
+      price: "₹299",
+      period: "One-Time Payment &bull; Single Wedding",
+      desc: "Chhoti shaadi ya intimate ceremonies ke liye simple, clean digital card.",
+      badge: "Best for Intimate Weddings",
+      badgeColor: "bg-stone-100 text-stone-700 border-stone-200",
+      features: [
+        "Up to 3 Ceremonies (e.g. Sangeet, Vivah, Reception)",
+        "1-Click Direct Google Maps GPS Navigation",
+        "WhatsApp Direct 1-Click Sharing",
+        "Mobile-Responsive Royal Layout",
+        "Family Phone Contacts on Card",
+        "3 Months Live Hosting Validity",
+      ],
+      notIncluded: [
+        "Live RSVP Catering Headcount Tracker",
+        "Personalized Guest Name Links",
+        "Custom URL Slug",
+      ],
+      cta: "Shubh Aarambh Chunein",
+      ctaClass: "bg-stone-900 hover:bg-stone-800 text-white",
+      highlight: false,
+    },
+    {
+      id: "royal",
+      name: "Rajwada Royal",
+      tier: "Most Popular",
+      price: "₹599",
+      period: "One-Time Payment &bull; Complete Wedding",
+      desc: "Sabse pasandeeda package — Live RSVP, unlimited ceremonies aur personalized guest samman.",
+      badge: "⭐ 92% Indian Families Choose This",
+      badgeColor: "bg-amber-100 text-amber-900 border-amber-300",
+      features: [
+        "Unlimited Ceremonies (Haldi, Mehendi, Sangeet, Vivah, Reception...)",
+        "Live RSVP Catering Headcount Dashboard (Track exact plates)",
+        "VIP Personalized Guest Names ('Honoured: Sharma Ji & Parivar')",
+        "Custom Branded URL Slug (/w/dulha-dulhan)",
+        "1-Click Google Maps Venue GPS Navigation",
+        "Instant Muhurat & Venue Update Control",
+        "1 Full Year Active Hosting (Post-wedding memories ke liye)",
+      ],
+      notIncluded: ["Dedicated Designer VIP Concierge"],
+      cta: "Rajwada Royal Chunein",
+      ctaClass: "bg-gradient-to-r from-rose-700 via-rose-800 to-amber-900 hover:from-rose-800 hover:to-amber-950 text-amber-100 shadow-md border border-amber-400/40",
+      highlight: true,
+    },
+    {
+      id: "bespoke",
+      name: "Maharaja Bespoke",
+      tier: "Luxury VIP",
+      price: "₹999",
+      period: "One-Time Payment &bull; VIP Concierge",
+      desc: "Aapke printed physical card ka exact digital replica + dedicated designer support.",
+      badge: "Includes Dedicated Designer",
+      badgeColor: "bg-purple-100 text-purple-900 border-purple-300",
+      features: [
+        "Sabhi Rajwada Royal features included",
+        "Dedicated Designer Assistance from our Indore Studio",
+        "Printed Physical Card Ka Exact Digital Replica Conversion",
+        "Background Shehnai / Music Track Integration",
+        "Couple Pre-Wedding Photo Gallery & Video Embed",
+        "Priority VIP WhatsApp Support (Same-day setup)",
+        "2 Full Years Active Hosting Validity",
+      ],
+      notIncluded: [],
+      cta: "Maharaja Bespoke Chunein",
+      ctaClass: "bg-stone-900 hover:bg-stone-800 text-white",
+      highlight: false,
+    },
+  ];
+
+  const subscriptionPlans = [
+    {
+      id: "studio-starter",
+      name: "Studio Starter",
+      price: "₹999",
+      period: "per month &bull; Billed monthly",
+      desc: "Freelance wedding photographers, card printers aur budding event planners ke liye.",
+      badge: "Up to 5 Weddings / Month",
+      features: [
+        "5 Client Weddings actively created per month",
+        "Dedicated Multi-Client Management Portal",
+        "All Royal Tier Features for all clients",
+        "Client Branding & Couple Domain Customization",
+        "Individual Guest RSVP exports to Excel/CSV",
+        "Standard Email & WhatsApp Support",
+      ],
+      cta: "Start Studio Plan",
+      ctaClass: "bg-stone-900 hover:bg-stone-800 text-white",
+      highlight: false,
+    },
+    {
+      id: "agency-pro",
+      name: "Agency Unlimited",
+      price: "₹2,499",
+      period: "per month &bull; Billed monthly",
+      desc: "Full-scale wedding planning agencies, luxury banquet halls aur digital invitation studios.",
+      badge: "⭐ Unlimited Weddings",
+      features: [
+        "Unlimited Client Weddings every month",
+        "White-label branding (Show your studio's logo on footer)",
+        "Multi-User Team Access (Assign planners to specific clients)",
+        "Custom Template Uploads & Bespoke Color Schemes",
+        "Direct CSV Bulk Guest Upload via WhatsApp automation",
+        "Dedicated Account Manager in Indore with 1-hr SLA",
+      ],
+      cta: "Start Agency Unlimited",
+      ctaClass: "bg-gradient-to-r from-rose-700 via-rose-800 to-amber-900 hover:from-rose-800 hover:to-amber-950 text-amber-100 shadow-md border border-amber-400/40",
+      highlight: true,
+    },
+  ];
+
   const faqs = [
     {
-      q: "How long does a digital wedding invitation remain live online?",
-      a: "Depending on your package, your invitation remains live from 3 months (Basic) up to 2 full years (Royal). It remains active for all post-wedding viewing even after the wedding concludes.",
+      q: "Agar shaadi ka muhurat ya venue aage peeche hua to kya naya card khareedna padega?",
+      a: "Bilkul nahi! Printed card me ek baar galti ho gayi to re-printing me hazaron rupaye lagte hain. ShaadiConnect me aap apne login dashboard se 1 second me naya time ya naya address save kar sakte hain — live link open karte hi sabhi mehmaano ko updated details dikhegi.",
     },
     {
-      q: "Do guests need an account or app to view the invitation or submit RSVP?",
-      a: "No! Guests never have to download an app or register an account. They click your shared WhatsApp link, view your invitation immediately, and submit their attendance headcount with zero friction.",
+      q: "Bade buzurg aur gaon ke rishtedaar isko aasani se dekh payenge?",
+      a: "Ji haan! Hamara 'Grandfather Test' certified hai. Mehmaan ko na to koi app download karni hai, na password dalna hai aur na OTP. WhatsApp par aayi link par bas 1 tap karte hi card bina kisi rukawat ke open ho jata hai.",
     },
     {
-      q: "Can I update event timings or venue details after sharing the link?",
-      a: "Yes! Any changes you make in your Admin dashboard update immediately in real-time on the live invitation URL.",
+      q: "Payment kaise karna hota hai?",
+      a: "Hum sabhi standard Indian payment methods support karte hain — UPI (GPay, PhonePe, Paytm), NetBanking, Debit/Credit Cards. One-time packages me koi hidden recurring charges nahi hote.",
     },
     {
-      q: "If a wedding business cancels its monthly subscription, will existing invitations go offline?",
-      a: "Never. As per our core architectural rules, one-time wedding packages and subscriptions are strictly separated. Any wedding purchased under a package remains live for its full promised hosting validity.",
+      q: "Kya hamara guest list aur phone numbers private rahenge?",
+      a: "100% Guaranteed. ShaadiConnect par privacy hamara pehla niyam hai. Aapke mehmaano ka data ya phone number kisi bhi third party ko share ya advertise nahi kiya jata.",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans flex flex-col justify-between selection:bg-rose-200 selection:text-rose-950">
       <PublicHeader />
 
-      <main className="flex-1 max-w-7xl mx-auto px-6 py-12 space-y-16">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-800 text-xs font-semibold border border-rose-200">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Transparent & Affordable Pricing</span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-stone-900">
-            Simple Plans for Families & Studios
-          </h1>
-          <p className="text-sm text-stone-600 leading-relaxed font-sans">
-            Choose a one-time wedding package for individual celebrations, or subscribe to a recurring plan if you manage multiple clients.
-          </p>
+      <main className="flex-1">
+        {/* HERO */}
+        <section className="relative overflow-hidden pt-14 pb-16 px-6 sm:px-8 border-b border-amber-900/10 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFEB]">
+          <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
 
-          {/* Tab Switcher */}
-          <div className="inline-flex p-1 bg-stone-200/80 rounded-2xl pt-1 font-sans">
-            <button
-              onClick={() => setBillingType("onetime")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
-                billingType === "onetime"
-                  ? "bg-white text-rose-700 shadow-sm"
-                  : "text-stone-600 hover:text-stone-900"
-              }`}
-            >
-              <Heart className="w-3.5 h-3.5" />
-              <span>For Couples & Families (One-Time)</span>
-            </button>
-
-            <button
-              onClick={() => setBillingType("subscription")}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
-                billingType === "subscription"
-                  ? "bg-white text-rose-700 shadow-sm"
-                  : "text-stone-600 hover:text-stone-900"
-              }`}
-            >
-              <Building className="w-3.5 h-3.5" />
-              <span>For Wedding Agencies (Subscriptions)</span>
-            </button>
-          </div>
-        </div>
-
-        {/* ONE-TIME WEDDING PACKAGES */}
-        {billingType === "onetime" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 font-sans">
-            {/* Basic */}
-            <div className="bg-white rounded-3xl p-8 border border-stone-200 shadow-xs space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <span className="text-xs uppercase font-bold text-stone-500 tracking-wider">
-                  Basic Package
-                </span>
-                <div>
-                  <span className="text-4xl font-serif font-bold text-stone-900">₹299</span>
-                  <span className="text-xs text-stone-500 font-normal ml-1">one-time</span>
-                </div>
-                <p className="text-xs text-stone-600 leading-relaxed">
-                  Ideal for intimate weddings or single ceremonies needing a clean digital invite.
-                </p>
-
-                <ul className="space-y-2.5 text-xs text-stone-700 pt-2 border-t border-stone-100">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Basic invitation templates</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Up to 2 event ceremonies</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Google Maps location link</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>WhatsApp sharing link</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>3 months active hosting</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                href="/register"
-                className="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold rounded-xl text-center text-xs transition"
-              >
-                Get Started with Basic
-              </Link>
+          <div className="max-w-4xl mx-auto text-center space-y-4 relative">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-cinzel">
+              <span>✦</span>
+              <span>Kifayati &bull; Saaf &bull; Zero Hidden Costs</span>
+              <span>✦</span>
             </div>
 
-            {/* Premium (Highlighted) */}
-            <div className="bg-gradient-to-b from-rose-900 to-rose-950 text-white rounded-3xl p-8 shadow-xl space-y-6 flex flex-col justify-between relative border-2 border-rose-500/40">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-400 text-rose-950 text-[10px] font-bold uppercase tracking-wider py-1 px-3.5 rounded-full shadow-sm">
-                Most Popular for Indian Weddings
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.15]">
+              Ek Physical Card Ka Kharcha ₹250,{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
+                Poori Shaadi Ka Unlimited Card Sirf ₹599 Me.
+              </span>
+            </h1>
+
+            <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
+              Print aur courier par ₹30,000 kharch karne ki zaroorat nahi. Apne budget ke hisaab se seedha plan chuniye — one-time payment for families ya monthly subscription for studios.
+            </p>
+
+            {/* TAB TOGGLE */}
+            <div className="pt-4 flex justify-center">
+              <div className="inline-flex p-1.5 bg-stone-200/80 rounded-2xl font-sans">
+                <button
+                  onClick={() => setBillingType("onetime")}
+                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer flex items-center gap-2 ${
+                    billingType === "onetime"
+                      ? "bg-rose-700 text-amber-50 shadow-sm"
+                      : "text-stone-700 hover:text-stone-950"
+                  }`}
+                >
+                  <Heart className="w-4 h-4" />
+                  <span>Couples &amp; Parivar Ke Liye (One-Time)</span>
+                </button>
+
+                <button
+                  onClick={() => setBillingType("subscription")}
+                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer flex items-center gap-2 ${
+                    billingType === "subscription"
+                      ? "bg-rose-700 text-amber-50 shadow-sm"
+                      : "text-stone-700 hover:text-stone-950"
+                  }`}
+                >
+                  <Building className="w-4 h-4" />
+                  <span>Planners &amp; Studios Ke Liye (Subscriptions)</span>
+                </button>
               </div>
-
-              <div className="space-y-4">
-                <span className="text-xs uppercase font-bold text-amber-300 tracking-wider">
-                  Premium Package
-                </span>
-                <div>
-                  <span className="text-4xl font-serif font-bold text-amber-100">₹799</span>
-                  <span className="text-xs text-rose-200 font-normal ml-1">one-time</span>
-                </div>
-                <p className="text-xs text-rose-200 leading-relaxed">
-                  Complete multi-day celebration suite with live RSVP and headcount tracking.
-                </p>
-
-                <ul className="space-y-2.5 text-xs text-rose-100 pt-2 border-t border-rose-800">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>All Premium & Floral templates</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Up to 6 events (Haldi, Mehendi, Sangeet, etc.)</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Live RSVP with attendee headcount tracking</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Personalized guest invite codes</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>1 Full Year active hosting</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                href="/register"
-                className="w-full py-3 bg-amber-400 hover:bg-amber-300 text-rose-950 font-bold rounded-xl text-center text-xs transition shadow-md"
-              >
-                Choose Premium (₹799)
-              </Link>
-            </div>
-
-            {/* Royal */}
-            <div className="bg-white rounded-3xl p-8 border border-stone-200 shadow-xs space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <span className="text-xs uppercase font-bold text-stone-500 tracking-wider">
-                  Royal Package
-                </span>
-                <div>
-                  <span className="text-4xl font-serif font-bold text-stone-900">₹1,999</span>
-                  <span className="text-xs text-stone-500 font-normal ml-1">one-time</span>
-                </div>
-                <p className="text-xs text-stone-600 leading-relaxed">
-                  The ultimate luxury invitation suite with bespoke typography and extended hosting.
-                </p>
-
-                <ul className="space-y-2.5 text-xs text-stone-700 pt-2 border-t border-stone-100">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Exclusive Royal & Palace designs</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Unlimited wedding events & functions</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Full RSVP tracking with dietary & notes</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Couple story & contact directory</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>2 Years active hosting & priority support</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                href="/register"
-                className="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold rounded-xl text-center text-xs transition"
-              >
-                Choose Royal Package
-              </Link>
             </div>
           </div>
+        </section>
+
+        {/* ONE-TIME PACKAGES GRID */}
+        {billingType === "onetime" ? (
+          <section className="max-w-7xl mx-auto px-6 py-14">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {oneTimePlans.map((plan) => (
+                <div
+                  key={plan.id}
+                  className={`bg-white rounded-3xl p-7 sm:p-8 border transition-all duration-300 flex flex-col justify-between ${
+                    plan.highlight
+                      ? "border-amber-400 ring-2 ring-amber-400/30 shadow-xl relative scale-102"
+                      : "border-stone-200/90 shadow-xs hover:shadow-md"
+                  }`}
+                >
+                  <div className="space-y-5">
+                    {/* Badge */}
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`text-[11px] font-bold px-3 py-1 rounded-full border ${plan.badgeColor}`}
+                      >
+                        {plan.badge}
+                      </span>
+                      {plan.highlight && (
+                        <span className="text-[10px] font-cinzel font-bold text-rose-800 tracking-wider uppercase">
+                          Top Choice
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <h3 className="text-2xl font-serif font-bold text-stone-900">
+                        {plan.name}
+                      </h3>
+                      <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+                        {plan.desc}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-stone-100">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl sm:text-5xl font-serif font-bold text-stone-900 tracking-tight">
+                          {plan.price}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-stone-500 block mt-1">
+                        {plan.period}
+                      </span>
+                    </div>
+
+                    {/* Features List */}
+                    <div className="space-y-2.5 pt-3 border-t border-stone-100 text-xs text-stone-700">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
+                        What&apos;s Included:
+                      </span>
+                      {plan.features.map((feat, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <span className="leading-snug">{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-6">
+                    <Link
+                      href="/register"
+                      className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm text-center block transition ${plan.ctaClass}`}
+                    >
+                      {plan.cta}
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : (
+          /* SUBSCRIPTION PLANS GRID */
+          <section className="max-w-5xl mx-auto px-6 py-14">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {subscriptionPlans.map((plan) => (
+                <div
+                  key={plan.id}
+                  className={`bg-white rounded-3xl p-8 border transition-all duration-300 flex flex-col justify-between ${
+                    plan.highlight
+                      ? "border-amber-400 ring-2 ring-amber-400/30 shadow-xl scale-102"
+                      : "border-stone-200/90 shadow-xs hover:shadow-md"
+                  }`}
+                >
+                  <div className="space-y-5">
+                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 inline-block">
+                      {plan.badge}
+                    </span>
+
+                    <div>
+                      <h3 className="text-2xl font-serif font-bold text-stone-900">
+                        {plan.name}
+                      </h3>
+                      <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+                        {plan.desc}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-stone-100">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl sm:text-5xl font-serif font-bold text-stone-900 tracking-tight">
+                          {plan.price}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-stone-500 block mt-1">
+                        {plan.period}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2.5 pt-3 border-t border-stone-100 text-xs text-stone-700">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
+                        Agency Capabilities:
+                      </span>
+                      {plan.features.map((feat, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <span className="leading-snug">{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-6">
+                    <Link
+                      href="/register"
+                      className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm text-center block transition ${plan.ctaClass}`}
+                    >
+                      {plan.cta}
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
 
-        {/* BUSINESS SUBSCRIPTION PLANS */}
-        {billingType === "subscription" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 font-sans">
-            {/* Starter */}
-            <div className="bg-white rounded-3xl p-8 border border-stone-200 shadow-xs space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <span className="text-xs uppercase font-bold text-stone-500 tracking-wider">
-                  Starter Agency
-                </span>
-                <div>
-                  <span className="text-4xl font-serif font-bold text-stone-900">₹499</span>
-                  <span className="text-xs text-stone-500 font-normal ml-1">/ month</span>
-                </div>
-                <p className="text-xs text-stone-600 leading-relaxed">
-                  For freelance designers and independent photographers taking on occasional weddings.
-                </p>
-
-                <ul className="space-y-2.5 text-xs text-stone-700 pt-2 border-t border-stone-100">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Up to 3 active client weddings</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Client management directory</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Basic + Premium templates</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                href="/register"
-                className="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold rounded-xl text-center text-xs transition"
-              >
-                Subscribe Starter
-              </Link>
-            </div>
-
-            {/* Professional */}
-            <div className="bg-gradient-to-b from-stone-900 to-stone-950 text-white rounded-3xl p-8 shadow-xl space-y-6 flex flex-col justify-between relative border border-stone-700">
-              <div className="space-y-4">
-                <span className="text-xs uppercase font-bold text-rose-400 tracking-wider">
-                  Professional Agency
-                </span>
-                <div>
-                  <span className="text-4xl font-serif font-bold text-white">₹999</span>
-                  <span className="text-xs text-stone-400 font-normal ml-1">/ month</span>
-                </div>
-                <p className="text-xs text-stone-300 leading-relaxed">
-                  For active wedding planners, studios, and invitation shops in Indore and MP.
-                </p>
-
-                <ul className="space-y-2.5 text-xs text-stone-200 pt-2 border-t border-stone-800">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-rose-400 shrink-0" />
-                    <span>Up to 10 active client weddings</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-rose-400 shrink-0" />
-                    <span>Client directory & archive tools</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-rose-400 shrink-0" />
-                    <span>Full Royal template catalog access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-rose-400 shrink-0" />
-                    <span>Headcount & exportable RSVP analytics</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                href="/register"
-                className="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl text-center text-xs transition"
-              >
-                Subscribe Professional
-              </Link>
-            </div>
-
-            {/* Agency */}
-            <div className="bg-white rounded-3xl p-8 border border-stone-200 shadow-xs space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <span className="text-xs uppercase font-bold text-stone-500 tracking-wider">
-                  Full Agency Suite
-                </span>
-                <div>
-                  <span className="text-4xl font-serif font-bold text-stone-900">₹2,499</span>
-                  <span className="text-xs text-stone-500 font-normal ml-1">/ month</span>
-                </div>
-                <p className="text-xs text-stone-600 leading-relaxed">
-                  For high-volume wedding production houses and event management firms.
-                </p>
-
-                <ul className="space-y-2.5 text-xs text-stone-700 pt-2 border-t border-stone-100">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Up to 30 active client weddings</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Custom domain / slug priority</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Dedicated account manager in Indore</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                href="/register"
-                className="w-full py-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold rounded-xl text-center text-xs transition"
-              >
-                Subscribe Agency
-              </Link>
-            </div>
-          </div>
-        )}
-
-        {/* FAQs Section */}
-        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-stone-200 space-y-6 font-sans">
-          <div className="text-center space-y-1">
-            <h2 className="text-2xl font-serif font-bold text-stone-900">
+        {/* FAQ ACCORDION / LIST */}
+        <section className="max-w-4xl mx-auto px-6 py-12">
+          <div className="text-center space-y-2 mb-8">
+            <span className="text-xs uppercase font-cinzel tracking-widest text-amber-800 font-bold">
+              ✦ Aapke Sawaal, Hamare Jawaab ✦
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
               Frequently Asked Questions
             </h2>
-            <p className="text-xs text-stone-500">
-              Everything you need to know about plans and digital invitation delivery.
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-            {faqs.map((faq, idx) => (
-              <div key={idx} className="space-y-1.5 p-4 bg-stone-50 rounded-2xl border border-stone-100">
-                <h3 className="font-bold text-sm text-stone-900 flex items-start gap-2">
-                  <HelpCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl p-6 border border-stone-200/90 shadow-xs space-y-2"
+              >
+                <h4 className="text-sm sm:text-base font-serif font-bold text-stone-900 flex items-start gap-2">
+                  <span className="text-rose-700 font-sans font-bold">Q.</span>
                   <span>{faq.q}</span>
-                </h3>
-                <p className="text-xs text-stone-600 leading-relaxed pl-6">
+                </h4>
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans pl-5">
                   {faq.a}
                 </p>
               </div>
             ))}
           </div>
-        </div>
+        </section>
+
+        {/* BOTTOM TATKAL BANNER */}
+        <section className="max-w-5xl mx-auto px-6 pb-16">
+          <div className="bg-gradient-to-r from-stone-900 via-rose-950 to-stone-900 text-amber-50 rounded-3xl p-8 sm:p-12 shadow-xl border border-amber-400/20 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-2 text-center md:text-left">
+              <span className="text-[11px] font-cinzel uppercase tracking-widest text-amber-300 font-bold">
+                Indore Design Desk Support
+              </span>
+              <h3 className="text-2xl font-serif font-bold text-amber-100">
+                Shaadi Me Bas 2-3 Din Bache Hain?
+              </h3>
+              <p className="text-xs text-stone-300 max-w-lg">
+                Hamari Tatkal Urgent Desk 2 ghante ke andar aapka digital card link bana kar active kar sakti hai.
+              </p>
+            </div>
+
+            <a
+              href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20urgent%20wedding%20invitation%20setup%20chahiye"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-xs sm:text-sm shrink-0"
+            >
+              <MessageCircle className="w-4 h-4 fill-white" />
+              <span>WhatsApp Tatkal Helpline</span>
+            </a>
+          </div>
+        </section>
       </main>
 
       <PublicFooter />
