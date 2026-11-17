@@ -185,14 +185,14 @@ function InvitationContent({ slug }: { slug: string }) {
             <Heart className="w-5 h-5 fill-amber-300" />
           </div>
 
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-200/80 font-sans font-semibold">
+          <p className="text-xs uppercase tracking-[0.3em] text-amber-200/90 font-cinzel font-semibold">
             Together with their families
           </p>
 
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-wide font-serif text-amber-100">
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-wide font-serif text-amber-100">
             {wedding.brideName}
-            <span className="block text-2xl sm:text-3xl font-light text-rose-300 my-1 font-sans">
-              &
+            <span className="block text-2xl sm:text-3xl font-serif italic text-rose-300 my-1">
+              &amp;
             </span>
             {wedding.groomName}
           </h1>

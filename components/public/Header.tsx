@@ -21,9 +21,9 @@ export default function PublicHeader() {
   return (
     <>
       {/* Top Auspicious Gold Strip */}
-      <div className="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-amber-50 text-[11px] py-1 px-4 text-center font-serif tracking-widest flex items-center justify-center gap-2">
+      <div className="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-amber-50 text-[11px] py-1.5 px-4 text-center font-cinzel tracking-widest flex items-center justify-center gap-2 shadow-inner">
         <span>✦</span>
-        <span>शुभ विवाह &bull; Digital Wedding Invitations Crafted for Modern Indian Families</span>
+        <span>शुभ विवाह &bull; Royal Digital Wedding Patrika &amp; Guest Management</span>
         <span>✦</span>
       </div>
 

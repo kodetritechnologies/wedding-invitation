@@ -164,13 +164,13 @@ export default function HomePage() {
                 <div className="bg-[#FAF7F2] rounded-[34px] overflow-hidden text-stone-800 font-serif border border-stone-200">
                   {/* Phone Header Strip */}
                   <div className="bg-gradient-to-b from-rose-950 via-rose-900 to-rose-950 text-amber-50 pt-8 pb-5 px-4 text-center relative">
-                    <span className="text-[9px] uppercase tracking-[0.25em] text-amber-300 font-sans font-bold block mb-1">
+                    <span className="text-[10px] uppercase tracking-[0.25em] text-amber-300 font-cinzel font-bold block mb-1">
                       || श्री गणेशाय नमः ||
                     </span>
-                    <h2 className="text-xl font-bold tracking-wide text-amber-100">
-                      Diya <span className="text-rose-300 font-light">&amp;</span> Aarav
+                    <h2 className="text-2xl font-bold tracking-wide font-serif text-amber-100">
+                      Diya <span className="text-rose-300 font-serif italic text-xl">&amp;</span> Aarav
                     </h2>
-                    <p className="text-[10px] text-amber-200/90 font-sans mt-0.5">
+                    <p className="text-[10px] text-amber-200/90 font-cinzel tracking-wider mt-0.5">
                       15 December 2026 &bull; Indore, MP
                     </p>
 
