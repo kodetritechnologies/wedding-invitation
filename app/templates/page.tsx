@@ -164,7 +164,7 @@ export default function TemplatesPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans flex flex-col justify-between selection:bg-rose-200 selection:text-rose-950">
+    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-body flex flex-col justify-between selection:bg-rose-200 selection:text-rose-950">
       <PublicHeader />
 
       <main className="flex-1">
@@ -174,20 +174,20 @@ export default function TemplatesPage() {
           <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
 
           <div className="max-w-5xl mx-auto text-center space-y-4 relative">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-cinzel">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-heading">
               <span>✦</span>
               <span>Exclusive Patrika Gallery &bull; 2026 Collections</span>
               <span>✦</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.15]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-bold text-stone-900 tracking-tight leading-[1.15]">
               Har Shaadi Ki Apni Kahani,{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
                 Har Parivar Ka Apna Andaaz.
               </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
+            <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-body">
               Jaipur ke Rajwada Darbar se leke Goa ke sunset lawn tak — hamare har digital card me Google Maps GPS, Haldi-Sangeet-Vivah schedule aur live RSVP headcount inbuilt hota hai.
             </p>
 
@@ -208,7 +208,7 @@ export default function TemplatesPage() {
         </section>
 
         {/* CATEGORY FILTER PILLS */}
-        <section className="max-w-7xl mx-auto px-6 pt-8 pb-4">
+        <section className=" mx-auto px-6 pt-8 pb-4">
           <div className="flex flex-wrap items-center justify-center gap-2">
             {CATEGORY_TABS.map((tab) => (
               <button
@@ -227,11 +227,11 @@ export default function TemplatesPage() {
         </section>
 
         {/* TEMPLATES GRID */}
-        <section className="max-w-7xl mx-auto px-6 py-8">
+        <section className=" mx-auto px-6 py-8">
           {filteredTemplates.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-stone-200 p-8 space-y-3">
+            <div className="text-center py-16 bg-white rounded-3xl border border-stone-200 p-8 space-y-3 font-body">
               <Sparkles className="w-8 h-8 text-amber-500 mx-auto" />
-              <h3 className="text-lg font-serif font-bold text-stone-800">
+              <h3 className="text-lg font-heading font-bold text-stone-800">
                 Koi design match nahi hua
               </h3>
               <p className="text-xs text-stone-500 max-w-md mx-auto">
@@ -252,7 +252,7 @@ export default function TemplatesPage() {
               {filteredTemplates.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-3xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400/50 transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-white rounded-3xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400/50 transition-all duration-300 flex flex-col justify-between group font-body"
                 >
                   {/* Luxury Mockup Card Header Preview */}
                   <div
@@ -276,20 +276,20 @@ export default function TemplatesPage() {
                         {item.tier} Edition
                       </span>
 
-                      <span className="text-[10px] text-amber-200/80 font-cinzel tracking-widest">
+                      <span className="text-[10px] text-amber-200/80 font-body uppercase tracking-wider">
                         {item.location}
                       </span>
                     </div>
 
                     {/* Center Royal Couple Title */}
                     <div className="text-center space-y-1.5 relative z-10 py-2">
-                      <span className="text-[10px] text-amber-300/90 font-cinzel font-semibold tracking-[0.2em] block">
+                      <span className="text-[10px] text-amber-300/90 shlok font-semibold block">
                         {item.subTitle}
                       </span>
-                      <h3 className="font-serif text-3xl font-bold tracking-wide text-amber-100">
+                      <h3 className="font-heading text-3xl font-bold tracking-wide text-amber-100">
                         {item.couples}
                       </h3>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] text-amber-200/80 font-sans">
+                      <div className="inline-flex items-center gap-1.5 text-[10px] text-amber-200/80 font-body">
                         <Calendar className="w-3 h-3 text-amber-300" />
                         <span>Shubh Muhurat &bull; 15 Dec 2026</span>
                       </div>
@@ -297,7 +297,7 @@ export default function TemplatesPage() {
 
                     {/* Bottom Swatches & Theme Pill */}
                     <div className="flex items-center justify-between relative z-10 pt-2 border-t border-white/10">
-                      <span className="text-[10px] font-sans text-stone-300 font-medium">
+                      <span className="text-[10px] font-body text-stone-300 font-medium">
                         {item.regionalTheme}
                       </span>
                       <div className="flex items-center gap-1.5">
@@ -316,21 +316,21 @@ export default function TemplatesPage() {
                   <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
                     <div className="space-y-3">
                       {item.popularBadge && (
-                        <div className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
+                        <div className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 font-body">
                           <span>{item.popularBadge}</span>
                         </div>
                       )}
 
-                      <h4 className="text-xl font-serif font-bold text-stone-900 group-hover:text-rose-700 transition">
+                      <h4 className="text-xl font-heading font-bold text-stone-900 group-hover:text-rose-700 transition">
                         {item.title}
                       </h4>
 
-                      <p className="text-xs text-stone-600 leading-relaxed font-sans">
+                      <p className="text-xs text-stone-600 leading-relaxed font-body">
                         {item.description}
                       </p>
 
                       {/* Feature Bullet Points */}
-                      <div className="grid grid-cols-2 gap-1.5 pt-2 text-[11px] text-stone-700 font-sans">
+                      <div className="grid grid-cols-2 gap-1.5 pt-2 text-[11px] text-stone-700 font-body">
                         {item.features.map((feat, idx) => (
                           <div key={idx} className="flex items-center gap-1.5">
                             <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
@@ -341,7 +341,7 @@ export default function TemplatesPage() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="pt-4 border-t border-stone-100 flex items-center justify-between gap-3 font-sans">
+                    <div className="pt-4 border-t border-stone-100 flex items-center justify-between gap-3 font-body">
                       <Link
                         href={`/w/${item.demoSlug}`}
                         target="_blank"
@@ -367,27 +367,27 @@ export default function TemplatesPage() {
         </section>
 
         {/* CUSTOM PHYSICAL CARD REPLICA CONCIERGE BANNER */}
-        <section className="max-w-7xl mx-auto px-6 py-12">
+        <section className=" mx-auto px-6 py-12">
           <div className="bg-gradient-to-br from-stone-900 via-rose-950 to-stone-900 text-amber-50 rounded-3xl p-8 sm:p-14 shadow-xl border border-amber-400/20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative overflow-hidden">
             {/* Subtle background motif */}
             <div className="absolute right-0 top-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-cinzel font-semibold">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-heading font-semibold">
                 <span>✦</span>
                 <span>Tatkal Custom Digital Replica Service</span>
                 <span>✦</span>
               </div>
 
-              <h2 className="text-2xl sm:text-4xl font-serif font-bold text-amber-100 leading-tight">
+              <h2 className="text-2xl sm:text-4xl font-heading font-bold text-amber-100 leading-tight">
                 Physical Printed Card Hai? Uska Exact Digital Replica Chahiye?
               </h2>
 
-              <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-2xl font-sans">
+              <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-2xl font-body">
                 Agar aapne physical wedding card already print karva liya hai, to bas uski photo hamare Indore design desk ko WhatsApp karein. Hamari team aapke card ke exact fonts, motifs aur couple monograms ke sath <strong className="text-amber-200">24 ghante ke andar</strong> live interactive digital link deliver karegi.
               </p>
 
-              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-stone-300 font-sans">
+              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-stone-300 font-body">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
                     ✓
@@ -403,7 +403,7 @@ export default function TemplatesPage() {
               </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center font-sans">
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center font-body">
               <a
                 href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20apne%20printed%20wedding%20card%20ka%20digital%20replica%20banvana%20hai"
                 target="_blank"

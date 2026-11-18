@@ -136,7 +136,7 @@ export default function HowItWorksPage() {
         </section>
 
         {/* 4 DETAILED PROCESS STEPS */}
-        <section className="max-w-7xl mx-auto px-6 py-14">
+        <section className=" mx-auto px-6 py-14">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((st, idx) => {
               const Icon = st.icon;

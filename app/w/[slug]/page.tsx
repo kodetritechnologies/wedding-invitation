@@ -177,7 +177,7 @@ function InvitationContent({ slug }: { slug: string }) {
   });
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-800 antialiased font-serif selection:bg-rose-100">
+    <div className="min-h-screen bg-stone-50 text-stone-800 antialiased font-body selection:bg-rose-100">
       {/* Hero Cover Header */}
       <header className="relative bg-gradient-to-b from-rose-950 via-rose-900 to-rose-950 text-amber-50 pt-16 pb-20 px-6 text-center shadow-lg">
         <div className="max-w-2xl mx-auto space-y-4">
@@ -185,19 +185,19 @@ function InvitationContent({ slug }: { slug: string }) {
             <Heart className="w-5 h-5 fill-amber-300" />
           </div>
 
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-200/90 font-cinzel font-semibold">
+          <p className="text-xs uppercase tracking-[0.2em] text-amber-200/90 font-heading font-semibold">
             Together with their families
           </p>
 
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-wide font-serif text-amber-100">
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-wide font-heading text-amber-100">
             {wedding.brideName}
-            <span className="block text-2xl sm:text-3xl font-serif italic text-rose-300 my-1">
+            <span className="block text-2xl sm:text-3xl font-heading italic text-rose-300 my-1">
               &amp;
             </span>
             {wedding.groomName}
           </h1>
 
-          <div className="pt-2 text-sm sm:text-base font-sans text-amber-200 flex flex-col items-center gap-1">
+          <div className="pt-2 text-sm sm:text-base font-body text-amber-200 flex flex-col items-center gap-1">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-amber-400" />
               <span>{weddingDateFormatted}</span>
@@ -211,7 +211,7 @@ function InvitationContent({ slug }: { slug: string }) {
           </div>
 
           {guest && (
-            <div className="mt-4 inline-block bg-white/10 backdrop-blur-xs px-4 py-1.5 rounded-full text-xs text-amber-100 font-sans border border-amber-300/30">
+            <div className="mt-4 inline-block bg-white/10 backdrop-blur-xs px-4 py-1.5 rounded-full text-xs text-amber-100 font-body border border-amber-300/30">
               Honoured Guest: <strong className="text-white">{guest.name}</strong>
             </div>
           )}
@@ -223,10 +223,10 @@ function InvitationContent({ slug }: { slug: string }) {
         {/* Family Message */}
         {wedding.familyMessage && (
           <section className="bg-white rounded-3xl p-8 shadow-sm border border-stone-200 text-center space-y-3">
-            <h2 className="text-xs uppercase tracking-widest text-rose-800 font-sans font-bold">
+            <h2 className="text-xs uppercase tracking-widest text-rose-800 font-body font-bold">
               A Warm Invitation
             </h2>
-            <p className="text-base text-stone-700 italic leading-relaxed">
+            <p className="text-base text-stone-700 italic leading-relaxed font-heading">
               &ldquo;{wedding.familyMessage}&rdquo;
             </p>
           </section>
@@ -235,17 +235,17 @@ function InvitationContent({ slug }: { slug: string }) {
         {/* Multi-Function Itinerary */}
         <section className="space-y-6">
           <div className="text-center space-y-1">
-            <span className="text-xs uppercase tracking-widest text-rose-800 font-sans font-bold">
+            <span className="text-xs uppercase tracking-widest text-rose-800 font-body font-bold">
               Celebration Itinerary
             </span>
-            <h2 className="text-2xl font-bold font-serif text-stone-900">
+            <h2 className="text-2xl font-bold font-heading text-stone-900">
               Wedding Functions
             </h2>
           </div>
 
           <div className="space-y-4">
             {events.length === 0 ? (
-              <p className="text-center text-xs text-stone-400 font-sans py-4">
+              <p className="text-center text-xs text-stone-400 font-body py-4">
                 Detailed function schedule will be updated shortly.
               </p>
             ) : (
@@ -256,15 +256,15 @@ function InvitationContent({ slug }: { slug: string }) {
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <span className="text-[11px] font-bold uppercase font-sans px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
+                      <span className="text-[11px] font-bold uppercase font-body px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
                         {event.eventType}
                       </span>
-                      <h3 className="text-lg font-bold font-serif text-stone-900 mt-1.5">
+                      <h3 className="text-lg font-bold font-heading text-stone-900 mt-1.5">
                         {event.title}
                       </h3>
                     </div>
 
-                    <div className="text-right font-sans text-xs text-stone-500">
+                    <div className="text-right font-body text-xs text-stone-500">
                       <p className="font-semibold text-stone-800">
                         {new Date(event.date).toLocaleDateString("en-IN", {
                           weekday: "short",
@@ -279,7 +279,7 @@ function InvitationContent({ slug }: { slug: string }) {
                     </div>
                   </div>
 
-                  <div className="font-sans text-xs text-stone-600 space-y-1 pt-1 border-t border-stone-100">
+                  <div className="font-body text-xs text-stone-600 space-y-1 pt-1 border-t border-stone-100">
                     <p className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-stone-400 shrink-0" />
                       <span>{event.venueName}</span>
@@ -299,7 +299,7 @@ function InvitationContent({ slug }: { slug: string }) {
                         href={event.mapUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-sans font-semibold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition"
+                        className="inline-flex items-center gap-1.5 text-xs font-body font-semibold text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition"
                       >
                         <MapPin className="w-3 h-3" />
                         <span>View Location Map</span>
@@ -315,21 +315,21 @@ function InvitationContent({ slug }: { slug: string }) {
         {/* Interactive RSVP Section */}
         <section className="bg-white rounded-3xl p-8 shadow-sm border border-stone-200 space-y-6">
           <div className="text-center space-y-1">
-            <span className="text-xs uppercase tracking-widest text-rose-800 font-sans font-bold">
+            <span className="text-xs uppercase tracking-widest text-rose-800 font-body font-bold">
               Response Requested
             </span>
-            <h2 className="text-2xl font-bold font-serif text-stone-900">
+            <h2 className="text-2xl font-bold font-heading text-stone-900">
               Will You Attend?
             </h2>
-            <p className="text-xs font-sans text-stone-500">
+            <p className="text-xs font-body text-stone-500">
               Please RSVP to help our families organize seating and catering arrangements.
             </p>
           </div>
 
           {rsvpSuccess ? (
-            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-3 font-sans">
+            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-3 font-body">
               <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
-              <h3 className="text-base font-bold text-emerald-900">
+              <h3 className="text-base font-bold font-heading text-emerald-900">
                 Thank You for Responding!
               </h3>
               <p className="text-xs text-emerald-700">
@@ -339,13 +339,13 @@ function InvitationContent({ slug }: { slug: string }) {
               </p>
               <button
                 onClick={() => setRsvpSuccess(false)}
-                className="text-xs text-emerald-800 font-semibold underline mt-2 cursor-pointer"
+                className="text-xs text-emerald-800 font-semibold underline mt-2 cursor-pointer font-body"
               >
                 Change or update response
               </button>
             </div>
           ) : (
-            <form onSubmit={handleRsvpSubmit} className="space-y-4 font-sans text-sm">
+            <form onSubmit={handleRsvpSubmit} className="space-y-4 font-body text-sm">
               {rsvpError && (
                 <div className="p-3 text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg">
                   {rsvpError}
@@ -383,7 +383,7 @@ function InvitationContent({ slug }: { slug: string }) {
 
               {/* Guest Name & Phone (if not personalized) */}
               <div>
-                <label className="block text-xs font-semibold text-stone-700 uppercase mb-1">
+                <label className="block text-xs font-semibold text-stone-700 uppercase mb-1 font-body">
                   Your Full Name *
                 </label>
                 <input
@@ -392,14 +392,14 @@ function InvitationContent({ slug }: { slug: string }) {
                   value={rsvpName}
                   onChange={(e) => setRsvpName(e.target.value)}
                   placeholder="e.g. Sharma Family / Rajesh Verma"
-                  className="w-full px-3.5 py-2.5 bg-stone-50 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 font-sans"
+                  className="w-full px-3.5 py-2.5 bg-stone-50 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 font-body"
                 />
               </div>
 
               {status === "attending" && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 uppercase mb-1">
+                    <label className="block text-xs font-semibold text-stone-700 uppercase mb-1 font-body">
                       Attending Headcount
                     </label>
                     <input
@@ -408,12 +408,12 @@ function InvitationContent({ slug }: { slug: string }) {
                       max={15}
                       value={attendeeCount}
                       onChange={(e) => setAttendeeCount(parseInt(e.target.value) || 1)}
-                      className="w-full px-3.5 py-2.5 bg-stone-50 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 font-sans"
+                      className="w-full px-3.5 py-2.5 bg-stone-50 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 font-body"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-stone-700 uppercase mb-1">
+                    <label className="block text-xs font-semibold text-stone-700 uppercase mb-1 font-body">
                       Mobile Number
                     </label>
                     <input
@@ -421,14 +421,14 @@ function InvitationContent({ slug }: { slug: string }) {
                       value={rsvpPhone}
                       onChange={(e) => setRsvpPhone(e.target.value)}
                       placeholder="+91 98260 00000"
-                      className="w-full px-3.5 py-2.5 bg-stone-50 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 font-sans"
+                      className="w-full px-3.5 py-2.5 bg-stone-50 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 font-body"
                     />
                   </div>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-stone-700 uppercase mb-1">
+                <label className="block text-xs font-semibold text-stone-700 uppercase mb-1 font-body">
                   Blessings & Wishes for Couple
                 </label>
                 <textarea
@@ -436,14 +436,14 @@ function InvitationContent({ slug }: { slug: string }) {
                   onChange={(e) => setMessage(e.target.value)}
                   rows={2}
                   placeholder="Share your warm wishes and blessings..."
-                  className="w-full px-3.5 py-2.5 bg-stone-50 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 font-sans"
+                  className="w-full px-3.5 py-2.5 bg-stone-50 rounded-xl border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 font-body"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 px-4 bg-rose-700 hover:bg-rose-800 text-white font-semibold rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-3 px-4 bg-rose-700 hover:bg-rose-800 text-white font-semibold rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 font-body"
               >
                 {submitting ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -457,8 +457,8 @@ function InvitationContent({ slug }: { slug: string }) {
 
         {/* Contact Assistance */}
         {wedding.contactPersons && wedding.contactPersons.length > 0 && (
-          <section className="bg-white rounded-3xl p-6 shadow-xs border border-stone-200 space-y-3 font-sans">
-            <h3 className="text-xs font-bold uppercase text-stone-500 tracking-wider text-center">
+          <section className="bg-white rounded-3xl p-6 shadow-xs border border-stone-200 space-y-3 font-body">
+            <h3 className="text-xs font-bold uppercase text-stone-500 tracking-wider text-center font-heading">
               For Venue & Travel Assistance
             </h3>
             <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-stone-700">
@@ -466,7 +466,7 @@ function InvitationContent({ slug }: { slug: string }) {
                 <a
                   key={idx}
                   href={`tel:${cp.phone}`}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 rounded-lg border border-stone-200 hover:border-rose-300 transition"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-stone-50 rounded-lg border border-stone-200 hover:border-rose-300 transition font-body"
                 >
                   <Phone className="w-3.5 h-3.5 text-rose-600" />
                   <span>
@@ -480,7 +480,7 @@ function InvitationContent({ slug }: { slug: string }) {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-8 font-sans text-xs text-stone-400 border-t border-stone-200 space-y-1">
+      <footer className="text-center py-8 font-body text-xs text-stone-400 border-t border-stone-200 space-y-1">
         <p>
           Created with VivahVaani &bull; Powered by{" "}
           <a
