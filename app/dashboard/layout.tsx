@@ -25,9 +25,8 @@ function NavLinks() {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard/clients", label: "Clients", icon: Users },
-    { href: "/dashboard/weddings", label: "Weddings", icon: CalendarHeart },
+    { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+    { href: "/dashboard/weddings", label: "My Wedding Cards", icon: CalendarHeart },
   ];
 
   return (
@@ -67,12 +66,10 @@ function HeaderTitle() {
   return (
     <h2 className="text-base font-semibold text-gray-800">
       {pathname === "/dashboard"
-        ? "Dashboard Overview"
-        : pathname.startsWith("/dashboard/clients")
-        ? "Client Directory"
+        ? "My Wedding Overview"
         : pathname.startsWith("/dashboard/weddings")
-        ? "Wedding Projects & RSVPs"
-        : "Workspace"}
+        ? "Wedding Card & Guests"
+        : "Wedding Portal"}
     </h2>
   );
 }
@@ -161,7 +158,7 @@ export default function DashboardLayout({
                 Shaadi<span className="text-rose-600">Connect</span>
               </span>
               <span className="block text-[10px] text-gray-400 font-medium uppercase tracking-wider">
-                Admin Workspace
+                Client Portal
               </span>
             </div>
           </div>
@@ -182,15 +179,9 @@ export default function DashboardLayout({
               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
             <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-700">
-              {user?.role === "super_admin" ? "SUPER ADMIN" : "ADMIN"}
+              CLIENT
             </span>
           </div>
-
-          {user?.businessName && (
-            <p className="text-xs text-gray-400 mb-3 truncate">
-              🏢 {user.businessName}
-            </p>
-          )}
 
           <button
             onClick={handleLogout}

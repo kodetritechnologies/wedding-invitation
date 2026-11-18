@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Cormorant_Garamond, Cinzel } from "next/font/google";
+import {
+  Plus_Jakarta_Sans,
+  Cormorant_Garamond,
+  Cinzel,
+  Rozha_One,
+  Noto_Serif_Devanagari,
+} from "next/font/google";
 import "./globals.css";
 
 const jakartaSans = Plus_Jakarta_Sans({
@@ -24,10 +30,33 @@ const cinzel = Cinzel({
   display: "swap",
 });
 
+const rozha = Rozha_One({
+  variable: "--font-rozha",
+  weight: "400",
+  subsets: ["devanagari", "latin"],
+  display: "swap",
+});
+
+const notoDevanagari = Noto_Serif_Devanagari({
+  variable: "--font-devanagari",
+  weight: ["400", "600", "700", "800"],
+  subsets: ["devanagari", "latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "ShaadiConnect — Royal Digital Wedding Invitations & Multi-Client SaaS",
+  title: "VivahVaani — Har Shaadi Ki Shuruaat, Ek Khoobsurat Nimantran",
   description:
-    "Design royal, interactive digital wedding invitations with Google Maps navigation, live RSVP headcount tracking, and 1-click WhatsApp distribution. Built for Indian couples, event planners, and studios.",
+    "VivahVaani by Kodetri Technologies — Royal interactive digital wedding patrika with Google Maps navigation, live RSVP headcount tracking, and 1-click WhatsApp distribution.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png" }],
+  },
 };
 
 export default function RootLayout({
@@ -37,8 +66,8 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
-      className={`${jakartaSans.variable} ${cormorant.variable} ${cinzel.variable} h-full antialiased`}
+      lang="hi"
+      className={`${jakartaSans.variable} ${cormorant.variable} ${cinzel.variable} ${rozha.variable} ${notoDevanagari.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>

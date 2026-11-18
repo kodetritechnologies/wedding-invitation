@@ -109,7 +109,7 @@ export default function FeaturesPage() {
             </h1>
 
             <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
-              ShaadiConnect sirf ek digital card nahi hai — yeh aapke parivar ka personal wedding assistant hai jo Papa ji ke 50 phone calls bachata hai aur catering ka laakho rupaye ka nuksan rokta hai.
+              VivahVaani sirf ek digital card nahi hai — yeh aapke parivar ka personal wedding assistant hai jo Papa ji ke 50 phone calls bachata hai aur catering ka laakho rupaye ka nuksan rokta hai.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
@@ -203,7 +203,7 @@ export default function FeaturesPage() {
                   ₹{potentialSavings.toLocaleString("en-IN")}
                 </div>
                 <p className="text-xs text-emerald-200/90 leading-snug">
-                  Lagbhag <strong className="text-white">{unconfirmedWastePlates} extra plates</strong> ka kharcha bachega! ShaadiConnect ka cost sirf ₹599 hai — yaani 100x return on investment.
+                  Lagbhag <strong className="text-white">{unconfirmedWastePlates} extra plates</strong> ka kharcha bachega! VivahVaani ka cost sirf ₹599 hai — yaani 100x return on investment.
                 </p>
                 <div className="pt-2">
                   <Link
@@ -353,7 +353,7 @@ export default function FeaturesPage() {
               ✦ Honest Comparison ✦
             </span>
             <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900">
-              Printed Card vs WhatsApp PDF vs ShaadiConnect
+              Printed Card vs WhatsApp PDF vs VivahVaani
             </h2>
           </div>
 
@@ -365,7 +365,7 @@ export default function FeaturesPage() {
                     <th className="py-4 px-6 font-bold">Feature / Suvidha</th>
                     <th className="py-4 px-4 font-normal text-stone-300">Printed Physical Card</th>
                     <th className="py-4 px-4 font-normal text-stone-300">Generic WhatsApp PDF</th>
-                    <th className="py-4 px-6 font-bold text-amber-300 bg-rose-950">ShaadiConnect Royal</th>
+                    <th className="py-4 px-6 font-bold text-amber-300 bg-rose-950">VivahVaani Royal</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-stone-100 font-sans">

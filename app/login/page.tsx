@@ -60,14 +60,14 @@ export default function LoginPage() {
           </Link>
 
           <div className="inline-block px-3 py-0.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-[11px] font-cinzel font-semibold">
-            ✦ Business &amp; Family Admin Portal ✦
+            ✦ Client Login &bull; Wedding Portal ✦
           </div>
 
           <h1 className="text-2xl font-bold font-serif text-stone-900 tracking-tight pt-1">
-            Apne Workspace Me Login Karein
+            Apne Account Me Login Karein
           </h1>
           <p className="text-xs text-stone-600 font-sans leading-relaxed">
-            Weddings, clients, function schedules aur live RSVP headcount manage karein.
+            Apna wedding invitation card, event schedule aur live RSVP headcount manage karein.
           </p>
         </div>
 

@@ -481,7 +481,17 @@ function InvitationContent({ slug }: { slug: string }) {
 
       {/* Footer */}
       <footer className="text-center py-8 font-sans text-xs text-stone-400 border-t border-stone-200 space-y-1">
-        <p>Created with ShaadiConnect — Digital Wedding Invitations & RSVPs</p>
+        <p>
+          Created with VivahVaani &bull; Powered by{" "}
+          <a
+            href="https://www.kodetri.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-stone-600 underline underline-offset-2 transition"
+          >
+            Kodetri Technologies
+          </a>
+        </p>
       </footer>
     </div>
   );

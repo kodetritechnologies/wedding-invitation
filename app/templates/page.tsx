@@ -410,7 +410,8 @@ export default function TemplatesPage() {
                 rel="noopener noreferrer"
                 className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 text-xs sm:text-sm"
               >
-                <MessageCircle className="w-4 h-4 fill-white" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/whatsapp.png" alt="WhatsApp" className="w-5 h-5 object-contain" />
                 <span>WhatsApp Par Card Photo Bhejo</span>
               </a>
 

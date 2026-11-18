@@ -27,7 +27,7 @@ export default function AboutPage() {
     },
     {
       title: "Paryavaran & Bachat (Zero Paper Waste)",
-      desc: "Lakhon mehnge paper cards shaadi ke agle din kudedan me chale jate hain. ShaadiConnect se hazaaron ped bachte hain aur parivar ke ₹30,000 se ₹50,000 direct bachte hain.",
+      desc: "Lakhon mehnge paper cards shaadi ke agle din kudedan me chale jate hain. VivahVaani se hazaaron ped bachte hain aur parivar ke ₹30,000 se ₹50,000 direct bachte hain.",
       icon: Leaf,
       color: "bg-emerald-50 text-emerald-700 border-emerald-200",
     },
@@ -69,7 +69,7 @@ export default function AboutPage() {
             </h1>
 
             <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
-              Humne ShaadiConnect isliye banaya taaki Papa ji ko shaadi ke din address samjhane ke liye 50 phone calls na lene padein, aur har rishtedaar ko poore samman ke sath shubh nimantran mile.
+              Humne VivahVaani isliye banaya taaki Papa ji ko shaadi ke din address samjhane ke liye 50 phone calls na lene padein, aur har rishtedaar ko poore samman ke sath shubh nimantran mile.
             </p>
           </div>
         </section>
@@ -99,7 +99,7 @@ export default function AboutPage() {
               </p>
 
               <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans">
-                Isi soch se janma <strong className="text-rose-800">ShaadiConnect</strong> — ek aisi Digital Royal Patrika jisme Rajwada ki shaan bhi hai, Google Maps ka rasta bhi, aur live RSVP headcount bhi.
+                Isi soch se <strong className="text-rose-800">Kodetri Technologies</strong> dwara janma <strong className="text-stone-900">VivahVaani</strong> — ek aisi Digital Royal Patrika jisme Rajwada ki shaan bhi hai, Google Maps ka rasta bhi, aur live RSVP headcount bhi.
               </p>
             </div>
 
@@ -143,7 +143,7 @@ export default function AboutPage() {
               ✦ Hamare Siddhant ✦
             </span>
             <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900">
-              Jo ShaadiConnect Ko Khaas Banata Hai
+              Jo VivahVaani Ko Khaas Banata Hai
             </h2>
           </div>
 

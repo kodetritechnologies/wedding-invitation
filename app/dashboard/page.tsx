@@ -65,27 +65,20 @@ export default function DashboardOverviewPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-            Wedding Operations Center
+            My Wedding Dashboard
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Manage your wedding clients, digital invitations, functions, and live RSVPs.
+            Yahan se aap apne shubh vivah ka digital card, ceremonies schedule aur live RSVP headcount manage karein.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <Link
-            href="/dashboard/clients"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium text-sm rounded-xl shadow-sm transition"
-          >
-            <Users className="w-4 h-4 text-gray-500" />
-            <span>Manage Clients</span>
-          </Link>
-          <Link
             href="/dashboard/weddings"
             className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-medium text-sm rounded-xl shadow-sm transition"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>New Wedding</span>
+            <span>Create Wedding Card</span>
           </Link>
         </div>
       </div>
@@ -93,26 +86,12 @@ export default function DashboardOverviewPage() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-xs flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-            <Users className="w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Total Clients
-            </p>
-            <p className="text-2xl font-bold text-gray-900 mt-0.5">
-              {loading ? "..." : clientsCount}
-            </p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-xs flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
             <CalendarHeart className="w-6 h-6" />
           </div>
           <div>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Wedding Projects
+              Total Wedding Cards
             </p>
             <p className="text-2xl font-bold text-gray-900 mt-0.5">
               {loading ? "..." : totalWeddings}
@@ -126,10 +105,24 @@ export default function DashboardOverviewPage() {
           </div>
           <div>
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Live Published Invitations
+              Live Published Cards
             </p>
             <p className="text-2xl font-bold text-gray-900 mt-0.5">
               {loading ? "..." : publishedWeddings}
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-xs flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+            <Users className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              WhatsApp Sharing
+            </p>
+            <p className="text-sm font-bold text-stone-900 mt-1">
+              Active &bull; 1-Click Ready
             </p>
           </div>
         </div>
@@ -139,16 +132,16 @@ export default function DashboardOverviewPage() {
       <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
         <div className="p-6 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">Recent Wedding Projects</h2>
+            <h2 className="text-lg font-bold text-gray-900">My Wedding Cards</h2>
             <p className="text-xs text-gray-500 mt-0.5">
-              Quickly view guest headcount, events, and invitation links
+              Functions, Google Maps directions, aur live RSVP headcount
             </p>
           </div>
           <Link
             href="/dashboard/weddings"
             className="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1"
           >
-            <span>View All</span>
+            <span>Manage All Cards</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>

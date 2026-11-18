@@ -60,7 +60,7 @@ export default function HowItWorksPage() {
       stepNum: "कदम 04",
       number: "04",
       title: "WhatsApp Par 1-Click Bhejiye & RSVP Dekhiye",
-      desc: "Apna branded link (`shaadiconnect.in/w/aarav-diya`) sabhi groups aur doston ko bhejiye aur live plate headcount track karein.",
+      desc: "Apna branded link (`vivahvaani.com/w/aarav-diya`) sabhi groups aur doston ko bhejiye aur live plate headcount track karein.",
       badge: "Instant WhatsApp Sharing",
       icon: Share2,
       color: "bg-purple-50 text-purple-800 border-purple-200",
@@ -107,7 +107,7 @@ export default function HowItWorksPage() {
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.15]">
               Kaise Kaam Karta Hai{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
-                ShaadiConnect Digital Patrika?
+                VivahVaani Digital Patrika?
               </span>
             </h1>
 
@@ -202,7 +202,7 @@ export default function HowItWorksPage() {
               </h2>
 
               <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-sans">
-                Aksar apps aur portals par password aur OTP ka jhanjhat hota hai jisse bade-buzurg pareshan hote hain. ShaadiConnect ko humne specially test kiya hai taaki 70 saal ke Dada ji bhi WhatsApp par link tap karke bina kisi rukawat ke poora card padh sakein aur venue navigation shuru kar sakein.
+                Aksar apps aur portals par password aur OTP ka jhanjhat hota hai jisse bade-buzurg pareshan hote hain. VivahVaani ko humne specially test kiya hai taaki 70 saal ke Dada ji bhi WhatsApp par link tap karke bina kisi rukawat ke poora card padh sakein aur venue navigation shuru kar sakein.
               </p>
 
               {/* Step Checklist */}

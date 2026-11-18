@@ -2,12 +2,65 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, Menu, X, ArrowRight, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { Heart, Menu, X, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+
+interface HeaderSettings {
+  siteName: string;
+  logoUrl?: string;
+  announcementBar?: {
+    enabled: boolean;
+    text: string;
+  };
+  address?: {
+    city?: string;
+    state?: string;
+  };
+}
 
 export default function PublicHeader() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [settings, setSettings] = useState<HeaderSettings>({
+    siteName: "VivahVaani",
+    logoUrl: "/logo.png",
+    announcementBar: {
+      enabled: true,
+      text: "✦ VivahVaani • Har Shaadi Ki Shuruaat, Ek Khoobsurat Nimantran ✦",
+    },
+    address: {
+      city: "Indore",
+      state: "MP",
+    },
+  });
+
+  useEffect(() => {
+    async function fetchHeaderSettings() {
+      try {
+        const res = await fetch("/api/public/settings");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.settings) {
+            setSettings({
+              siteName: data.settings.siteName || "ShaadiConnect",
+              logoUrl: data.settings.logoUrl || "",
+              announcementBar: data.settings.announcementBar || {
+                enabled: true,
+                text: "✦ शुभ विवाह • Royal Digital Wedding Patrika & Guest Management ✦",
+              },
+              address: {
+                city: data.settings.address?.city || "Indore",
+                state: data.settings.address?.state || "MP",
+              },
+            });
+          }
+        }
+      } catch {
+        // Fallback to initial state
+      }
+    }
+    fetchHeaderSettings();
+  }, []);
 
   const navLinks = [
     { href: "/templates", label: "Designs & Patrika" },
@@ -20,28 +73,40 @@ export default function PublicHeader() {
 
   return (
     <>
-      {/* Top Auspicious Gold Strip */}
-      <div className="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-amber-50 text-[10px] sm:text-[11px] py-1 px-4 text-center font-cinzel tracking-widest flex items-center justify-center gap-2 shadow-inner">
-        <span>✦</span>
-        <span>शुभ विवाह &bull; Royal Digital Wedding Patrika &amp; Guest Management</span>
-        <span>✦</span>
-      </div>
+      {/* Top Auspicious Gold Strip (Dynamic) */}
+      {settings.announcementBar?.enabled && (
+        <div className="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-amber-50 text-[11px] sm:text-xs py-1 px-4 text-center font-devanagari tracking-wide flex items-center justify-center gap-2 shadow-inner font-medium">
+          <span>{settings.announcementBar.text}</span>
+        </div>
+      )}
 
       <header className="bg-[#FDFBF7]/90 backdrop-blur-md border-b border-amber-900/10 sticky top-0 z-50 transition-all">
         <div className="max-w-7xl mx-auto px-6 h-15 sm:h-16 flex items-center justify-between">
-          {/* Brand Logo with Indian Royal Flourish */}
+          {/* Brand Logo with Dynamic Logo / Text */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-700 via-rose-800 to-amber-900 flex items-center justify-center text-amber-300 shadow-sm border border-amber-400/30 group-hover:scale-105 transition">
-              <Heart className="w-4 h-4 fill-amber-300 text-amber-300" />
-            </div>
-            <div>
-              <span className="font-bold text-stone-900 tracking-tight text-xl font-serif">
-                Shaadi<span className="text-rose-700">Connect</span>
-              </span>
-              <span className="block text-[9px] text-amber-800/80 uppercase font-sans font-semibold tracking-wider -mt-1">
-                Digital Patrika &bull; Indore, MP
-              </span>
-            </div>
+            {settings.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={settings.logoUrl}
+                alt={settings.siteName}
+                className="h-12 sm:h-13 w-auto max-w-[210px] object-contain"
+              />
+            ) : (
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-700 via-rose-800 to-amber-900 flex items-center justify-center text-amber-300 shadow-sm border border-amber-400/30 group-hover:scale-105 transition">
+                  <Heart className="w-4 h-4 fill-amber-300 text-amber-300" />
+                </div>
+                <div>
+                  <span className="font-bold text-stone-900 tracking-tight text-xl font-serif">
+                    {settings.siteName}
+                  </span>
+                  <span className="block text-[9px] text-amber-800/80 uppercase font-sans font-semibold tracking-wider -mt-1">
+                    Digital Patrika &bull; {settings.address?.city || "Indore"},{" "}
+                    {settings.address?.state || "MP"}
+                  </span>
+                </div>
+              </div>
+            )}
           </Link>
 
           {/* Desktop Nav Links */}

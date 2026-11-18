@@ -1,28 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import {
   Check,
-  HelpCircle,
   Sparkles,
   ArrowRight,
-  Shield,
   Heart,
-  Building,
   Crown,
-  Zap,
   PhoneCall,
   MessageCircle,
-  IndianRupee,
 } from "lucide-react";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
 
 export default function PricingPage() {
-  const [billingType, setBillingType] = useState<"onetime" | "subscription">("onetime");
-
-  const oneTimePlans = [
+  const plans = [
     {
       id: "basic",
       name: "Shubh Aarambh",
@@ -56,13 +48,13 @@ export default function PricingPage() {
       price: "₹599",
       period: "One-Time Payment &bull; Complete Wedding",
       desc: "Sabse pasandeeda package — Live RSVP, unlimited ceremonies aur personalized guest samman.",
-      badge: "⭐ 92% Indian Families Choose This",
+      badge: "⭐ 92% Families Choose This",
       badgeColor: "bg-amber-100 text-amber-900 border-amber-300",
       features: [
         "Unlimited Ceremonies (Haldi, Mehendi, Sangeet, Vivah, Reception...)",
         "Live RSVP Catering Headcount Dashboard (Track exact plates)",
         "VIP Personalized Guest Names ('Honoured: Sharma Ji & Parivar')",
-        "Custom Branded URL Slug (/w/dulha-dulhan)",
+        "Custom Branded URL Slug (/w/couple-names)",
         "1-Click Google Maps Venue GPS Navigation",
         "Instant Muhurat & Venue Update Control",
         "1 Full Year Active Hosting (Post-wedding memories ke liye)",
@@ -97,51 +89,10 @@ export default function PricingPage() {
     },
   ];
 
-  const subscriptionPlans = [
-    {
-      id: "studio-starter",
-      name: "Studio Starter",
-      price: "₹999",
-      period: "per month &bull; Billed monthly",
-      desc: "Freelance wedding photographers, card printers aur budding event planners ke liye.",
-      badge: "Up to 5 Weddings / Month",
-      features: [
-        "5 Client Weddings actively created per month",
-        "Dedicated Multi-Client Management Portal",
-        "All Royal Tier Features for all clients",
-        "Client Branding & Couple Domain Customization",
-        "Individual Guest RSVP exports to Excel/CSV",
-        "Standard Email & WhatsApp Support",
-      ],
-      cta: "Start Studio Plan",
-      ctaClass: "bg-stone-900 hover:bg-stone-800 text-white",
-      highlight: false,
-    },
-    {
-      id: "agency-pro",
-      name: "Agency Unlimited",
-      price: "₹2,499",
-      period: "per month &bull; Billed monthly",
-      desc: "Full-scale wedding planning agencies, luxury banquet halls aur digital invitation studios.",
-      badge: "⭐ Unlimited Weddings",
-      features: [
-        "Unlimited Client Weddings every month",
-        "White-label branding (Show your studio's logo on footer)",
-        "Multi-User Team Access (Assign planners to specific clients)",
-        "Custom Template Uploads & Bespoke Color Schemes",
-        "Direct CSV Bulk Guest Upload via WhatsApp automation",
-        "Dedicated Account Manager in Indore with 1-hr SLA",
-      ],
-      cta: "Start Agency Unlimited",
-      ctaClass: "bg-gradient-to-r from-rose-700 via-rose-800 to-amber-900 hover:from-rose-800 hover:to-amber-950 text-amber-100 shadow-md border border-amber-400/40",
-      highlight: true,
-    },
-  ];
-
   const faqs = [
     {
       q: "Agar shaadi ka muhurat ya venue aage peeche hua to kya naya card khareedna padega?",
-      a: "Bilkul nahi! Printed card me ek baar galti ho gayi to re-printing me hazaron rupaye lagte hain. ShaadiConnect me aap apne login dashboard se 1 second me naya time ya naya address save kar sakte hain — live link open karte hi sabhi mehmaano ko updated details dikhegi.",
+      a: "Bilkul nahi! Printed card me ek baar galti ho gayi to re-printing me hazaron rupaye lagte hain. VivahVaani me aap apne login dashboard se 1 second me naya time ya naya address save kar sakte hain — live link open karte hi sabhi mehmaano ko updated details dikhegi.",
     },
     {
       q: "Bade buzurg aur gaon ke rishtedaar isko aasani se dekh payenge?",
@@ -153,7 +104,7 @@ export default function PricingPage() {
     },
     {
       q: "Kya hamara guest list aur phone numbers private rahenge?",
-      a: "100% Guaranteed. ShaadiConnect par privacy hamara pehla niyam hai. Aapke mehmaano ka data ya phone number kisi bhi third party ko share ya advertise nahi kiya jata.",
+      a: "100% Guaranteed. VivahVaani par privacy hamara pehla niyam hai. Aapke mehmaano ka data ya phone number kisi bhi third party ko share ya advertise nahi kiya jata.",
     },
   ];
 
@@ -181,178 +132,84 @@ export default function PricingPage() {
             </h1>
 
             <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
-              Print aur courier par ₹30,000 kharch karne ki zaroorat nahi. Apne budget ke hisaab se seedha plan chuniye — one-time payment for families ya monthly subscription for studios.
+              Print aur courier par ₹30,000 kharch karne ki zaroorat nahi. Apni shaadi ke hisaab se seedha one-time package chuniye aur bina kisi jhanjhat ke digital card banayein.
             </p>
-
-            {/* TAB TOGGLE */}
-            <div className="pt-4 flex justify-center">
-              <div className="inline-flex p-1.5 bg-stone-200/80 rounded-2xl font-sans">
-                <button
-                  onClick={() => setBillingType("onetime")}
-                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer flex items-center gap-2 ${
-                    billingType === "onetime"
-                      ? "bg-rose-700 text-amber-50 shadow-sm"
-                      : "text-stone-700 hover:text-stone-950"
-                  }`}
-                >
-                  <Heart className="w-4 h-4" />
-                  <span>Couples &amp; Parivar Ke Liye (One-Time)</span>
-                </button>
-
-                <button
-                  onClick={() => setBillingType("subscription")}
-                  className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer flex items-center gap-2 ${
-                    billingType === "subscription"
-                      ? "bg-rose-700 text-amber-50 shadow-sm"
-                      : "text-stone-700 hover:text-stone-950"
-                  }`}
-                >
-                  <Building className="w-4 h-4" />
-                  <span>Planners &amp; Studios Ke Liye (Subscriptions)</span>
-                </button>
-              </div>
-            </div>
           </div>
         </section>
 
-        {/* ONE-TIME PACKAGES GRID */}
-        {billingType === "onetime" ? (
-          <section className="max-w-7xl mx-auto px-6 py-14">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {oneTimePlans.map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`bg-white rounded-3xl p-7 sm:p-8 border transition-all duration-300 flex flex-col justify-between ${
-                    plan.highlight
-                      ? "border-amber-400 ring-2 ring-amber-400/30 shadow-xl relative scale-102"
-                      : "border-stone-200/90 shadow-xs hover:shadow-md"
-                  }`}
-                >
-                  <div className="space-y-5">
-                    {/* Badge */}
-                    <div className="flex items-center justify-between">
-                      <span
-                        className={`text-[11px] font-bold px-3 py-1 rounded-full border ${plan.badgeColor}`}
-                      >
-                        {plan.badge}
-                      </span>
-                      {plan.highlight && (
-                        <span className="text-[10px] font-cinzel font-bold text-rose-800 tracking-wider uppercase">
-                          Top Choice
-                        </span>
-                      )}
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-serif font-bold text-stone-900">
-                        {plan.name}
-                      </h3>
-                      <p className="text-xs text-stone-600 mt-1 leading-relaxed">
-                        {plan.desc}
-                      </p>
-                    </div>
-
-                    <div className="pt-2 border-t border-stone-100">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl sm:text-5xl font-serif font-bold text-stone-900 tracking-tight">
-                          {plan.price}
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-stone-500 block mt-1">
-                        {plan.period}
-                      </span>
-                    </div>
-
-                    {/* Features List */}
-                    <div className="space-y-2.5 pt-3 border-t border-stone-100 text-xs text-stone-700">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
-                        What&apos;s Included:
-                      </span>
-                      {plan.features.map((feat, i) => (
-                        <div key={i} className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span className="leading-snug">{feat}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pt-6">
-                    <Link
-                      href="/register"
-                      className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm text-center block transition ${plan.ctaClass}`}
+        {/* PACKAGES GRID */}
+        <section className="max-w-7xl mx-auto px-6 py-14">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {plans.map((plan) => (
+              <div
+                key={plan.id}
+                className={`bg-white rounded-3xl p-7 sm:p-8 border transition-all duration-300 flex flex-col justify-between ${
+                  plan.highlight
+                    ? "border-amber-400 ring-2 ring-amber-400/30 shadow-xl relative scale-102"
+                    : "border-stone-200/90 shadow-xs hover:shadow-md"
+                }`}
+              >
+                <div className="space-y-5">
+                  {/* Badge */}
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-[11px] font-bold px-3 py-1 rounded-full border ${plan.badgeColor}`}
                     >
-                      {plan.cta}
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : (
-          /* SUBSCRIPTION PLANS GRID */
-          <section className="max-w-5xl mx-auto px-6 py-14">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {subscriptionPlans.map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`bg-white rounded-3xl p-8 border transition-all duration-300 flex flex-col justify-between ${
-                    plan.highlight
-                      ? "border-amber-400 ring-2 ring-amber-400/30 shadow-xl scale-102"
-                      : "border-stone-200/90 shadow-xs hover:shadow-md"
-                  }`}
-                >
-                  <div className="space-y-5">
-                    <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 inline-block">
                       {plan.badge}
                     </span>
-
-                    <div>
-                      <h3 className="text-2xl font-serif font-bold text-stone-900">
-                        {plan.name}
-                      </h3>
-                      <p className="text-xs text-stone-600 mt-1 leading-relaxed">
-                        {plan.desc}
-                      </p>
-                    </div>
-
-                    <div className="pt-2 border-t border-stone-100">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-4xl sm:text-5xl font-serif font-bold text-stone-900 tracking-tight">
-                          {plan.price}
-                        </span>
-                      </div>
-                      <span className="text-[11px] text-stone-500 block mt-1">
-                        {plan.period}
+                    {plan.highlight && (
+                      <span className="text-[10px] font-cinzel font-bold text-rose-800 tracking-wider uppercase">
+                        Top Choice
                       </span>
-                    </div>
-
-                    <div className="space-y-2.5 pt-3 border-t border-stone-100 text-xs text-stone-700">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
-                        Agency Capabilities:
-                      </span>
-                      {plan.features.map((feat, i) => (
-                        <div key={i} className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span className="leading-snug">{feat}</span>
-                        </div>
-                      ))}
-                    </div>
+                    )}
                   </div>
 
-                  <div className="pt-6">
-                    <Link
-                      href="/register"
-                      className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm text-center block transition ${plan.ctaClass}`}
-                    >
-                      {plan.cta}
-                    </Link>
+                  <div>
+                    <h3 className="text-2xl font-serif font-bold text-stone-900">
+                      {plan.name}
+                    </h3>
+                    <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+                      {plan.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-stone-100">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl sm:text-5xl font-serif font-bold text-stone-900 tracking-tight">
+                        {plan.price}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-stone-500 block mt-1">
+                      {plan.period}
+                    </span>
+                  </div>
+
+                  {/* Features List */}
+                  <div className="space-y-2.5 pt-3 border-t border-stone-100 text-xs text-stone-700">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 block mb-1">
+                      What&apos;s Included:
+                    </span>
+                    {plan.features.map((feat, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span className="leading-snug">{feat}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+
+                <div className="pt-6">
+                  <Link
+                    href="/register"
+                    className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm text-center block transition ${plan.ctaClass}`}
+                  >
+                    {plan.cta}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* FAQ ACCORDION / LIST */}
         <section className="max-w-4xl mx-auto px-6 py-12">
@@ -404,7 +261,8 @@ export default function PricingPage() {
               rel="noopener noreferrer"
               className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md transition flex items-center gap-2 text-xs sm:text-sm shrink-0"
             >
-              <MessageCircle className="w-4 h-4 fill-white" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/whatsapp.png" alt="WhatsApp" className="w-5 h-5 object-contain" />
               <span>WhatsApp Tatkal Helpline</span>
             </a>
           </div>

@@ -1,145 +1,211 @@
+"use client";
+
 import Link from "next/link";
 import { Heart, MapPin, Mail, Phone, MessageCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+
+interface FooterSettings {
+  siteName: string;
+  logoUrl?: string;
+  address: {
+    formattedAddress: string;
+  };
+  contact: {
+    email: string;
+    phone: string;
+    whatsapp: string;
+    workingHours: string;
+  };
+  footer: {
+    copyrightText: string;
+    tagline: string;
+  };
+}
 
 export default function PublicFooter() {
+  const [settings, setSettings] = useState<FooterSettings>({
+    siteName: "VivahVaani",
+    logoUrl: "/logo.png",
+    address: {
+      formattedAddress: "Vijay Nagar, Indore, Madhya Pradesh • 452010",
+    },
+    contact: {
+      email: "namaste@vivahvaani.com",
+      phone: "+91 98260 12345",
+      whatsapp: "919826012345",
+      workingHours: "10 AM - 7 PM",
+    },
+    footer: {
+      copyrightText: "© 2026 VivahVaani. All rights reserved.",
+      tagline: "Har Shaadi Ki Shuruaat, Ek Khoobsurat Nimantran",
+    },
+  });
+
+  useEffect(() => {
+    async function fetchFooterSettings() {
+      try {
+        const res = await fetch("/api/public/settings");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.settings) {
+            setSettings({
+              siteName: data.settings.siteName || "ShaadiConnect",
+              logoUrl: data.settings.logoUrl || "",
+              address: {
+                formattedAddress:
+                  data.settings.address?.formattedAddress ||
+                  "Vijay Nagar, Indore, Madhya Pradesh • 452010",
+              },
+              contact: {
+                email: data.settings.contact?.email || "namaste@shaadiconnect.com",
+                phone: data.settings.contact?.phone || "+91 98260 12345",
+                whatsapp: data.settings.contact?.whatsapp || "919826012345",
+                workingHours: data.settings.contact?.workingHours || "10 AM - 7 PM",
+              },
+              footer: {
+                copyrightText:
+                  data.settings.footer?.copyrightText ||
+                  "© 2026 ShaadiConnect. Crafted with shradha & modern technology in Indore, Madhya Pradesh.",
+                tagline:
+                  data.settings.footer?.tagline ||
+                  "“Kalyanam, Mangalyam, Shubham.” Reimagining Indian wedding invitations into timeless, interactive digital patrika experiences.",
+              },
+            });
+          }
+        }
+      } catch {
+        // Fallback to initial values
+      }
+    }
+
+    fetchFooterSettings();
+  }, []);
+
   return (
-    <footer className="bg-[#1A1110] text-amber-100/80 font-sans text-xs border-t border-amber-900/30">
-      {/* Decorative Traditional Divider */}
-      <div className="py-3 text-center text-amber-400/40 text-xs tracking-[0.5em] font-serif border-b border-amber-950">
-        ✦ ━━━━━━ ❖ ━━━━━━ ✦
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
+    <footer className="bg-stone-950 text-stone-400 font-sans text-xs border-t border-stone-800">
+      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Brand Col */}
-        <div className="space-y-4 md:col-span-1">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-700 to-amber-800 flex items-center justify-center text-amber-300 shadow-sm border border-amber-500/30">
-              <Heart className="w-4 h-4 fill-amber-300 text-amber-300" />
-            </div>
-            <span className="font-bold text-white tracking-tight text-xl font-serif">
-              Shaadi<span className="text-rose-400">Connect</span>
-            </span>
+        <div className="space-y-3">
+          <Link href="/" className="inline-block group">
+            {settings.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src="/logo-dark.png"
+                alt={settings.siteName}
+                className="h-16 sm:h-18 w-auto max-w-[250px] object-contain drop-shadow-[0_2px_12px_rgba(245,158,11,0.25)] group-hover:brightness-110 transition"
+              />
+            ) : (
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-rose-950 text-amber-300 flex items-center justify-center border border-amber-500/30">
+                  <Heart className="w-4 h-4 fill-amber-300 text-amber-300" />
+                </div>
+                <span className="font-bold text-white tracking-tight text-lg font-serif">
+                  {settings.siteName}
+                </span>
+              </div>
+            )}
           </Link>
-          <p className="text-amber-100/60 leading-relaxed text-xs font-serif italic">
-            &ldquo;Kalyanam, Mangalyam, Shubham.&rdquo; Reimagining Indian wedding invitations into timeless, interactive digital patrika experiences.
+          <p className="text-stone-400 leading-relaxed text-xs">
+            {settings.footer.tagline}
           </p>
-          <p className="flex items-start gap-2 text-amber-200/70 text-[11px] pt-1">
-            <MapPin className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-            <span>Vijay Nagar, Indore, Madhya Pradesh &bull; 452010</span>
-          </p>
+          <div className="flex items-start gap-2 text-stone-400 text-xs pt-1">
+            <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <span>{settings.address.formattedAddress}</span>
+          </div>
         </div>
 
-        {/* Product Links */}
-        <div className="space-y-3">
-          <h4 className="font-serif font-bold text-amber-200 uppercase text-xs tracking-wider">
-            Wedding Patrika & Invites
+        {/* Quick Links */}
+        <div className="space-y-3 md:pl-8">
+          <h4 className="font-semibold text-white uppercase text-xs tracking-wider">
+            Quick Links
           </h4>
-          <ul className="space-y-2 text-amber-100/60">
+          <ul className="space-y-2 text-stone-400">
             <li>
-              <Link href="/templates" className="hover:text-amber-200 transition">
-                Royal Rajasthani Designs
+              <Link href="/templates" className="hover:text-amber-400 transition">
+                Wedding Templates
               </Link>
             </li>
             <li>
-              <Link href="/templates" className="hover:text-amber-200 transition">
-                Floral Pastel Collections
+              <Link href="/pricing" className="hover:text-amber-400 transition">
+                Pricing &amp; Plans
               </Link>
             </li>
             <li>
-              <Link href="/templates" className="hover:text-amber-200 transition">
-                Vedic Gold & Shloka Themes
+              <Link href="/about" className="hover:text-amber-400 transition">
+                About Us
               </Link>
             </li>
             <li>
-              <Link href="/features" className="hover:text-amber-200 transition">
-                Google Maps & RSVP Features
-              </Link>
-            </li>
-            <li>
-              <Link href="/pricing" className="hover:text-amber-200 transition">
-                Affordable Packages (from ₹299)
+              <Link href="/contact" className="hover:text-amber-400 transition">
+                Contact &amp; Support
               </Link>
             </li>
           </ul>
         </div>
 
-        {/* For Wedding Businesses */}
+        {/* Contact & Support */}
         <div className="space-y-3">
-          <h4 className="font-serif font-bold text-amber-200 uppercase text-xs tracking-wider">
-            For Wedding Studios & Planners
+          <h4 className="font-semibold text-white uppercase text-xs tracking-wider">
+            Contact
           </h4>
-          <ul className="space-y-2 text-amber-100/60">
-            <li>
-              <Link href="/register" className="hover:text-amber-200 transition">
-                Invitation Designers Portal
-              </Link>
+          <ul className="space-y-2.5 text-stone-400">
+            <li className="flex items-center gap-2">
+              <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <a href={`mailto:${settings.contact.email}`} className="hover:text-white transition">
+                {settings.contact.email}
+              </a>
             </li>
-            <li>
-              <Link href="/register" className="hover:text-amber-200 transition">
-                Wedding Planners Multi-Client Suite
-              </Link>
+            <li className="flex items-center gap-2">
+              <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>
+                {settings.contact.phone} {settings.contact.workingHours ? `(${settings.contact.workingHours})` : ""}
+              </span>
             </li>
-            <li>
-              <Link href="/register" className="hover:text-amber-200 transition">
-                Photographers & Event Studios
-              </Link>
-            </li>
-            <li>
-              <Link href="/how-it-works" className="hover:text-amber-200 transition">
-                How It Works for Agencies
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin" className="text-amber-400/40 hover:text-amber-300 transition font-mono text-[10px]">
-                Super Admin Master Console (/admin)
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Company & Local Concierge */}
-        <div className="space-y-3">
-          <h4 className="font-serif font-bold text-amber-200 uppercase text-xs tracking-wider">
-            Indore Support & Concierge
-          </h4>
-          <ul className="space-y-2 text-amber-100/60">
-            <li>
-              <Link href="/about" className="hover:text-amber-200 transition">
-                Our Story in Madhya Pradesh
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="hover:text-amber-200 transition">
-                Customer Support & Help
-              </Link>
-            </li>
-            <li className="flex items-center gap-2 pt-1 text-amber-200">
-              <Mail className="w-3.5 h-3.5 text-rose-400" />
-              <span>namaste@shaadiconnect.com</span>
-            </li>
-            <li className="flex items-center gap-2 text-amber-200">
-              <Phone className="w-3.5 h-3.5 text-rose-400" />
-              <span>+91 98260 12345 (10 AM - 7 PM)</span>
-            </li>
-            <li className="pt-2">
+            <li className="pt-1">
               <a
-                href="https://wa.me/919826012345?text=Hello%20ShaadiConnect,%20I%20want%20to%20know%20more%20about%20digital%20wedding%20invitations"
+                href={`https://wa.me/${settings.contact.whatsapp}?text=Hello%20${encodeURIComponent(
+                  settings.siteName
+                )},%20I%20want%20to%20know%20more%20about%20digital%20wedding%20invitations`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-800 text-[11px] font-semibold hover:bg-emerald-900 transition"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition cursor-pointer"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>Chat on WhatsApp Directly</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/whatsapp.png" alt="WhatsApp" className="w-4 h-4 object-contain" />
+                <span>Chat on WhatsApp</span>
               </a>
             </li>
           </ul>
         </div>
       </div>
 
-      <div className="border-t border-amber-950 py-6 px-6 text-center text-[11px] text-amber-200/40 font-serif">
-        <p>
-          &copy; 2026 ShaadiConnect. Crafted with shradha & modern technology in Indore, Madhya Pradesh.
-        </p>
+      {/* Bottom Bar */}
+      <div className="border-t border-stone-800/80 py-5 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-stone-500 text-xs">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span>{settings.footer.copyrightText || "© 2026 VivahVaani. All rights reserved."}</span>
+            <span className="hidden sm:inline text-stone-700">&bull;</span>
+            <span>
+              Developed by{" "}
+              <a
+                href="https://www.kodetri.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 transition"
+              >
+                Kodetri Technologies
+              </a>
+            </span>
+          </div>
+          <div className="flex items-center gap-5">
+            <Link href="/privacy" className="hover:text-stone-300 transition">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-stone-300 transition">
+              Terms of Service
+            </Link>
+          </div>
+        </div>
       </div>
     </footer>
   );

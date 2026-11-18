@@ -75,8 +75,9 @@ export default function ContactPage() {
             <div className="lg:col-span-5 space-y-6">
               {/* WhatsApp Quick Card */}
               <div className="bg-gradient-to-br from-emerald-950 via-emerald-900 to-stone-950 text-emerald-50 rounded-3xl p-7 sm:p-8 shadow-xl border border-emerald-400/30 space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400/30">
-                  <MessageCircle className="w-6 h-6 fill-emerald-300" />
+                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20 p-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/whatsapp.png" alt="WhatsApp" className="w-full h-full object-contain" />
                 </div>
 
                 <div className="space-y-1">
@@ -93,12 +94,13 @@ export default function ContactPage() {
 
                 <div className="pt-2">
                   <a
-                    href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20ShaadiConnect%20digital%20invitation%20ke%20baare%20me%20jaankari%20chahiye"
+                    href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20VivahVaani%20digital%20invitation%20ke%20baare%20me%20jaankari%20chahiye"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition"
                   >
-                    <MessageCircle className="w-4 h-4 fill-stone-950" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/whatsapp.png" alt="WhatsApp" className="w-5 h-5 object-contain" />
                     <span>WhatsApp Par Baat Shuru Karein</span>
                   </a>
                 </div>
@@ -188,7 +190,7 @@ export default function ContactPage() {
                         {[
                           { id: "couple", label: "Dulha / Dulhan" },
                           { id: "family", label: "Parivar / Parents" },
-                          { id: "planner", label: "Wedding Planner" },
+                          { id: "relative", label: "Bhai / Relative" },
                         ].map((r) => (
                           <button
                             type="button"

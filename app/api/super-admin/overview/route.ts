@@ -11,13 +11,14 @@ export async function GET(req: NextRequest) {
     try {
       await dbConnect();
 
-      const [totalAdmins, totalWeddings, totalClients, totalGuests, recentAdmins] =
+      const [totalAdmins, totalWeddings, totalClients, totalGuests, recentAdmins, recentWeddings] =
         await Promise.all([
           Admin.countDocuments(),
           Wedding.countDocuments(),
           Client.countDocuments(),
           Guest.countDocuments(),
-          Admin.find().select("-password").sort({ createdAt: -1 }).limit(10),
+          Admin.find().select("-password").sort({ createdAt: -1 }).limit(50),
+          Wedding.find().sort({ createdAt: -1 }).limit(50).lean(),
         ]);
 
       return NextResponse.json({
@@ -29,6 +30,7 @@ export async function GET(req: NextRequest) {
           totalGuests,
         },
         recentAdmins,
+        recentWeddings,
       });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to load overview";
