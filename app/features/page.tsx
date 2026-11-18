@@ -219,7 +219,7 @@ export default function FeaturesPage() {
         </section>
 
         {/* 6 CORE PILLARS WITH INDIAN CONTEXT */}
-        <section className="max-w-7xl mx-auto px-6 py-10 space-y-10">
+        <section className=" mx-auto px-6 py-10 space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-2">
             <span className="text-xs uppercase font-cinzel tracking-widest text-rose-800 font-bold">
               ✦ Built For Real Indian Weddings ✦

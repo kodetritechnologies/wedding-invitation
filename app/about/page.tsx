@@ -1,48 +1,76 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Heart,
   Sparkles,
-  MapPin,
   Leaf,
   ShieldCheck,
   Building,
-  ArrowRight,
   Check,
+  ArrowRight,
+  Send,
   Users,
-  Compass,
-  Award,
 } from "lucide-react";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
+import { BRAND } from "@/lib/brand";
+
+interface SiteSettings {
+  businessName?: string;
+}
 
 export default function AboutPage() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    fetch("/api/public/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.settings) {
+          setSettings(data.settings);
+        }
+      })
+      .catch((err) => console.error("Error fetching settings:", err));
+  }, []);
+
+  const brandName = settings?.businessName || BRAND.name;
+
   const pillars = [
     {
       title: "Parampara & Sanskriti Ka Aadar",
-      desc: "Shaadi koi aam event nahi, do parivaron ka pavitra sangam hai. Hamare har card me Ganesha Vandana, Vedic shlokas aur mangal aashirvaad ko sarvopari sthan milta hai.",
+      desc: "Shaadi koi sadharan karyakram nahi, do parivaron ka pavitra sangam hai. Hamare har invitation me Ganesha Vandana, Vedic shlokas aur mangal aashirvaad ko sarvopari sthan milta hai.",
       icon: Heart,
       color: "bg-rose-50 text-rose-700 border-rose-200",
     },
     {
       title: "Paryavaran & Bachat (Zero Paper Waste)",
-      desc: "Lakhon mehnge paper cards shaadi ke agle din kudedan me chale jate hain. VivahVaani se hazaaron ped bachte hain aur parivar ke ₹30,000 se ₹50,000 direct bachte hain.",
+      desc: "Lakhon mehnge paper cards event ke agle din kudedan me chale jate hain. Digital patrika se ped bachte hain aur parivar ke ₹25,000 se ₹60,000 sidhe bachte hain.",
       icon: Leaf,
       color: "bg-emerald-50 text-emerald-700 border-emerald-200",
     },
     {
       title: "100% Private & Pavitra Guest Data",
-      desc: "Aapke rishtedaron ke phone number aur guest list hamare liye amanat hain. Zero advertisements, zero spam, aur zero third-party data sharing.",
+      desc: "Aapke rishtedaron ke phone number aur guest list hamare liye amanat hain. Zero advertisements, zero spam, aur zero third-party data monetization.",
       icon: ShieldCheck,
       color: "bg-blue-50 text-blue-700 border-blue-200",
     },
     {
-      title: "Local Wedding Planners Ka Saath",
-      desc: "Indore, Bhopal, Jaipur se leke har shahar ke photographers, card printers aur wedding event planners ke liye ek modern multi-client SaaS workspace.",
+      title: "Wedding Planners & Studios Ka Saath",
+      desc: "Local photographers, card printers aur event planners ke liye ek samarpit digital platform jahan wo apne clients ko instant digital invitations deliver kar sakein.",
       icon: Building,
       color: "bg-amber-50 text-amber-800 border-amber-200",
     },
+  ];
+
+  const highlights = [
+    "WhatsApp par 1 click me shareable high-speed invitations",
+    "Ganesh Vandana, Vedic Shlok aur Shubh Muhurat sections",
+    "Google Maps navigation button har mehmaan ke liye",
+    "Bina kisi technical gyan ke 2 minute me live website tayyar",
+    "Mobile-first responsive design jo har smartphone par khulta hai",
+    "PDF Patrika aur Video formats bhi uplabdh",
   ];
 
   return (
@@ -53,146 +81,122 @@ export default function AboutPage() {
         {/* HERO SECTION */}
         <section className="relative overflow-hidden pt-14 pb-16 px-6 sm:px-8 border-b border-amber-900/10 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFEB]">
           <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
-
-          <div className="max-w-4xl mx-auto text-center space-y-4 relative">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-cinzel">
-              <span>✦</span>
-              <span>Malwa Ki Mitti &bull; Indore Se Pan-India</span>
-              <span>✦</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.15]">
-              Bhartiya Shaadiyon Ki Shaan,{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
-                Digital Yug Ki Aasani Ke Sath.
-              </span>
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200 uppercase tracking-widest mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-rose-600" /> Hamari Kahani & Uddeshya
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-6">
+              Bhartiya Sanskar, Modern Takneek: {brandName}
             </h1>
-
-            <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
-              Humne VivahVaani isliye banaya taaki Papa ji ko shaadi ke din address samjhane ke liye 50 phone calls na lene padein, aur har rishtedaar ko poore samman ke sath shubh nimantran mile.
+            <p className="text-base sm:text-xl text-stone-700 max-w-2xl mx-auto leading-relaxed">
+              Humne shuru kiya ek seedhe vichar se: Bhartiya shadiyon aur mangal karyakramon ki sanskriti ko bina kisi samjhote ke digital daur me le aana.
             </p>
           </div>
         </section>
 
-        {/* STORY OF ORIGIN */}
-        <section className="max-w-6xl mx-auto px-6 py-14">
-          <div className="bg-white rounded-3xl p-8 sm:p-14 border border-stone-200/90 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-7 space-y-5">
-              <span className="text-xs uppercase font-cinzel tracking-widest text-rose-800 font-bold">
-                Hamari Kahani &bull; Our Story
-              </span>
-
-              <h2 className="text-2xl sm:text-4xl font-serif font-bold text-stone-900 leading-tight">
-                Indore Ke Mandapon Se Shuru Hua Ek Asli Sawaal
+        {/* MISSION & STORY */}
+        <section className="py-16 px-6 sm:px-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            <div className="space-y-4 text-stone-700 leading-relaxed text-sm sm:text-base">
+              <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-2">
+                Paper Se Digital Ka Yeh Badlav Kyun Zaroori Hai?
               </h2>
-
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans">
-                Indore aur Malwa apni laajawab mehman-nawazi aur shaadiyon ke dhoom-dhadake ke liye poore desh me mashhoor hain. Lekin har wedding season me hum ek aam baat dekhte the:
+              <p>
+                Bhartiya parivaron me shaadi ya mangal karyakram ki patrika banna sabse pehla aur pavitra charan hota hai. Par har saal karodon paper cards print hote hain jinme se 90% vivah ke kuch hi ghanton baad dustbin me phenk diye jate hain.
               </p>
-
-              <blockquote className="p-4 bg-amber-50/70 border-l-4 border-amber-500 rounded-r-2xl italic text-xs sm:text-sm text-stone-800 font-serif leading-relaxed">
-                &ldquo;Shaadi se 15 din pehle Papa ji aur Chacha ji dhoop me gadi chala kar 300 gharon me lifafe baantne nikalte hain. Phir bhi shaadi wale din highway par mehmaan bhatak jaate hain, aur halwai ko pata hi nahi hota ki 250 log aayenge ya 400!&rdquo;
-              </blockquote>
-
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans">
-                Humne socha: <strong className="text-stone-900">Agar train ki ticket, flight aur banking sab phone par ho sakti hai, to shaadi ka nimantran ek static paper ya boring PDF me kyun bandhe?</strong>
+              <p>
+                Paper cards na to venue ka direct Google Map batate hain, na aane wale samay me muhurat badalne par update ho sakte hain, aur door daraz ke rishtedaron tak pahuchane me hazaron rupaye courier aur samay barbad hota hai.
               </p>
-
-              <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans">
-                Isi soch se <strong className="text-rose-800">Kodetri Technologies</strong> dwara janma <strong className="text-stone-900">VivahVaani</strong> — ek aisi Digital Royal Patrika jisme Rajwada ki shaan bhi hai, Google Maps ka rasta bhi, aur live RSVP headcount bhi.
+              <p className="font-medium text-stone-900">
+                {brandName} is samasya ka sanskritik aur aadhunik hal hai. Yeh aapke WhatsApp dwara sabhi doston aur parivar tak turant pahuchta hai, mehmaano ko Google Maps navigation deta hai, aur shreshth Vedic prathnaon ke sath mangal sandesh deliver karta hai.
               </p>
             </div>
 
-            <div className="lg:col-span-5">
-              <div className="bg-gradient-to-br from-stone-900 via-rose-950 to-stone-900 text-amber-50 rounded-3xl p-8 shadow-xl border border-amber-400/20 text-center space-y-5">
-                <div className="w-16 h-16 rounded-2xl bg-amber-400/10 border border-amber-400/30 text-amber-300 flex items-center justify-center mx-auto">
-                  <MapPin className="w-8 h-8" />
+            <div className="bg-gradient-to-br from-[#FFF9EE] to-[#FAF1DF] p-8 rounded-3xl border border-amber-200/80 shadow-sm relative">
+              <h3 className="text-lg font-bold text-amber-950 mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5 text-amber-700" /> Parivaron Ko Kya Labh Milta Hai?
+              </h3>
+              <ul className="space-y-3">
+                {highlights.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-stone-800">
+                    <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 pt-5 border-t border-amber-200/60 flex items-center justify-between">
+                <div>
+                  <span className="text-xs text-stone-500 uppercase tracking-wider block">Shuruat</span>
+                  <span className="text-sm font-bold text-stone-900">₹499 Se Shuruat</span>
                 </div>
-
-                <div className="space-y-1">
-                  <span className="text-[11px] font-cinzel uppercase tracking-widest text-amber-300 font-bold block">
-                    Headquartered In
-                  </span>
-                  <h3 className="text-2xl font-serif font-bold text-amber-100">
-                    Indore, Madhya Pradesh
-                  </h3>
-                  <p className="text-xs text-stone-300 font-sans">
-                    Vijay Nagar, Commercial Hub &bull; 452010
-                  </p>
-                </div>
-
-                <div className="pt-4 border-t border-white/10 grid grid-cols-2 gap-3 text-left text-xs font-sans">
-                  <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                    <span className="text-amber-300 font-serif font-bold text-lg block">500+</span>
-                    <span className="text-stone-300 text-[11px]">Weddings Hosted</span>
-                  </div>
-                  <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                    <span className="text-amber-300 font-serif font-bold text-lg block">₹45 Lakhs+</span>
-                    <span className="text-stone-300 text-[11px]">Catering Saved</span>
-                  </div>
-                </div>
+                <Link
+                  href="/wedding"
+                  className="px-4 py-2 rounded-xl bg-rose-700 text-white text-xs font-semibold hover:bg-rose-800 transition shadow-sm"
+                >
+                  Designs Dekhein
+                </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 4 CORE PRINCIPLES */}
-        <section className="max-w-7xl mx-auto px-6 py-10 space-y-10">
-          <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs uppercase font-cinzel tracking-widest text-amber-800 font-bold">
-              ✦ Hamare Siddhant ✦
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900">
-              Jo VivahVaani Ko Khaas Banata Hai
-            </h2>
-          </div>
+        {/* 4 PILLARS */}
+        <section className="py-16 px-6 sm:px-8 bg-stone-100/50 border-y border-stone-200">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <span className="text-xs font-semibold text-rose-800 uppercase tracking-widest">Moolya & Vishwas</span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 mt-2">
+                Hamare 4 Mukhya Siddhant
+              </h2>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {pillars.map((pil, idx) => {
-              const Icon = pil.icon;
-              return (
-                <div
-                  key={idx}
-                  className="bg-white rounded-3xl p-8 border border-stone-200/90 shadow-xs hover:shadow-lg transition space-y-4"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-2xl ${pil.color} flex items-center justify-center border shadow-2xs`}>
-                      <Icon className="w-6 h-6" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {pillars.map((pillar, idx) => {
+                const Icon = pillar.icon;
+                return (
+                  <div
+                    key={idx}
+                    className="p-6 rounded-2xl bg-white border border-stone-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 border ${pillar.color}`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <h3 className="font-bold text-base text-stone-900 mb-2 leading-snug">
+                        {pillar.title}
+                      </h3>
+                      <p className="text-xs text-stone-600 leading-relaxed">
+                        {pillar.desc}
+                      </p>
                     </div>
-                    <h3 className="text-xl font-serif font-bold text-stone-900">
-                      {pil.title}
-                    </h3>
                   </div>
-                  <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans pl-1">
-                    {pil.desc}
-                  </p>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </section>
 
-        {/* BOTTOM INVITATION BANNER */}
-        <section className="max-w-5xl mx-auto px-6 pb-16">
-          <div className="bg-gradient-to-r from-rose-900 via-rose-950 to-amber-950 text-amber-50 rounded-3xl p-8 sm:p-12 text-center space-y-4 shadow-xl border border-amber-400/20">
-            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-amber-100">
-              Aaiye, Apne Parivar Ki Shaadi Ko Digital Banayein
+        {/* CTA */}
+        <section className="py-16 px-6 sm:px-8 max-w-4xl mx-auto text-center">
+          <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-stone-900 via-rose-950 to-stone-900 text-white shadow-xl">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+              Apne Shubh Karyakram Ko Banayein Khaas
             </h2>
-            <p className="text-xs sm:text-sm text-stone-300 max-w-xl mx-auto leading-relaxed font-sans">
-              Hamari Indore desk kisi bhi sahayata ke liye hamesha taiyar hai.
+            <p className="text-stone-300 text-sm sm:text-base max-w-xl mx-auto mb-8">
+              Pesh hai sunder digital patrika, jo har kisi ke dil ko chhoo le aur paryavaran ki raksha kare.
             </p>
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-3 font-sans">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/templates"
-                className="px-6 py-3 bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold rounded-xl shadow-md transition text-xs sm:text-sm"
+                href="/wedding"
+                className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-sm transition shadow-md inline-flex items-center justify-center gap-2"
               >
-                Browse Royal Templates
+                Catalog Explore Karein <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/contact"
-                className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl border border-white/20 transition text-xs sm:text-sm"
+                className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition border border-white/20 inline-flex items-center justify-center gap-2"
               >
-                Connect With Indore Office
+                Hamein Sampark Karein <Send className="w-4 h-4" />
               </Link>
             </div>
           </div>

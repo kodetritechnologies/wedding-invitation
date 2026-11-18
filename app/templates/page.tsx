@@ -208,7 +208,7 @@ export default function TemplatesPage() {
         </section>
 
         {/* CATEGORY FILTER PILLS */}
-        <section className="max-w-7xl mx-auto px-6 pt-8 pb-4">
+        <section className=" mx-auto px-6 pt-8 pb-4">
           <div className="flex flex-wrap items-center justify-center gap-2">
             {CATEGORY_TABS.map((tab) => (
               <button
@@ -227,7 +227,7 @@ export default function TemplatesPage() {
         </section>
 
         {/* TEMPLATES GRID */}
-        <section className="max-w-7xl mx-auto px-6 py-8">
+        <section className=" mx-auto px-6 py-8">
           {filteredTemplates.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-3xl border border-stone-200 p-8 space-y-3 font-body">
               <Sparkles className="w-8 h-8 text-amber-500 mx-auto" />
@@ -367,7 +367,7 @@ export default function TemplatesPage() {
         </section>
 
         {/* CUSTOM PHYSICAL CARD REPLICA CONCIERGE BANNER */}
-        <section className="max-w-7xl mx-auto px-6 py-12">
+        <section className=" mx-auto px-6 py-12">
           <div className="bg-gradient-to-br from-stone-900 via-rose-950 to-stone-900 text-amber-50 rounded-3xl p-8 sm:p-14 shadow-xl border border-amber-400/20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative overflow-hidden">
             {/* Subtle background motif */}
             <div className="absolute right-0 top-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />

@@ -204,7 +204,7 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        <div className="p-8 max-w-7xl mx-auto">{children}</div>
+        <div className="p-8  mx-auto">{children}</div>
       </main>
     </div>
   );

@@ -302,7 +302,7 @@ export default function SuperAdminLayout({
         </header>
 
         {/* Dynamic Nested Route Page Content */}
-        <main className="flex-1 p-6 space-y-6 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-6 space-y-6  w-full mx-auto">
           {children}
         </main>
       </div>

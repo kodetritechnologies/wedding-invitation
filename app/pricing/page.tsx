@@ -138,7 +138,7 @@ export default function PricingPage() {
         </section>
 
         {/* PACKAGES GRID */}
-        <section className="max-w-7xl mx-auto px-6 py-14">
+        <section className=" mx-auto px-6 py-14">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {plans.map((plan) => (
               <div

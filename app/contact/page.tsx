@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Mail,
@@ -11,32 +11,85 @@ import {
   CheckCircle2,
   Send,
   Loader2,
-  Building,
   MessageCircle,
-  Calendar,
-  Heart,
   HelpCircle,
+  ArrowRight,
 } from "lucide-react";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
+import { BRAND } from "@/lib/brand";
+
+interface SiteSettings {
+  contactPhone?: string;
+  contactEmail?: string;
+  contactAddress?: string;
+  contactWhatsapp?: string;
+  workingHours?: string;
+  businessName?: string;
+}
 
 export default function ContactPage() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [city, setCity] = useState("");
+  const [email, setEmail] = useState("");
   const [role, setRole] = useState("couple");
-  const [weddingDate, setWeddingDate] = useState("");
+  const [eventDate, setEventDate] = useState("");
   const [message, setMessage] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetch("/api/public/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.settings) {
+          setSettings(data.settings);
+        }
+      })
+      .catch((err) => console.error("Error fetching settings:", err));
+  }, []);
+
+  const brandName = settings?.businessName || BRAND.name;
+  const contactPhone = settings?.contactPhone || BRAND.whatsappDisplay;
+  const contactEmail = settings?.contactEmail || BRAND.email;
+  const contactAddress = settings?.contactAddress || BRAND.address;
+  const contactWhatsapp = settings?.contactWhatsapp || BRAND.whatsapp;
+  const workingHours = settings?.workingHours || BRAND.workingHours;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg("");
     setSubmitting(true);
-    setTimeout(() => {
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          phone,
+          email,
+          role,
+          eventDate,
+          message,
+          honeypot,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSubmitted(true);
+      } else {
+        setErrorMsg(data.error || "Unable to send message. Please try again or message via WhatsApp.");
+      }
+    } catch {
+      setErrorMsg("Network error occurred. Please reach out to us via WhatsApp directly.");
+    } finally {
       setSubmitting(false);
-      setSubmitted(true);
-    }, 700);
+    }
   };
 
   return (
@@ -45,258 +98,281 @@ export default function ContactPage() {
 
       <main className="flex-1">
         {/* HERO */}
-        <section className="relative overflow-hidden pt-14 pb-16 px-6 sm:px-8 border-b border-amber-900/10 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFEB]">
+        <section className="relative overflow-hidden pt-12 pb-14 px-6 sm:px-8 border-b border-amber-900/10 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFEB]">
           <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
-
-          <div className="max-w-4xl mx-auto text-center space-y-4 relative">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-cinzel">
-              <span>✦</span>
-              <span>Indore Wedding Concierge &bull; 7 Days Open</span>
-              <span>✦</span>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.15]">
-              Hamari Team Se Seedhi Baat Karein,{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
-                Kharche Aur Design Ki Har Jaankari Paayein.
-              </span>
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200 uppercase tracking-widest mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-rose-600" /> Hum Aapki Sahayata Ke Liye Hain
+            </span>
+            <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-stone-900 mb-4">
+              Sampark Karein & Sahayata Payein
             </h1>
-
-            <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
-              Chahe aap apni parivarik shaadi plan kar rahe hon ya wedding planner hon — hamare Indore design studio se direct phone ya WhatsApp par sampark karein.
+            <p className="text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed">
+              Kavya card design chunne me sahayata chahiye, custom Sanskrit shlok jodhna hai ya koi takneeki prashn hai?
+              Hamari team WhatsApp, phone aur email par sahayata ke liye uplabdh hai.
             </p>
           </div>
         </section>
 
-        {/* CONTACT MAIN SECTION */}
-        <section className="max-w-7xl mx-auto px-6 py-14">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* Left Column: Direct Helpline & Office Card */}
+        {/* MAIN CONTENT */}
+        <section className="py-14 px-6 sm:px-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* LEFT CONTACT INFO CARDS */}
             <div className="lg:col-span-5 space-y-6">
-              {/* WhatsApp Quick Card */}
-              <div className="bg-gradient-to-br from-emerald-950 via-emerald-900 to-stone-950 text-emerald-50 rounded-3xl p-7 sm:p-8 shadow-xl border border-emerald-400/30 space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center border border-white/20 p-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/whatsapp.png" alt="WhatsApp" className="w-full h-full object-contain" />
-                </div>
+              <div>
+                <h2 className="text-2xl font-bold text-stone-900 mb-2">Direct Sampark Madhyam</h2>
+                <p className="text-sm text-stone-600">
+                  Aamtaur par WhatsApp par turant ya 15-30 minute ke bheetar uttar mil jata hai.
+                </p>
+              </div>
 
-                <div className="space-y-1">
-                  <span className="text-[10px] uppercase font-cinzel tracking-widest text-emerald-300 font-bold block">
-                    Fastest Response &bull; 10 Mins
-                  </span>
-                  <h3 className="text-2xl font-serif font-bold text-white">
-                    Direct WhatsApp Helpdesk
-                  </h3>
-                  <p className="text-xs text-emerald-200/80 leading-relaxed font-sans">
-                    Physical card ki photo bhejne ya urgent Tatkal invite ke liye hamare WhatsApp helpline par message karein.
-                  </p>
-                </div>
-
-                <div className="pt-2">
-                  <a
-                    href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20VivahVaani%20digital%20invitation%20ke%20baare%20me%20jaankari%20chahiye"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-bold rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/whatsapp.png" alt="WhatsApp" className="w-5 h-5 object-contain" />
-                    <span>WhatsApp Par Baat Shuru Karein</span>
-                  </a>
+              {/* WhatsApp Card */}
+              <div className="p-6 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-sm relative overflow-hidden">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">Sabse Tez Jawab</span>
+                    <h3 className="text-lg font-bold text-emerald-950 mt-0.5">WhatsApp Sahayata</h3>
+                    <p className="text-xs text-emerald-800 mt-1 mb-3">
+                      Design customize karne ya custom quote ke liye direct message karein.
+                    </p>
+                    <a
+                      href={`https://wa.me/${contactWhatsapp.replace(/\D/g, "")}?text=Namaste%20${encodeURIComponent(brandName)},%20mujhe%20invitation%20card%20ke%20bare%20me%20jankari%20chahiye.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-medium text-xs hover:bg-emerald-700 transition-colors shadow-sm"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      Chat on WhatsApp ({contactWhatsapp})
+                    </a>
+                  </div>
                 </div>
               </div>
 
-              {/* Physical Office Details */}
-              <div className="bg-white rounded-3xl p-7 sm:p-8 border border-stone-200/90 shadow-xs space-y-5">
-                <h4 className="text-lg font-serif font-bold text-stone-900 border-b border-stone-100 pb-3">
-                  Studio &amp; Office Coordinates
-                </h4>
-
-                <div className="space-y-4 text-xs font-sans text-stone-600">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-4 h-4 text-rose-700 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="block text-stone-900 font-semibold">Indore Office Address</strong>
-                      <span>Vijay Nagar Commercial Zone, AB Road, Indore, Madhya Pradesh &bull; 452010</span>
-                    </div>
+              {/* Phone, Email, Office Details */}
+              <div className="p-6 rounded-2xl bg-white border border-stone-200/80 shadow-sm space-y-5">
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-stone-100 text-stone-700 flex items-center justify-center shrink-0">
+                    <Phone className="w-4 h-4" />
                   </div>
-
-                  <div className="flex items-start gap-3">
-                    <Phone className="w-4 h-4 text-rose-700 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="block text-stone-900 font-semibold">Direct Phone Helpline</strong>
-                      <span>+91 98260 12345 / +91 731 4000000</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Mail className="w-4 h-4 text-rose-700 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="block text-stone-900 font-semibold">Official Support Email</strong>
-                      <span>support@shaadiconnect.in</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Clock className="w-4 h-4 text-rose-700 shrink-0 mt-0.5" />
-                    <div>
-                      <strong className="block text-stone-900 font-semibold">Working Hours</strong>
-                      <span>10:00 AM – 9:00 PM (Monday to Sunday &bull; Wedding Season Open)</span>
-                    </div>
+                  <div>
+                    <div className="text-xs font-medium text-stone-500 uppercase tracking-wider">Direct Call</div>
+                    <a href={`tel:${contactPhone}`} className="text-sm font-semibold text-stone-900 hover:text-rose-700 transition-colors">
+                      {contactPhone}
+                    </a>
+                    <p className="text-xs text-stone-500 mt-0.5">Mon - Sat (10:00 AM - 7:00 PM IST)</p>
                   </div>
                 </div>
+
+                <div className="flex items-start gap-3 pt-4 border-t border-stone-100">
+                  <div className="w-9 h-9 rounded-lg bg-stone-100 text-stone-700 flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-stone-500 uppercase tracking-wider">Email Inquiry</div>
+                    <a href={`mailto:${contactEmail}`} className="text-sm font-semibold text-stone-900 hover:text-rose-700 transition-colors">
+                      {contactEmail}
+                    </a>
+                    <p className="text-xs text-stone-500 mt-0.5">24 ghanton me email reply</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 pt-4 border-t border-stone-100">
+                  <div className="w-9 h-9 rounded-lg bg-stone-100 text-stone-700 flex items-center justify-center shrink-0">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-stone-500 uppercase tracking-wider">Karyalay Samay</div>
+                    <div className="text-sm font-medium text-stone-900">{workingHours}</div>
+                    <p className="text-xs text-stone-500 mt-0.5">Sunday: WhatsApp emergency assistance only</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 pt-4 border-t border-stone-100">
+                  <div className="w-9 h-9 rounded-lg bg-stone-100 text-stone-700 flex items-center justify-center shrink-0">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-stone-500 uppercase tracking-wider">Registered Karyalay</div>
+                    <p className="text-xs text-stone-700 leading-relaxed mt-0.5">{contactAddress}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* FAQ Quick Link */}
+              <div className="p-5 rounded-2xl bg-amber-50/60 border border-amber-200/70 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <HelpCircle className="w-5 h-5 text-amber-800" />
+                  <div>
+                    <p className="text-xs font-bold text-amber-950">Aam Sawal (FAQs)?</p>
+                    <p className="text-xs text-amber-800">Card share karne aur pricing se jude sawal</p>
+                  </div>
+                </div>
+                <Link href="/#faq" className="text-xs font-semibold text-rose-700 hover:underline inline-flex items-center gap-1">
+                  Check FAQs <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </div>
 
-            {/* Right Column: Interactive Inquiry Form */}
+            {/* RIGHT: CONTACT FORM */}
             <div className="lg:col-span-7">
-              <div className="bg-white rounded-3xl p-8 sm:p-10 border border-stone-200/90 shadow-sm space-y-6">
-                <div>
-                  <span className="text-xs font-cinzel font-bold text-rose-800 uppercase tracking-widest block mb-1">
-                    ✦ Send Us A Message ✦
-                  </span>
-                  <h3 className="text-2xl font-serif font-bold text-stone-900">
-                    ShaadiConnect Design Desk Ko Sandesh Bhejein
-                  </h3>
-                  <p className="text-xs text-stone-600 mt-1">
-                    Aapki inquiry aane ke 30 minute ke andar hamara wedding consultant aapse sampark karega.
-                  </p>
-                </div>
-
+              <div className="bg-white p-8 sm:p-10 rounded-3xl border border-stone-200 shadow-sm relative">
                 {submitted ? (
-                  <div className="p-8 bg-emerald-50 rounded-2xl border border-emerald-200 text-center space-y-3">
-                    <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
-                    <h4 className="text-lg font-serif font-bold text-emerald-950">
-                      Dhanyawad {name}! Aapka Sandesh Mil Gaya Hai.
-                    </h4>
-                    <p className="text-xs text-emerald-800 max-w-md mx-auto">
-                      Hamari Indore team aapke WhatsApp number <strong>{phone}</strong> par agle 30 minute me sampark karegi.
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle2 className="w-9 h-9" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-stone-900 mb-2">Sandesh Prapt Hua!</h3>
+                    <p className="text-stone-600 text-sm max-w-md mx-auto mb-6 leading-relaxed">
+                      Dhanyawad. Aapka sandesh surakshit tarike se save kar liya gaya hai. Hamari team aapse jald hi sampark karegi.
                     </p>
                     <button
-                      onClick={() => setSubmitted(false)}
-                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition"
+                      onClick={() => {
+                        setSubmitted(false);
+                        setName("");
+                        setPhone("");
+                        setEmail("");
+                        setMessage("");
+                      }}
+                      className="px-6 py-2.5 rounded-xl bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors"
                     >
                       Naya Sandesh Bhejein
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4 text-xs font-sans">
-                    {/* Role Picker */}
+                  <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                      <label className="block text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1.5">
-                        Aap Kaun Hain?
-                      </label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { id: "couple", label: "Dulha / Dulhan" },
-                          { id: "family", label: "Parivar / Parents" },
-                          { id: "relative", label: "Bhai / Relative" },
-                        ].map((r) => (
-                          <button
-                            type="button"
-                            key={r.id}
-                            onClick={() => setRole(r.id)}
-                            className={`py-2 px-3 rounded-xl border text-center font-semibold cursor-pointer transition ${
-                              role === r.id
-                                ? "bg-rose-50 border-rose-500 text-rose-900 shadow-2xs font-bold"
-                                : "border-stone-200 text-stone-600 hover:bg-stone-50"
-                            }`}
-                          >
-                            {r.label}
-                          </button>
-                        ))}
+                      <h2 className="text-xl font-bold text-stone-900">Hamein Sandesh Bhejein</h2>
+                      <p className="text-xs text-stone-500 mt-1">
+                        Form bharein aur hamari wedding coordination team aapse direct sampark karegi.
+                      </p>
+                    </div>
+
+                    {errorMsg && (
+                      <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium">
+                        {errorMsg}
                       </div>
+                    )}
+
+                    {/* Honeypot field (hidden from real users) */}
+                    <div className="hidden" aria-hidden="true">
+                      <input
+                        type="text"
+                        name="hp_field"
+                        value={honeypot}
+                        onChange={(e) => setHoneypot(e.target.value)}
+                        tabIndex={-1}
+                        autoComplete="off"
+                      />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1">
-                          Aapka Shubh Naam *
+                        <label className="block text-xs font-medium text-stone-700 mb-1.5">
+                          Aapka Naam <span className="text-rose-600">*</span>
                         </label>
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Rajesh Sharma"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-600 text-stone-800"
+                          placeholder="Jaise: Amit Sharma"
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1">
-                          WhatsApp / Mobile No. *
+                        <label className="block text-xs font-medium text-stone-700 mb-1.5">
+                          Phone / WhatsApp Number <span className="text-rose-600">*</span>
                         </label>
                         <input
                           type="tel"
                           required
-                          placeholder="e.g. +91 98260 00000"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-600 text-stone-800"
+                          placeholder="+91 98765 43210"
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1">
-                          Shahar (City)
-                        </label>
+                        <label className="block text-xs font-medium text-stone-700 mb-1.5">Email Address</label>
                         <input
-                          type="text"
-                          placeholder="e.g. Indore, Bhopal, Jaipur..."
-                          value={city}
-                          onChange={(e) => setCity(e.target.value)}
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-600 text-stone-800"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="amit@example.com (Optional)"
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1">
-                          Anumanit Wedding Date
-                        </label>
-                        <input
-                          type="date"
-                          value={weddingDate}
-                          onChange={(e) => setWeddingDate(e.target.value)}
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-600 text-stone-800"
-                        />
+                        <label className="block text-xs font-medium text-stone-700 mb-1.5">Aapka Role</label>
+                        <select
+                          value={role}
+                          onChange={(e) => setRole(e.target.value)}
+                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 bg-white transition"
+                        >
+                          <option value="couple">Dulha / Dulhan (Bride or Groom)</option>
+                          <option value="family">Parivar ke Sadasya (Parents/Family)</option>
+                          <option value="planner">Wedding Planner / Event Manager</option>
+                          <option value="vendor">Card Printer / Photographer</option>
+                          <option value="other">Anya (Other)</option>
+                        </select>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-stone-700 uppercase tracking-wider mb-1">
-                        Aapka Sandesh / Requirements
+                      <label className="block text-xs font-medium text-stone-700 mb-1.5">
+                        Karyakram Ki Sambhavit Taarikh (Event Date)
                       </label>
-                      <textarea
-                        rows={4}
-                        placeholder="Batayein aapko custom design chahiye, printed card ka replica banvana hai, ya wedding planning ke liye multi-client access chahiye..."
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-600 text-stone-800"
+                      <input
+                        type="text"
+                        value={eventDate}
+                        onChange={(e) => setEventDate(e.target.value)}
+                        placeholder="Jaise: 24 December 2026 ya Shubh Muhurat"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
                       />
                     </div>
 
-                    <div className="pt-2">
-                      <button
-                        type="submit"
-                        disabled={submitting}
-                        className="w-full py-3.5 bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 text-amber-50 font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-xs sm:text-sm"
-                      >
-                        {submitting ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            <span>Sandesh Bheja Ja Raha Hai...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Send className="w-4 h-4" />
-                            <span>Inquiry Submit Karein</span>
-                          </>
-                        )}
-                      </button>
+                    <div>
+                      <label className="block text-xs font-medium text-stone-700 mb-1.5">
+                        Aapka Sandesh ya Sawal <span className="text-rose-600">*</span>
+                      </label>
+                      <textarea
+                        rows={4}
+                        required
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Aapko kaisa card design chahiye, Sanskrit shlok jodhna hai ya koi specific requirements hain..."
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
+                      />
                     </div>
+
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full py-3.5 px-6 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-semibold text-sm transition-all shadow-md shadow-rose-900/10 flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
+                    >
+                      {submitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Sandesh Bheja Ja Raha Hai...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          Sandesh Bhejein
+                        </>
+                      )}
+                    </button>
+                    <p className="text-[11px] text-stone-400 text-center">
+                      Aapka data 100% surakshit hai. Hum kabhi bhi spam nahi karte.
+                    </p>
                   </form>
                 )}
               </div>
