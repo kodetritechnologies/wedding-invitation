@@ -77,11 +77,11 @@ export default function WebsiteSettingsPage() {
     },
     footer: {
       copyrightText: "© 2026 VivahVaani. All rights reserved.",
-      tagline: "Har Shaadi Ki Shuruaat, Ek Khoobsurat Nimantran",
+      tagline: "हर शादी की शुरुआत, एक खूबसूरत निमंत्रण",
     },
     announcementBar: {
       enabled: true,
-      text: "✦ VivahVaani • Har Shaadi Ki Shuruaat, Ek Khoobsurat Nimantran ✦",
+      text: "✦ विवाहवाणी • हर शादी की शुरुआत, एक खूबसूरत निमंत्रण ✦",
     },
   });
 

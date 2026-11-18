@@ -37,7 +37,7 @@ export default function PublicFooter() {
     },
     footer: {
       copyrightText: "© 2026 VivahVaani. All rights reserved.",
-      tagline: "Har Shaadi Ki Shuruaat, Ek Khoobsurat Nimantran",
+      tagline: "हर शादी की शुरुआत, एक खूबसूरत निमंत्रण",
     },
   });
 

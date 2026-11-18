@@ -26,7 +26,7 @@ export default function PublicHeader() {
     logoUrl: "/logo.png",
     announcementBar: {
       enabled: true,
-      text: "✦ VivahVaani • Har Shaadi Ki Shuruaat, Ek Khoobsurat Nimantran ✦",
+      text: "✦ विवाहवाणी • हर शादी की शुरुआत, एक खूबसूरत निमंत्रण ✦",
     },
     address: {
       city: "Indore",
