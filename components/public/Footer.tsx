@@ -82,7 +82,7 @@ export default function PublicFooter() {
   }, []);
 
   return (
-    <footer className="bg-stone-950 text-stone-400 font-sans text-xs border-t border-stone-800">
+    <footer className="bg-stone-950 text-stone-400 font-body text-xs border-t border-stone-800">
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
         {/* Brand Col */}
         <div className="space-y-3">
@@ -99,7 +99,7 @@ export default function PublicFooter() {
                 <div className="w-8 h-8 rounded-lg bg-rose-950 text-amber-300 flex items-center justify-center border border-amber-500/30">
                   <Heart className="w-4 h-4 fill-amber-300 text-amber-300" />
                 </div>
-                <span className="font-bold text-white tracking-tight text-lg font-serif">
+                <span className="font-bold text-white tracking-tight text-lg font-heading">
                   {settings.siteName}
                 </span>
               </div>

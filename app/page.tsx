@@ -151,7 +151,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans flex flex-col justify-between selection:bg-rose-200 selection:text-rose-950">
+    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-body flex flex-col justify-between selection:bg-rose-200 selection:text-rose-950">
       <PublicHeader />
 
       <main className="flex-1">
@@ -164,13 +164,13 @@ export default function HomePage() {
             {/* Left Column: Human Relatable Copy */}
             <div className="lg:col-span-6 space-y-5 text-left">
               {/* Regional Cultural Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs">
-                <span className="text-amber-600 font-serif">ॐ</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-body">
+                <span className="text-amber-600 font-hindi">ॐ</span>
                 <span>Designed with Cultural Reverence in Indore, Madhya Pradesh</span>
               </div>
 
               {/* Punchy Headline (The Real Pain Point) */}
-              <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-serif font-bold text-stone-900 leading-[1.18] tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-heading font-bold text-stone-900 leading-[1.18] tracking-tight">
                 WhatsApp par PDF card bhejna purana ho gaya.{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
                   Bhejiye ek shandar Royal Digital Patrika.
@@ -178,7 +178,7 @@ export default function HomePage() {
               </h1>
 
               {/* Relatable Subheading */}
-              <p className="text-sm sm:text-base text-stone-700 leading-relaxed max-w-lg font-sans">
+              <p className="text-sm sm:text-base text-stone-700 leading-relaxed max-w-lg font-body">
                 Haldi, Mehendi, Sangeet aur Vivah ka poora schedule ek jagah. Google Maps se 1-click direct venue navigation aur live RSVP headcount tracking — <strong className="text-stone-900 font-semibold">bina kisi app download ke</strong>.
               </p>
 
@@ -248,10 +248,10 @@ export default function HomePage() {
                 </div>
                 <div className="text-left text-xs">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-stone-900 text-[11px]">Live RSVP Tracker</span>
+                    <span className="font-bold text-stone-900 text-[11px] font-body">Live RSVP Tracker</span>
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   </div>
-                  <p className="text-stone-600 text-[11px] font-sans">
+                  <p className="text-stone-600 text-[11px] font-body">
                     <strong>184 Guests Attending</strong> &bull; 12 Jain Meals
                   </p>
                 </div>
@@ -262,38 +262,38 @@ export default function HomePage() {
                 {/* Dynamic Island Notch */}
                 <div className="w-24 h-4 bg-stone-950 rounded-full mx-auto absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center justify-between px-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[8px] text-amber-200 font-sans tracking-wide">Shehnai 🎵</span>
+                  <span className="text-[8px] text-amber-200 font-body">Shehnai 🎵</span>
                 </div>
 
                 {/* Mobile Screen Surface */}
-                <div className="bg-[#FAF7F2] rounded-[34px] overflow-hidden text-stone-800 font-serif border border-stone-200/90 shadow-inner">
+                <div className="bg-[#FAF7F2] rounded-[34px] overflow-hidden text-stone-800 font-body border border-stone-200/90 shadow-inner">
                   {/* Phone Header Banner */}
                   <div className="bg-gradient-to-b from-rose-950 via-rose-900 to-rose-950 text-amber-50 pt-7 pb-4 px-4 text-center relative">
-                    <span className="text-xs tracking-wider text-amber-300 font-devanagari font-bold block mb-1">
+                    <span className="text-xs text-amber-300 shlok font-bold block mb-1">
                       ॥ श्री गणेशाय नमः ॥
                     </span>
 
                     {/* Royal Monogram Ring */}
-                    <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-br from-amber-600 to-amber-800 border-2 border-amber-300/60 flex items-center justify-center text-amber-100 font-cinzel font-bold text-sm shadow-md mb-1.5">
+                    <div className="w-10 h-10 mx-auto rounded-full bg-gradient-to-br from-amber-600 to-amber-800 border-2 border-amber-300/60 flex items-center justify-center text-amber-100 font-heading font-bold text-sm shadow-md mb-1.5">
                       A&amp;D
                     </div>
 
-                    <h2 className="text-2xl font-bold tracking-wide font-serif text-amber-100">
-                      Diya <span className="text-rose-300 font-serif italic text-lg">&amp;</span> Aarav
+                    <h2 className="text-2xl font-bold tracking-wide font-heading text-amber-100">
+                      Diya <span className="text-rose-300 font-heading italic text-lg">&amp;</span> Aarav
                     </h2>
 
-                    <p className="text-[10px] text-amber-200/90 font-cinzel tracking-wider mt-0.5">
+                    <p className="text-[10px] text-amber-200/90 font-body mt-0.5">
                       15 December 2026 &bull; Indore, MP
                     </p>
 
-                    <div className="mt-2 inline-block px-3 py-0.5 rounded-full bg-white/10 backdrop-blur-xs text-[9px] text-amber-200 font-sans border border-amber-300/25">
+                    <div className="mt-2 inline-block px-3 py-0.5 rounded-full bg-white/10 backdrop-blur-xs text-[9px] text-amber-200 font-body border border-amber-300/25">
                       Honoured Guest: <strong>Mr. Rajesh Sharma &amp; Family</strong>
                     </div>
                   </div>
 
                   {/* Interactive Ceremony Tabs Inside Phone */}
                   <div className="px-2.5 py-2 bg-white border-b border-stone-200/70">
-                    <div className="grid grid-cols-4 gap-1 text-[10px] font-sans font-semibold">
+                    <div className="grid grid-cols-4 gap-1 text-[10px] font-body font-semibold">
                       {[
                         { id: "haldi", hi: "हल्दी", en: "Haldi" },
                         { id: "sangeet", hi: "संगीत", en: "Sangeet" },
@@ -309,8 +309,8 @@ export default function HomePage() {
                               : "bg-stone-100 text-stone-700 hover:bg-stone-200"
                           }`}
                         >
-                          <span className="block font-devanagari text-[11px] font-bold leading-tight">{item.hi}</span>
-                          <span className="block text-[8px] opacity-75 font-sans leading-none">{item.en}</span>
+                          <span className="block font-hindi text-[11px] font-bold leading-tight">{item.hi}</span>
+                          <span className="block text-[8px] opacity-75 font-body leading-none">{item.en}</span>
                         </button>
                       ))}
                     </div>
@@ -321,20 +321,20 @@ export default function HomePage() {
                     <div className="bg-white rounded-2xl p-3 shadow-xs border border-stone-200 space-y-2 text-left">
                       <div className="flex items-center justify-between">
                         <span
-                          className={`text-[10px] font-bold font-devanagari px-2.5 py-0.5 rounded-full border ${eventPreview[activeTab].badgeColor}`}
+                          className={`text-[10px] font-bold font-hindi px-2.5 py-0.5 rounded-full border ${eventPreview[activeTab].badgeColor}`}
                         >
                           {eventPreview[activeTab].badge}
                         </span>
-                        <span className="text-[10px] font-sans text-stone-500 font-medium">
+                        <span className="text-[10px] font-body text-stone-500 font-medium">
                           {eventPreview[activeTab].date}
                         </span>
                       </div>
 
-                      <h3 className="font-rozha text-stone-900 text-base leading-snug">
+                      <h3 className="hindi-heading text-stone-900 text-base leading-snug">
                         {eventPreview[activeTab].title}
                       </h3>
 
-                      <div className="font-sans text-[11px] text-stone-600 space-y-1 pt-1.5 border-t border-stone-100">
+                      <div className="font-body text-[11px] text-stone-600 space-y-1 pt-1.5 border-t border-stone-100">
                         <p className="flex items-center gap-1.5">
                           <Clock className="w-3 h-3 text-rose-700 shrink-0" />
                           <span>{eventPreview[activeTab].time}</span>
@@ -350,7 +350,7 @@ export default function HomePage() {
                         href="https://maps.google.com/?q=Brilliant+Convention+Centre+Indore"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-800 font-sans font-bold text-[10px] rounded-lg flex items-center justify-center gap-1.5 transition border border-rose-200 cursor-pointer"
+                        className="w-full py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-800 font-body font-bold text-[10px] rounded-lg flex items-center justify-center gap-1.5 transition border border-rose-200 cursor-pointer"
                       >
                         <MapPin className="w-3 h-3 text-rose-700" />
                         <span>Navigate in Google Maps</span>
@@ -358,14 +358,14 @@ export default function HomePage() {
                     </div>
 
                     {/* Quick RSVP Bar Inside Phone */}
-                    <div className="bg-emerald-50 rounded-xl p-2.5 border border-emerald-200 flex items-center justify-between font-sans text-xs">
+                    <div className="bg-emerald-50 rounded-xl p-2.5 border border-emerald-200 flex items-center justify-between font-body text-xs">
                       <div className="text-left">
                         <span className="font-bold text-emerald-950 block text-[10px]">
                           Live Attendance RSVP
                         </span>
                         <span className="text-[9px] text-emerald-700">Sharma Family &bull; 3 Attending</span>
                       </div>
-                      <span className="px-2.5 py-1 rounded-full bg-emerald-600 text-white font-bold text-[9px] flex items-center gap-1">
+                      <span className="px-2.5 py-1 rounded-full bg-emerald-600 text-white font-bold text-[9px] flex items-center gap-1 font-body">
                         <Check className="w-2.5 h-2.5" />
                         <span>Confirmed</span>
                       </span>
@@ -375,7 +375,7 @@ export default function HomePage() {
                     <Link
                       href="/w/aarav-diya"
                       target="_blank"
-                      className="block text-center text-[10px] font-sans font-bold text-amber-800 hover:text-amber-950 pt-1"
+                      className="block text-center text-[10px] font-body font-bold text-amber-800 hover:text-amber-950 pt-1"
                     >
                       Tap to open full experience →
                     </Link>
@@ -390,23 +390,23 @@ export default function HomePage() {
         <section className="py-20 px-6 sm:px-8 max-w-7xl mx-auto space-y-14">
           {/* Header */}
           <div className="text-center max-w-3xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-sans">
-              <span className="text-amber-600 font-serif">✦</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-body">
+              <span className="text-amber-600 font-hindi">✦</span>
               <span>Purana Kagazi Tareeka vs. VivahVaani Smart Patrika</span>
-              <span className="text-amber-600 font-serif">✦</span>
+              <span className="text-amber-600 font-hindi">✦</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-stone-900 leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-bold text-stone-900 leading-tight">
               Shaadi ki taiyari mein in 4 pareshaniyon se bachhiye
             </h2>
 
-            <p className="text-sm sm:text-base text-stone-600 font-sans max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base text-stone-600 font-body max-w-2xl mx-auto leading-relaxed">
               Traditional printed cards aur messy WhatsApp PDF se hone wale confusion aur fizulkharchi ko khatam karein.
             </p>
           </div>
 
           {/* 4 Redesigned Problem vs Solution Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-sans">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-body">
             {/* Card 1: Venue Navigation */}
             <div className="bg-white rounded-3xl border border-stone-200/90 shadow-sm overflow-hidden flex flex-col justify-between hover:border-amber-400/80 hover:shadow-md transition-all duration-300 group">
               {/* Top: The Real Problem */}
@@ -586,20 +586,20 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto space-y-10">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div className="space-y-2">
-                <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-sans">
+                <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-body">
                   Royal &amp; Modern Themes
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-serif font-bold text-amber-50">
+                <h2 className="text-3xl sm:text-4xl font-heading font-bold text-amber-50">
                   Har Parivaar Ki Pasand Ke Liye Shandar Designs
                 </h2>
-                <p className="text-xs sm:text-sm text-stone-300 font-sans max-w-xl">
+                <p className="text-xs sm:text-sm text-stone-300 font-body max-w-xl">
                   Rajputi Mahal theme se lekar modern blush pastel tak — har design mobile par fast khulta hai.
                 </p>
               </div>
 
               <Link
                 href="/templates"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-rose-950 font-bold text-xs rounded-xl shadow-md transition shrink-0 font-sans"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-rose-950 font-bold text-xs rounded-xl shadow-md transition shrink-0 font-body"
               >
                 <span>View All 50+ Templates</span>
                 <ArrowRight className="w-4 h-4" />
@@ -607,7 +607,7 @@ export default function HomePage() {
             </div>
 
             {/* 3 Featured Themes Showcase Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-body">
               {/* Card 1: Jaipur Royal */}
               <div className="bg-stone-950/80 rounded-2xl border border-amber-500/20 p-5 space-y-4 hover:border-amber-400 transition">
                 <div className="h-44 rounded-xl bg-gradient-to-br from-rose-950 via-rose-900 to-amber-950 p-4 flex flex-col justify-between border border-amber-400/20">
@@ -615,14 +615,14 @@ export default function HomePage() {
                     Royal Heritage
                   </span>
                   <div className="text-center">
-                    <p className="font-rozha text-xl text-amber-100">जयपुर राजसी मण्डप</p>
-                    <p className="text-[10px] text-amber-200/80 font-sans">Jaipur Royal Heritage &bull; Maroon &amp; Gold</p>
+                    <p className="hindi-heading text-xl text-amber-100">जयपुर राजसी मण्डप</p>
+                    <p className="text-[10px] text-amber-200/80 font-body">Jaipur Royal Heritage &bull; Maroon &amp; Gold</p>
                   </div>
-                  <div className="text-center text-[10px] text-amber-300 font-serif">✦ ━━━ ❖ ━━━ ✦</div>
+                  <div className="text-center text-[10px] text-amber-300 font-hindi">✦ ━━━ ❖ ━━━ ✦</div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-white">Mughal &amp; Rajputi Heritage</h3>
-                  <p className="text-xs text-stone-400 mt-1">
+                  <h3 className="font-bold text-sm text-white font-heading">Mughal &amp; Rajputi Heritage</h3>
+                  <p className="text-xs text-stone-400 mt-1 font-body">
                     Traditional arches, auspicious Sanskrit shlokas, and royal palatial fonts.
                   </p>
                 </div>
@@ -635,14 +635,14 @@ export default function HomePage() {
                     Pastel Romance
                   </span>
                   <div className="text-center">
-                    <p className="font-rozha text-xl text-rose-100">गुलाब पुष्प वाटिका</p>
-                    <p className="text-[10px] text-rose-200/80 font-sans">Blush Botanical Lawn &bull; Pastel Romance</p>
+                    <p className="hindi-heading text-xl text-rose-100">गुलाब पुष्प वाटिका</p>
+                    <p className="text-[10px] text-rose-200/80 font-body">Blush Botanical Lawn &bull; Pastel Romance</p>
                   </div>
-                  <div className="text-center text-[10px] text-rose-300 font-serif">✦ ━━━ ❖ ━━━ ✦</div>
+                  <div className="text-center text-[10px] text-rose-300 font-hindi">✦ ━━━ ❖ ━━━ ✦</div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-white">Contemporary Garden Wedding</h3>
-                  <p className="text-xs text-stone-400 mt-1">
+                  <h3 className="font-bold text-sm text-white font-heading">Contemporary Garden Wedding</h3>
+                  <p className="text-xs text-stone-400 mt-1 font-body">
                     Delicate watercolor eucalyptus leaves, soft pastels, and elegant calligraphy.
                   </p>
                 </div>
@@ -655,14 +655,14 @@ export default function HomePage() {
                     Vedic Gold
                   </span>
                   <div className="text-center">
-                    <p className="font-rozha text-xl text-amber-100">काशी शुभ मण्डप</p>
-                    <p className="text-[10px] text-amber-200/80 font-sans">Kashi Vedic Mandap &bull; Sindoor &amp; Marigold</p>
+                    <p className="hindi-heading text-xl text-amber-100">काशी शुभ मण्डप</p>
+                    <p className="text-[10px] text-amber-200/80 font-body">Kashi Vedic Mandap &bull; Sindoor &amp; Marigold</p>
                   </div>
-                  <div className="text-center text-[10px] text-amber-300 font-serif">✦ ━━━ ❖ ━━━ ✦</div>
+                  <div className="text-center text-[10px] text-amber-300 font-hindi">✦ ━━━ ❖ ━━━ ✦</div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-white">Sacred Vedic Traditions</h3>
-                  <p className="text-xs text-stone-400 mt-1">
+                  <h3 className="font-bold text-sm text-white font-heading">Sacred Vedic Traditions</h3>
+                  <p className="text-xs text-stone-400 mt-1 font-body">
                     Auspicious Kalash, sacred Agni Kund motifs, and complete muhurat timings.
                   </p>
                 </div>
@@ -676,20 +676,20 @@ export default function HomePage() {
           {/* Section Header with Controls */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-stone-200 pb-6">
             <div className="space-y-2 max-w-xl">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200 font-sans uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200 font-body uppercase tracking-wider">
                 <ShieldCheck className="w-3.5 h-3.5 text-rose-700" />
                 Asli Anubhav &bull; Madhya Pradesh
               </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-heading font-bold text-stone-900 tracking-tight">
                 Parivaar aur Wedding Planners Kya Kehte Hain
               </h2>
-              <p className="text-xs sm:text-sm text-stone-600 font-sans">
+              <p className="text-xs sm:text-sm text-stone-600 font-body">
                 VivahVaani ke zariye 500+ parivaar apne mehmaanon ko de chuke hain royal digital invitation ka anubhav.
               </p>
             </div>
 
             {/* Slider Controls */}
-            <div className="flex items-center gap-3 shrink-0 font-sans">
+            <div className="flex items-center gap-3 shrink-0 font-body">
               <span className="text-xs font-mono font-medium text-stone-500 bg-stone-100 px-3 py-1.5 rounded-full border border-stone-200">
                 0{sliderIndex + 1} / 0{displayList.length}
               </span>
@@ -727,30 +727,30 @@ export default function HomePage() {
               <div className="relative z-10 space-y-6">
                 {/* Rating & Verified Tag */}
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full">
+                  <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full font-body">
                     <div className="flex items-center gap-1">
                       {Array.from({ length: displayList[sliderIndex]?.rating || 5 }).map((_, i) => (
                         <Star key={i} className="w-4 h-4 fill-amber-500 text-amber-500" />
                       ))}
                     </div>
-                    <span className="text-xs font-bold text-amber-900 font-sans ml-1">
+                    <span className="text-xs font-bold text-amber-900 font-body ml-1">
                       {displayList[sliderIndex]?.rating || 5}.0
                     </span>
                   </div>
 
-                  <span className="inline-flex items-center gap-1.5 text-xs text-stone-600 font-sans">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-stone-600 font-body">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     Verified Wedding Experience
                   </span>
                 </div>
 
                 {/* Main Quote */}
-                <blockquote className="text-lg sm:text-2xl font-serif text-stone-900 leading-relaxed italic">
+                <blockquote className="text-lg sm:text-2xl font-heading text-stone-900 leading-relaxed italic">
                   &ldquo;{displayList[sliderIndex]?.content}&rdquo;
                 </blockquote>
 
                 {/* Author Info */}
-                <div className="flex items-center gap-4 pt-4 border-t border-stone-100 font-sans">
+                <div className="flex items-center gap-4 pt-4 border-t border-stone-100 font-body">
                   <div className="w-12 h-12 rounded-full bg-rose-900 text-amber-200 flex items-center justify-center font-bold text-sm border-2 border-amber-300/40 shrink-0">
                     {displayList[sliderIndex]?.name
                       ?.split(" ")
@@ -760,10 +760,10 @@ export default function HomePage() {
                       .toUpperCase() || "SC"}
                   </div>
                   <div>
-                    <h4 className="font-bold text-base text-stone-900">
+                    <h4 className="font-bold text-base text-stone-900 font-heading">
                       {displayList[sliderIndex]?.name}
                     </h4>
-                    <p className="text-xs text-stone-500 flex items-center gap-1.5 mt-0.5">
+                    <p className="text-xs text-stone-500 flex items-center gap-1.5 mt-0.5 font-body">
                       <span className="font-medium text-rose-800">
                         {displayList[sliderIndex]?.role}
                       </span>
@@ -797,20 +797,20 @@ export default function HomePage() {
 
         {/* SECTION 5: FINAL REGAL CALL TO ACTION */}
         <section className="pb-20 px-6 sm:px-8 max-w-5xl mx-auto">
-          <div className="bg-gradient-to-br from-rose-950 via-rose-900 to-amber-950 rounded-3xl p-8 sm:p-14 text-center text-white shadow-2xl relative overflow-hidden border border-amber-400/30 font-sans space-y-6">
+          <div className="bg-gradient-to-br from-rose-950 via-rose-900 to-amber-950 rounded-3xl p-8 sm:p-14 text-center text-white shadow-2xl relative overflow-hidden border border-amber-400/30 font-body space-y-6">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/10 text-amber-300 border border-amber-300/30 mx-auto">
               <Sparkles className="w-6 h-6" />
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-amber-100 max-w-xl mx-auto leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-heading font-bold text-amber-100 max-w-xl mx-auto leading-tight">
               Apni Shaadi Ki Digital Patrika Aaj Hi Tayar Karein
             </h2>
 
-            <p className="text-xs sm:text-sm text-stone-300 max-w-lg mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm text-stone-300 max-w-lg mx-auto leading-relaxed font-body">
               15 minute mein create karein, WhatsApp par share karein aur mehmaanon ko de ek modern, regal invitation experience.
             </p>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 font-body">
               <Link
                 href="/register"
                 className="w-full sm:w-auto px-7 py-3.5 bg-amber-400 hover:bg-amber-300 text-rose-950 font-bold text-xs rounded-xl shadow-lg transition"
@@ -825,7 +825,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <p className="text-[11px] text-amber-200/60 font-serif italic pt-2">
+            <p className="text-[11px] text-amber-200/60 font-body italic pt-2">
               ✦ Shubham Bhavatu &bull; Happy Wedding Planning ✦
             </p>
           </div>

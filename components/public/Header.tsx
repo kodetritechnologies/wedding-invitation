@@ -75,12 +75,12 @@ export default function PublicHeader() {
     <>
       {/* Top Auspicious Gold Strip (Dynamic) */}
       {settings.announcementBar?.enabled && (
-        <div className="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-amber-50 text-[11px] sm:text-xs py-1 px-4 text-center font-devanagari tracking-wide flex items-center justify-center gap-2 shadow-inner font-medium">
+        <div className="bg-gradient-to-r from-amber-700 via-yellow-600 to-amber-700 text-amber-50 text-[11px] sm:text-xs py-1 px-4 text-center font-hindi flex items-center justify-center gap-2 shadow-inner font-medium">
           <span>{settings.announcementBar.text}</span>
         </div>
       )}
 
-      <header className="bg-[#FDFBF7]/90 backdrop-blur-md border-b border-amber-900/10 sticky top-0 z-50 transition-all">
+      <header className="bg-[#FDFBF7]/90 backdrop-blur-md border-b border-amber-900/10 sticky top-0 z-50 transition-all font-body">
         <div className="max-w-7xl mx-auto px-6 h-15 sm:h-16 flex items-center justify-between">
           {/* Brand Logo with Dynamic Logo / Text */}
           <Link href="/" className="flex items-center gap-3 group">
@@ -97,10 +97,10 @@ export default function PublicHeader() {
                   <Heart className="w-4 h-4 fill-amber-300 text-amber-300" />
                 </div>
                 <div>
-                  <span className="font-bold text-stone-900 tracking-tight text-xl font-serif">
+                  <span className="font-bold text-stone-900 tracking-tight text-xl font-heading">
                     {settings.siteName}
                   </span>
-                  <span className="block text-[9px] text-amber-800/80 uppercase font-sans font-semibold tracking-wider -mt-1">
+                  <span className="block text-[9px] text-amber-800/80 uppercase font-body font-semibold tracking-wider -mt-1">
                     Digital Patrika &bull; {settings.address?.city || "Indore"},{" "}
                     {settings.address?.state || "MP"}
                   </span>
@@ -110,7 +110,7 @@ export default function PublicHeader() {
           </Link>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-7 text-xs font-semibold uppercase tracking-wider text-stone-700">
+          <nav className="hidden md:flex items-center gap-7 text-xs font-semibold uppercase tracking-wider text-stone-700 font-body">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -130,7 +130,7 @@ export default function PublicHeader() {
           </nav>
 
           {/* Action Buttons */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3 font-body">
             <Link
               href="/login"
               className="text-xs font-bold text-stone-700 hover:text-rose-700 transition px-3 py-2 uppercase tracking-wider"
@@ -158,8 +158,8 @@ export default function PublicHeader() {
 
         {/* Mobile Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#FDFBF7] border-b border-amber-900/10 px-6 py-5 space-y-4 shadow-lg">
-            <nav className="space-y-3 font-serif">
+          <div className="md:hidden bg-[#FDFBF7] border-b border-amber-900/10 px-6 py-5 space-y-4 shadow-lg font-body">
+            <nav className="space-y-3 font-body">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -171,7 +171,7 @@ export default function PublicHeader() {
                 </Link>
               ))}
             </nav>
-            <div className="pt-3 border-t border-amber-900/10 flex flex-col gap-2 font-sans">
+            <div className="pt-3 border-t border-amber-900/10 flex flex-col gap-2 font-body">
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
