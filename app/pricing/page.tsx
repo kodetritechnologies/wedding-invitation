@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Check,
@@ -89,7 +90,7 @@ export default function PricingPage() {
     },
   ];
 
-  const faqs = [
+  const initialFaqs = [
     {
       q: "Agar shaadi ka muhurat ya venue aage peeche hua to kya naya card khareedna padega?",
       a: "Bilkul nahi! Printed card me ek baar galti ho gayi to re-printing me hazaron rupaye lagte hain. VivahVaani me aap apne login dashboard se 1 second me naya time ya naya address save kar sakte hain — live link open karte hi sabhi mehmaano ko updated details dikhegi.",
@@ -107,6 +108,31 @@ export default function PricingPage() {
       a: "100% Guaranteed. VivahVaani par privacy hamara pehla niyam hai. Aapke mehmaano ka data ya phone number kisi bhi third party ko share ya advertise nahi kiya jata.",
     },
   ];
+
+  const [faqs, setFaqs] = useState(initialFaqs);
+
+  // Fetch Pricing FAQs dynamically from API
+  useEffect(() => {
+    async function loadFaqs() {
+      try {
+        const res = await fetch("/api/public/faqs?category=pricing");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.faqs) && data.faqs.length > 0) {
+            setFaqs(
+              data.faqs.map((f: { question: string; answer: string }) => ({
+                q: f.question,
+                a: f.answer,
+              }))
+            );
+          }
+        }
+      } catch {
+        // Fallback to initial static FAQs
+      }
+    }
+    loadFaqs();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans flex flex-col justify-between selection:bg-rose-200 selection:text-rose-950">

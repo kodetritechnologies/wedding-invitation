@@ -17,6 +17,8 @@ export interface IWedding extends Document {
   city: string;
   slug: string;
   coverPhoto?: string;
+  templateId?: Types.ObjectId;
+  templateContent?: Record<string, any>;
   status: "draft" | "published" | "archived";
   packageTier: "basic" | "premium" | "royal" | "subscription";
   hostingExpiresAt?: Date;
@@ -96,6 +98,15 @@ const WeddingSchema = new Schema<IWedding>(
     coverPhoto: {
       type: String,
       trim: true,
+    },
+    templateId: {
+      type: Schema.Types.ObjectId,
+      ref: "InvitationTemplate",
+      index: true,
+    },
+    templateContent: {
+      type: Schema.Types.Mixed,
+      default: {},
     },
     status: {
       type: String,

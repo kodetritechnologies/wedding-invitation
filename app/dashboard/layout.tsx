@@ -125,6 +125,7 @@ export default function DashboardLayout({
     try {
       await fetch("/api/auth/logout", { method: "POST" });
       localStorage.removeItem("shaadi_auth_token");
+      localStorage.removeItem("token");
       router.push("/login");
       router.refresh();
     } catch (err) {

@@ -39,6 +39,7 @@ export default function RegisterPage() {
 
       if (data.token) {
         localStorage.setItem("shaadi_auth_token", data.token);
+        localStorage.setItem("token", data.token);
       }
 
       window.location.href = "/dashboard";
@@ -57,12 +58,12 @@ export default function RegisterPage() {
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-stone-200/90 p-8 sm:p-10 space-y-6 relative z-10">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-700 via-rose-800 to-amber-900 flex items-center justify-center text-amber-300 shadow-sm border border-amber-400/30">
-              <Heart className="w-5 h-5 fill-amber-300 text-amber-300" />
-            </div>
-            <span className="font-bold text-stone-900 tracking-tight text-2xl font-serif">
-              Shaadi<span className="text-rose-700">Connect</span>
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="VivahVaani"
+              className="h-14 w-auto mx-auto object-contain"
+            />
           </Link>
 
           <div className="inline-block px-3 py-0.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-[11px] font-cinzel font-semibold">

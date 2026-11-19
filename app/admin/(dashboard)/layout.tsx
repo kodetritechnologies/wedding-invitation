@@ -17,6 +17,8 @@ import {
   ChevronRight,
   Globe,
   MessageSquareQuote,
+  LayoutTemplate,
+  HelpCircle,
 } from "lucide-react";
 
 interface SuperAdminUser {
@@ -102,7 +104,9 @@ export default function SuperAdminLayout({
   const isDashboardActive = pathname === "/admin/dashboard";
   const isClientsActive = pathname.startsWith("/admin/clients");
   const isWeddingsActive = pathname.startsWith("/admin/weddings");
+  const isTemplatesActive = pathname.startsWith("/admin/templates");
   const isTestimonialsActive = pathname.startsWith("/admin/testimonials");
+  const isFaqsActive = pathname.startsWith("/admin/faqs");
   const isWebsiteSettingsActive = pathname.startsWith("/admin/settings/website");
 
   return (
@@ -192,6 +196,20 @@ export default function SuperAdminLayout({
             <span>Weddings</span>
           </Link>
 
+          {/* 4. Master Templates */}
+          <Link
+            href="/admin/templates"
+            onClick={() => setSidebarOpen(false)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition ${
+              isTemplatesActive
+                ? "bg-zinc-800 text-amber-400 font-semibold border-l-2 border-amber-500"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+            }`}
+          >
+            <LayoutTemplate className="w-4 h-4" />
+            <span>Templates</span>
+          </Link>
+
           {/* 4. Testimonials */}
           <Link
             href="/admin/testimonials"
@@ -204,6 +222,20 @@ export default function SuperAdminLayout({
           >
             <MessageSquareQuote className="w-4 h-4" />
             <span>Testimonials</span>
+          </Link>
+
+          {/* 5. FAQs */}
+          <Link
+            href="/admin/faqs"
+            onClick={() => setSidebarOpen(false)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition ${
+              isFaqsActive
+                ? "bg-zinc-800 text-amber-400 font-semibold border-l-2 border-amber-500"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+            }`}
+          >
+            <HelpCircle className="w-4 h-4" />
+            <span>FAQs</span>
           </Link>
 
           {/* 5. Settings (Collapsible Parent) */}

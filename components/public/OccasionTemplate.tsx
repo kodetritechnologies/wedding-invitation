@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   Eye,
@@ -49,6 +49,35 @@ export default function OccasionTemplate({
   const [selectedTradition, setSelectedTradition] = useState<string>("all");
   const [selectedPriceSort, setSelectedPriceSort] = useState<"default" | "lowToHigh" | "highToLow">("default");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [currentFaqs, setCurrentFaqs] = useState<FaqItem[]>(faqs);
+
+  // Sync when prop changes
+  useEffect(() => {
+    setCurrentFaqs(faqs);
+  }, [faqs]);
+
+  // Dynamically load category/occasion specific FAQs from Super Admin
+  useEffect(() => {
+    async function loadFaqs() {
+      try {
+        const res = await fetch(`/api/public/faqs?category=${occasion}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.faqs) && data.faqs.length > 0) {
+            setCurrentFaqs(
+              data.faqs.map((f: { question: string; answer: string }) => ({
+                q: f.question,
+                a: f.answer,
+              }))
+            );
+          }
+        }
+      } catch {
+        // Keep initial faqs
+      }
+    }
+    loadFaqs();
+  }, [occasion]);
 
   // Available traditions for this occasion
   const traditions = useMemo(() => {
@@ -336,13 +365,13 @@ export default function OccasionTemplate({
         </section>
 
         {/* 3 PAGE-SPECIFIC FAQS */}
-        {faqs.length > 0 && (
+        {currentFaqs.length > 0 && (
           <section className="py-16 px-4 sm:px-8 max-w-4xl mx-auto space-y-6">
             <h2 className="text-xl sm:text-2xl font-bold text-stone-900 border-b border-stone-200 pb-3">
               Frequently Asked Questions
             </h2>
             <div className="space-y-3">
-              {faqs.map((faq, idx) => {
+              {currentFaqs.map((faq, idx) => {
                 const isOpen = openFaq === idx;
                 return (
                   <div

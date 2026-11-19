@@ -66,7 +66,7 @@ const initialTestimonials: TestimonialItem[] = [
   },
 ];
 
-const faqs = [
+const initialFaqs = [
   {
     q: "What is a digital wedding invitation?",
     a: "An online invitation shared as a video, PDF or web link on WhatsApp, so you do not need to print or deliver physical cards door-to-door.",
@@ -104,6 +104,7 @@ const faqs = [
 export default function HomePage() {
   const [themeFormat, setThemeFormat] = useState<"all" | "video" | "website" | "pdf">("all");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [faqs, setFaqs] = useState<{ q: string; a: string }[]>(initialFaqs);
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>(initialTestimonials);
   const [sliderIndex, setSliderIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -125,6 +126,29 @@ export default function HomePage() {
       }
     }
     loadTestimonials();
+  }, []);
+
+  // Fetch FAQs dynamically from public API
+  useEffect(() => {
+    async function loadFaqs() {
+      try {
+        const res = await fetch("/api/public/faqs?category=general");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.faqs) && data.faqs.length > 0) {
+            setFaqs(
+              data.faqs.map((f: { question: string; answer: string }) => ({
+                q: f.question,
+                a: f.answer,
+              }))
+            );
+          }
+        }
+      } catch {
+        // Fallback to initial static FAQs
+      }
+    }
+    loadFaqs();
   }, []);
 
   // Testimonials Auto-advance every 5 seconds (pauses on hover or focus)
@@ -1241,7 +1265,7 @@ export default function HomePage() {
         {/* ========================================================================= */}
         {/* SECTION 4.7: FAQ ACCORDION                                               */}
         {/* ========================================================================= */}
-        <section className="py-20 px-4 sm:px-8 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#FDFBF7] border-y border-amber-900/10">
+        <section id="faq" className="py-20 px-4 sm:px-8 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#FDFBF7] border-y border-amber-900/10">
           <div className="max-w-4xl mx-auto space-y-10">
             <div className="text-center space-y-2">
               <span className="text-xs uppercase font-bold tracking-widest text-amber-800">

@@ -19,6 +19,9 @@ import {
   Loader2,
   X,
   Sparkles,
+  LayoutTemplate,
+  Eye,
+  Palette,
 } from "lucide-react";
 
 interface EventItem {
@@ -66,6 +69,8 @@ interface WeddingDetail {
   packageTier: string;
   story?: string;
   familyMessage?: string;
+  templateId?: any;
+  templateContent?: Record<string, any>;
 }
 
 function WeddingDetailContent({ weddingId }: { weddingId: string }) {
@@ -76,7 +81,15 @@ function WeddingDetailContent({ weddingId }: { weddingId: string }) {
   const [rsvpStats, setRsvpStats] = useState<RsvpStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [copiedLink, setCopiedLink] = useState(false);
-  const [activeTab, setActiveTab] = useState<"itinerary" | "guests" | "settings">("itinerary");
+  const [activeTab, setActiveTab] = useState<"itinerary" | "guests" | "template" | "settings">("itinerary");
+
+  // Template State
+  const [availableTemplates, setAvailableTemplates] = useState<any[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
+  const [templateContent, setTemplateContent] = useState<Record<string, any>>({});
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [templateSuccessMsg, setTemplateSuccessMsg] = useState("");
+  const [previewIframeOpen, setPreviewIframeOpen] = useState(false);
 
   // Modals State
   const [showAddEventModal, setShowAddEventModal] = useState(false);
@@ -102,22 +115,32 @@ function WeddingDetailContent({ weddingId }: { weddingId: string }) {
   const loadWeddingData = async () => {
     try {
       setLoading(true);
-      const [resW, resG] = await Promise.all([
+      const [resW, resG, resT] = await Promise.all([
         fetch(`/api/admin/weddings/${weddingId}`),
         fetch(`/api/admin/weddings/${weddingId}/guests`),
+        fetch("/api/templates"),
       ]);
 
       const dataW = await resW.json();
       const dataG = await resG.json();
+      const dataT = await resT.json();
 
       if (dataW.success) {
         setWedding(dataW.wedding);
         setEvents(dataW.events || []);
         setRsvpStats(dataW.rsvpStats || null);
+
+        const currentTmplId = dataW.wedding.templateId?._id || dataW.wedding.templateId || "";
+        setSelectedTemplateId(currentTmplId);
+        setTemplateContent(dataW.wedding.templateContent || {});
       }
 
       if (dataG.success) {
         setGuests(dataG.guests || []);
+      }
+
+      if (dataT.success) {
+        setAvailableTemplates(dataT.templates || []);
       }
     } catch (err) {
       console.error("Failed to load wedding details", err);
@@ -153,6 +176,33 @@ function WeddingDetailContent({ weddingId }: { weddingId: string }) {
       }
     } catch (err) {
       console.error("Status toggle error", err);
+    }
+  };
+
+  const handleSaveTemplateSettings = async () => {
+    setSavingTemplate(true);
+    setTemplateSuccessMsg("");
+    try {
+      const res = await fetch(`/api/admin/weddings/${weddingId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          templateId: selectedTemplateId || null,
+          templateContent,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTemplateSuccessMsg("Template customization saved successfully!");
+        setTimeout(() => setTemplateSuccessMsg(""), 4000);
+        loadWeddingData();
+      } else {
+        alert(data.error || "Failed to save template personalization");
+      }
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setSavingTemplate(false);
     }
   };
 
@@ -385,6 +435,18 @@ function WeddingDetailContent({ weddingId }: { weddingId: string }) {
           <Users className="w-4 h-4" />
           <span>Guest List & RSVPs ({guests.length})</span>
         </button>
+
+        <button
+          onClick={() => setActiveTab("template")}
+          className={`py-3 px-5 text-sm font-semibold border-b-2 transition flex items-center gap-2 cursor-pointer ${
+            activeTab === "template"
+              ? "border-rose-600 text-rose-600"
+              : "border-transparent text-gray-500 hover:text-gray-900"
+          }`}
+        >
+          <LayoutTemplate className="w-4 h-4" />
+          <span>Website Template & Theme</span>
+        </button>
       </div>
 
       {/* TAB 1: ITINERARY & FUNCTIONS */}
@@ -562,6 +624,260 @@ function WeddingDetailContent({ weddingId }: { weddingId: string }) {
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {/* TAB 3: WEBSITE TEMPLATE & THEME */}
+      {activeTab === "template" && (
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+                <LayoutTemplate className="w-5 h-5 text-rose-600" />
+                Select &amp; Personalize Master Theme
+              </h2>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Choose an HTML/CSS/JS master theme and customize the dynamic fields defined in its manifest.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPreviewIframeOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition cursor-pointer"
+              >
+                <Eye className="w-3.5 h-3.5 text-amber-600" />
+                <span>Live Preview</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={savingTemplate}
+                onClick={handleSaveTemplateSettings}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg shadow-xs transition cursor-pointer disabled:opacity-50"
+              >
+                {savingTemplate ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                <span>Save Theme Settings</span>
+              </button>
+            </div>
+          </div>
+
+          {templateSuccessMsg && (
+            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center gap-2">
+              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{templateSuccessMsg}</span>
+            </div>
+          )}
+
+          {/* Step 1: Theme Selection Cards */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
+            <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider text-[11px]">
+              Step 1: Choose Website Theme
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Option: Default Built-in React Patrika */}
+              <div
+                onClick={() => setSelectedTemplateId("")}
+                className={`border-2 rounded-xl p-4 cursor-pointer transition flex flex-col justify-between ${
+                  !selectedTemplateId
+                    ? "border-rose-600 bg-rose-50/30"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-900">Standard Royal Patrika</span>
+                    {!selectedTemplateId && (
+                      <span className="text-[10px] bg-rose-600 text-white font-semibold px-2 py-0.5 rounded-full">
+                        Active
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Classic Vedic gold-bordered mobile card with interactive RSVP and turn-by-turn Google Maps.
+                  </p>
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-100 text-[11px] text-gray-400">
+                  Built-in Default Theme
+                </div>
+              </div>
+
+              {/* Master Templates from Template Engine */}
+              {availableTemplates.map((tmpl) => {
+                const isSelected = selectedTemplateId === tmpl._id;
+                return (
+                  <div
+                    key={tmpl._id}
+                    onClick={() => setSelectedTemplateId(tmpl._id)}
+                    className={`border-2 rounded-xl p-4 cursor-pointer transition flex flex-col justify-between ${
+                      isSelected
+                        ? "border-rose-600 bg-rose-50/30"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-900">{tmpl.name}</span>
+                        {isSelected && (
+                          <span className="text-[10px] bg-rose-600 text-white font-semibold px-2 py-0.5 rounded-full">
+                            Active
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                        {tmpl.description || "Master HTML/CSS/JS template with dynamic countdown and animations."}
+                      </p>
+                    </div>
+
+                    <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400 font-mono">
+                      <span>/{tmpl.slug}</span>
+                      <span className="text-rose-600 font-sans font-medium">
+                        {tmpl.manifest?.customerFields?.length || 0} Dynamic Fields
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Step 2: Dynamic Form Fields (Rendered from Manifest) */}
+          {(() => {
+            const currentTmpl = availableTemplates.find((t) => t._id === selectedTemplateId);
+            if (!currentTmpl || !currentTmpl.manifest?.customerFields?.length) {
+              return null;
+            }
+
+            return (
+              <div className="bg-white rounded-2xl border border-gray-200 p-5 space-y-4">
+                <div className="border-b border-gray-100 pb-3">
+                  <h3 className="text-sm font-bold text-gray-800 uppercase tracking-wider text-[11px]">
+                    Step 2: Manifest Personalization ({currentTmpl.name})
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    These fields are dynamically defined by this template&apos;s manifest contract.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {currentTmpl.manifest.customerFields.map((field: any) => {
+                    const currentVal =
+                      templateContent[field.key] !== undefined
+                        ? templateContent[field.key]
+                        : field.key === "groomName"
+                        ? wedding.groomName
+                        : field.key === "brideName"
+                        ? wedding.brideName
+                        : field.key === "weddingDate"
+                        ? wedding.weddingDate?.split("T")[0]
+                        : field.key === "venue"
+                        ? wedding.venue
+                        : field.key === "city"
+                        ? wedding.city
+                        : field.key === "story"
+                        ? wedding.story || ""
+                        : field.key === "familyMessage"
+                        ? wedding.familyMessage || ""
+                        : field.defaultValue || "";
+
+                    return (
+                      <div
+                        key={field.key}
+                        className={field.type === "textarea" ? "md:col-span-2 space-y-1" : "space-y-1"}
+                      >
+                        <label className="block text-xs font-semibold text-gray-700">
+                          {field.label} {field.required && <span className="text-rose-500">*</span>}
+                          <span className="ml-1 text-[10px] font-normal text-gray-400 font-mono">
+                            {`{{${field.key}}}`}
+                          </span>
+                        </label>
+
+                        {field.type === "textarea" ? (
+                          <textarea
+                            rows={3}
+                            value={currentVal}
+                            placeholder={field.placeholder || `Enter ${field.label}...`}
+                            onChange={(e) =>
+                              setTemplateContent({
+                                ...templateContent,
+                                [field.key]: e.target.value,
+                              })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          />
+                        ) : (
+                          <input
+                            type={field.type === "date" ? "date" : field.type === "number" ? "number" : "text"}
+                            value={currentVal}
+                            placeholder={field.placeholder || `Enter ${field.label}...`}
+                            onChange={(e) =>
+                              setTemplateContent({
+                                ...templateContent,
+                                [field.key]: e.target.value,
+                              })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="pt-3 border-t border-gray-100 flex justify-end">
+                  <button
+                    type="button"
+                    disabled={savingTemplate}
+                    onClick={handleSaveTemplateSettings}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg shadow-xs transition cursor-pointer disabled:opacity-50"
+                  >
+                    {savingTemplate ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                    <span>Save Personalized Details</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* PREVIEW IFRAME MODAL */}
+      {previewIframeOpen && wedding && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex flex-col p-4 sm:p-6">
+          <div className="bg-white rounded-t-xl px-4 py-3 flex items-center justify-between border-b border-gray-200">
+            <div className="flex items-center gap-2">
+              <Eye className="w-4 h-4 text-rose-600" />
+              <h3 className="text-sm font-bold text-gray-800">
+                Live Preview: {wedding.brideName} &amp; {wedding.groomName}&apos;s Card
+              </h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <a
+                href={`/api/public/wedding/${wedding.slug}/render`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs text-rose-600 hover:text-rose-700 font-medium px-2.5 py-1 bg-rose-50 rounded"
+              >
+                Open Fullscreen
+              </a>
+              <button
+                onClick={() => setPreviewIframeOpen(false)}
+                className="text-gray-400 hover:text-gray-600 p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+          <div className="flex-1 bg-stone-900 rounded-b-xl overflow-hidden">
+            <iframe
+              src={`/api/public/wedding/${wedding.slug}/render`}
+              className="w-full h-full border-0"
+              title="Personalized Wedding Preview"
+              sandbox="allow-scripts allow-same-origin"
+            />
+          </div>
         </div>
       )}
 

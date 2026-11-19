@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, X, MessageCircle, User } from "lucide-react";
+import { ChevronDown, Menu, X, User, LogOut, LayoutDashboard } from "lucide-react";
 import { useState, useEffect } from "react";
 import { BRAND } from "@/lib/brand";
 
@@ -23,13 +23,15 @@ export default function PublicHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [weddingDropdownOpen, setWeddingDropdownOpen] = useState(false);
   const [mobileWeddingOpen, setMobileWeddingOpen] = useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
 
   const [settings, setSettings] = useState<HeaderSettings>({
     siteName: BRAND.name,
-    logoUrl: "",
+    logoUrl: "/logo.png",
     announcementBar: {
       enabled: true,
-      text: "✦ Digital Invitations for Every Indian Celebration • Video, PDF & Website ✦",
+      text: "✦ विवाहवाणी • हर शादी की शुरुआत, एक खूबसूरत निमंत्रण ✦",
     },
     contact: {
       whatsapp: BRAND.whatsapp,
@@ -45,10 +47,10 @@ export default function PublicHeader() {
           if (data.success && data.settings) {
             setSettings({
               siteName: data.settings.siteName || BRAND.name,
-              logoUrl: data.settings.logoUrl || "",
+              logoUrl: data.settings.logoUrl || "/logo.png",
               announcementBar: data.settings.announcementBar || {
                 enabled: true,
-                text: "✦ Digital Invitations for Every Indian Celebration • Video, PDF & Website ✦",
+                text: "✦ विवाहवाणी • हर शादी की शुरुआत, एक खूबसूरत निमंत्रण ✦",
               },
               contact: {
                 whatsapp: data.settings.contact?.whatsapp || BRAND.whatsapp,
@@ -63,6 +65,54 @@ export default function PublicHeader() {
 
     fetchHeaderSettings();
   }, []);
+
+  // Check login state dynamically on route change
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("shaadi_auth_token") || localStorage.getItem("token")
+            : null;
+
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        const res = await fetch("/api/auth/me", {
+          headers,
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.user) {
+            setUser({ name: data.user.name, email: data.user.email });
+            return;
+          }
+        }
+        setUser(null);
+      } catch {
+        setUser(null);
+      }
+    }
+
+    checkSession();
+  }, [pathname]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore
+    }
+    localStorage.removeItem("shaadi_auth_token");
+    localStorage.removeItem("token");
+    setUser(null);
+    setAccountDropdownOpen(false);
+    window.location.href = "/login";
+  };
 
   const weddingSubLinks = [
     { href: "/wedding", label: "All Wedding Invitations" },
@@ -200,18 +250,87 @@ export default function PublicHeader() {
               aria-label="Chat with our invitation team on WhatsApp"
               className="px-3.5 py-2 rounded-xl bg-[#E8F8F0] hover:bg-[#D3F3E3] text-[#127C4B] border border-[#BCE8D2] text-xs font-semibold flex items-center gap-2 transition min-h-[42px] justify-center shadow-xs"
             >
-              <MessageCircle className="w-4 h-4 text-[#127C4B]" />
-              <span>WhatsApp</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/whatsapp.png" alt="WhatsApp" className="w-4 h-4 object-contain" />
+              <span className="hidden sm:inline">WhatsApp</span>
             </a>
 
-            {/* Login / My Account Button */}
-            <Link
-              href="/my-account"
-              className="px-4 py-2 rounded-xl bg-[#5C0612] hover:bg-[#48050e] text-white text-xs font-semibold transition flex items-center gap-2 shadow-sm min-h-[42px]"
-            >
-              <User className="w-4 h-4 text-white/90" />
-              <span>My Account</span>
-            </Link>
+            {/* Login / My Account Dynamic Switcher */}
+            {user ? (
+              <div
+                className="relative"
+                onMouseLeave={() => setAccountDropdownOpen(false)}
+              >
+                <button
+                  type="button"
+                  onClick={() => setAccountDropdownOpen((prev) => !prev)}
+                  className="px-3.5 py-2 rounded-xl bg-[#5C0612] hover:bg-[#48050e] text-white text-xs font-semibold transition flex items-center gap-2 shadow-sm min-h-[42px] cursor-pointer"
+                  aria-expanded={accountDropdownOpen}
+                >
+                  <User className="w-4 h-4 text-amber-200" />
+                  <span className="max-w-[120px] truncate">{user.name.split(" ")[0] || "My Account"}</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                      accountDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {accountDropdownOpen && (
+                  <div className="absolute right-0 top-full pt-1.5 w-56 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div className="bg-white rounded-2xl shadow-xl border border-stone-200 p-2 space-y-1">
+                      <div className="px-3 py-2 border-b border-stone-100">
+                        <p className="text-xs font-bold text-stone-900 truncate">{user.name}</p>
+                        <p className="text-[11px] text-stone-500 truncate">{user.email}</p>
+                      </div>
+
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setAccountDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-stone-700 hover:bg-stone-50 hover:text-[#5C0612] rounded-xl transition"
+                      >
+                        <LayoutDashboard className="w-3.5 h-3.5 text-stone-400" />
+                        <span>Dashboard</span>
+                      </Link>
+
+                      <Link
+                        href="/dashboard/weddings"
+                        onClick={() => setAccountDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-stone-700 hover:bg-stone-50 hover:text-[#5C0612] rounded-xl transition"
+                      >
+                        <User className="w-3.5 h-3.5 text-stone-400" />
+                        <span>My Wedding Cards</span>
+                      </Link>
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 text-left px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 rounded-xl transition cursor-pointer"
+                      >
+                        <LogOut className="w-3.5 h-3.5 text-red-500" />
+                        <span>Log Out</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <Link
+                  href="/login"
+                  className="px-3 py-2 text-xs font-semibold text-stone-700 hover:text-[#5C0612] hover:bg-stone-100 rounded-xl transition min-h-[42px] flex items-center justify-center"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href="/register"
+                  className="px-4 py-2 rounded-xl bg-[#5C0612] hover:bg-[#48050e] text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-sm min-h-[42px]"
+                >
+                  <span>Sign Up</span>
+                </Link>
+              </div>
+            )}
 
             {/* Mobile Hamburger Drawer Trigger */}
             <button
@@ -298,18 +417,50 @@ export default function PublicHeader() {
                 rel="noopener noreferrer"
                 className="w-full text-center py-3 text-xs font-bold text-emerald-900 bg-emerald-50 border border-emerald-300 rounded-xl flex items-center justify-center gap-2 min-h-[44px]"
               >
-                <MessageCircle className="w-4 h-4 text-emerald-700" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/whatsapp.png" alt="WhatsApp" className="w-4 h-4 object-contain" />
                 <span>Chat on WhatsApp ({BRAND.whatsappDisplay})</span>
               </a>
 
-              <Link
-                href="/my-account"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-3 text-xs font-bold text-amber-50 bg-rose-700 rounded-xl min-h-[44px] flex items-center justify-center gap-1.5"
-              >
-                <User className="w-4 h-4 text-amber-200" />
-                <span>Login / My Account</span>
-              </Link>
+              {user ? (
+                <div className="space-y-2">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center py-3 text-xs font-bold text-amber-50 bg-[#5C0612] rounded-xl min-h-[44px] flex items-center justify-center gap-1.5"
+                  >
+                    <User className="w-4 h-4 text-amber-200" />
+                    <span>My Account ({user.name})</span>
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="w-full text-center py-2.5 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-xl min-h-[40px] flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5 text-red-600" />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center py-2.5 text-xs font-bold text-stone-800 bg-stone-100 hover:bg-stone-200 rounded-xl min-h-[42px] flex items-center justify-center"
+                  >
+                    Login
+                  </Link>
+
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full text-center py-2.5 text-xs font-bold text-white bg-[#5C0612] hover:bg-[#48050e] rounded-xl min-h-[42px] flex items-center justify-center shadow-xs"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         )}

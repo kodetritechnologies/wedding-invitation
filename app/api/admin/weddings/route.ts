@@ -72,6 +72,8 @@ export async function POST(req: NextRequest) {
       familyMessage,
       contactPersons,
       packageTier,
+      templateId,
+      templateContent,
     } = body;
 
     // Required field validation
@@ -133,6 +135,8 @@ export async function POST(req: NextRequest) {
       slug,
       status: "draft",
       packageTier: packageTier || "basic",
+      templateId: templateId || undefined,
+      templateContent: templateContent || {},
       story: story?.trim() || undefined,
       familyMessage: familyMessage?.trim() || undefined,
       contactPersons: Array.isArray(contactPersons) ? contactPersons : [],

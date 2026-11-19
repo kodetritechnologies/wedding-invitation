@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { MessageCircle, Mail, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BRAND } from "@/lib/brand";
 
@@ -32,7 +31,7 @@ interface FooterSettings {
 export default function PublicFooter() {
   const [settings, setSettings] = useState<FooterSettings>({
     siteName: BRAND.name,
-    logoUrl: "",
+    logoUrl: "/logo-dark.png",
     address: {
       formattedAddress: BRAND.address,
     },
@@ -42,7 +41,7 @@ export default function PublicFooter() {
       workingHours: BRAND.workingHours,
     },
     footer: {
-      copyrightText: `© 2026 ${BRAND.name}. Crafted with love and modern technology in Indore, Madhya Pradesh.`,
+      copyrightText: `© 2026 ${BRAND.name}. Designed & Developed by Kodetri Technologies.`,
       tagline: BRAND.tagline,
     },
   });
@@ -57,7 +56,7 @@ export default function PublicFooter() {
             const currentYear = new Date().getFullYear();
             setSettings({
               siteName: data.settings.siteName || BRAND.name,
-              logoUrl: data.settings.logoUrl || "",
+              logoUrl: data.settings.logoUrl || "/logo-dark.png",
               address: {
                 formattedAddress:
                   data.settings.address?.formattedAddress || BRAND.address,
@@ -72,7 +71,7 @@ export default function PublicFooter() {
               footer: {
                 copyrightText:
                   data.settings.footer?.copyrightText?.replace(/ShaadiConnect|VivahVaani/g, data.settings.siteName || BRAND.name) ||
-                  `© ${currentYear} ${data.settings.siteName || BRAND.name}. Crafted with love and modern technology in Indore, Madhya Pradesh.`,
+                  `© ${currentYear} ${data.settings.siteName || BRAND.name}. Designed & Developed by Kodetri Technologies.`,
                 tagline: data.settings.footer?.tagline || BRAND.tagline,
               },
             });
@@ -86,10 +85,13 @@ export default function PublicFooter() {
     fetchFooterSettings();
   }, []);
 
-  const whatsappNumber = settings.contact?.whatsapp || "919826012345";
-  const emailAddress = settings.contact?.email || "namaste@shaadiconnect.com";
-  const workingHours = settings.contact?.workingHours || "Mon - Sun: 10:00 AM - 7:00 PM IST";
   const formattedAddress = settings.address?.formattedAddress || "Vijay Nagar, Indore, Madhya Pradesh - 452010";
+  const hasSocialLinks = Boolean(
+    settings.socialLinks &&
+      (settings.socialLinks.instagram ||
+        settings.socialLinks.facebook ||
+        settings.socialLinks.youtube)
+  );
 
   return (
     <footer
@@ -118,54 +120,11 @@ export default function PublicFooter() {
 
       {/* Main Content Container */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* TOP CONTACT BAR */}
-        <div className="py-5 border-b border-[#D6A64B]/25 flex flex-wrap items-center justify-between gap-4 text-sm tracking-wide">
-          <div className="flex flex-wrap items-center gap-6 sm:gap-10">
-            <a
-              href={`https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=Namaste!%20I%20would%20like%20to%20know%20more%20about%20ShaadiConnect%20digital%20invitations.`}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Contact us on WhatsApp"
-              className="group flex items-center gap-3 text-[#FDFBF7]/90 hover:text-[#D6A64B] transition duration-200"
-            >
-              <span className="p-2 rounded-full border border-[#D6A64B]/40 group-hover:border-[#D6A64B] group-hover:bg-[#D6A64B]/10 transition">
-                <MessageCircle className="w-4 h-4 text-[#D6A64B]" />
-              </span>
-              <span>
-                <strong className="text-[#D6A64B] font-medium mr-1.5">WhatsApp:</strong>
-                +{whatsappNumber.startsWith("91") ? whatsappNumber : `91 ${whatsappNumber}`}
-              </span>
-            </a>
-
-            <a
-              href={`mailto:${emailAddress}`}
-              aria-label="Send us an email"
-              className="group flex items-center gap-3 text-[#FDFBF7]/90 hover:text-[#D6A64B] transition duration-200"
-            >
-              <span className="p-2 rounded-full border border-[#D6A64B]/40 group-hover:border-[#D6A64B] group-hover:bg-[#D6A64B]/10 transition">
-                <Mail className="w-4 h-4 text-[#D6A64B]" />
-              </span>
-              <span>
-                <strong className="text-[#D6A64B] font-medium mr-1.5">Email:</strong>
-                {emailAddress}
-              </span>
-            </a>
-
-            <div className="flex items-center gap-3 text-[#FDFBF7]/85">
-              <span className="p-2 rounded-full border border-[#D6A64B]/40">
-                <Clock className="w-4 h-4 text-[#D6A64B]" />
-              </span>
-              <span>
-                <strong className="text-[#D6A64B] font-medium mr-1.5">Working Hours:</strong>
-                {workingHours}
-              </span>
-            </div>
-          </div>
-
-          {/* Social Icons / Links (if available) */}
-          {settings.socialLinks && (settings.socialLinks.instagram || settings.socialLinks.facebook || settings.socialLinks.youtube) && (
+        {/* Social Icons / Links (if available) */}
+        {hasSocialLinks && (
+          <div className="py-4 border-b border-[#D6A64B]/25 flex items-center justify-end gap-4 text-sm tracking-wide">
             <div className="flex items-center gap-4 text-sm text-[#FDFBF7]/75">
-              {settings.socialLinks.instagram && (
+              {settings.socialLinks?.instagram && (
                 <a
                   href={settings.socialLinks.instagram}
                   target="_blank"
@@ -176,7 +135,7 @@ export default function PublicFooter() {
                   Instagram
                 </a>
               )}
-              {settings.socialLinks.youtube && (
+              {settings.socialLinks?.youtube && (
                 <a
                   href={settings.socialLinks.youtube}
                   target="_blank"
@@ -187,7 +146,7 @@ export default function PublicFooter() {
                   YouTube
                 </a>
               )}
-              {settings.socialLinks.facebook && (
+              {settings.socialLinks?.facebook && (
                 <a
                   href={settings.socialLinks.facebook}
                   target="_blank"
@@ -199,33 +158,20 @@ export default function PublicFooter() {
                 </a>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* 4 COLUMNS CONTENT */}
         <div className="pt-14  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 relative z-10">
           {/* COLUMN 1 — BRAND */}
           <div className="space-y-4">
             <Link href="/" className="inline-flex items-center gap-2 group focus:outline-none">
-              {settings.logoUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={settings.logoUrl}
-                  alt={settings.siteName}
-                  className="h-12 w-auto max-w-[220px] object-contain"
-                />
-              ) : (
-                <div className="flex items-center gap-3">
-                  <span className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D6A64B] via-[#E9BC5A] to-[#B07818] p-[1.5px] flex items-center justify-center shadow-md">
-                    <span className="w-full h-full rounded-full bg-[#50080E] flex items-center justify-center text-[#D6A64B] font-bold text-lg">
-                      🕉
-                    </span>
-                  </span>
-                  <span className="text-2xl sm:text-3xl font-bold tracking-tight text-[#FDFBF7] font-['Cinzel',serif] group-hover:text-[#D6A64B] transition">
-                    {settings.siteName}
-                  </span>
-                </div>
-              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-dark.png"
+                alt={settings.siteName}
+                className="h-16 sm:h-20 w-auto max-w-[260px] object-contain drop-shadow-[0_4px_16px_rgba(214,166,75,0.35)] group-hover:brightness-110 transition duration-200"
+              />
             </Link>
 
             <p className="text-sm sm:text-[15px] leading-relaxed text-[#FDFBF7]/90 pr-2">
@@ -369,7 +315,16 @@ export default function PublicFooter() {
       <div className="relative border-t border-[#D6A64B]/30 bg-[#50080E]/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-[#FDFBF7]/80">
           <p className="text-center md:text-left">
-            © 2026 {settings.siteName}. Crafted with love and modern technology in Indore, Madhya Pradesh.
+            © 2026 {settings.siteName}. Designed & Developed by{" "}
+            <a
+              href="https://www.kodetri.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#D6A64B] font-semibold hover:underline"
+            >
+              Kodetri Technologies
+            </a>
+            .
           </p>
           <p className="text-center md:text-right text-[#FDFBF7]/90">
             <span className="text-[#D6A64B] font-medium">&ldquo;Kalyaanam, Mangalyam, Shubham.&rdquo;</span> Reimagining Indian wedding invitations into timeless, interactive digital patrika experiences.

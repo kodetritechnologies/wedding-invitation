@@ -41,6 +41,8 @@ interface WeddingData {
     allowPublicRsvp: boolean;
     showHeadcount: boolean;
   };
+  templateId?: any;
+  templateContent?: Record<string, any>;
 }
 
 interface PersonalGuestInfo {
@@ -165,6 +167,19 @@ function InvitationContent({ slug }: { slug: string }) {
             This wedding invitation may be in draft mode or the link is incorrect.
           </p>
         </div>
+      </div>
+    );
+  }
+
+  if (wedding.templateId) {
+    return (
+      <div className="w-full h-screen overflow-hidden relative bg-black">
+        <iframe
+          src={`/api/public/wedding/${slug}/render`}
+          className="w-full h-full border-0"
+          title={`${wedding.brideName} & ${wedding.groomName} Wedding Invitation`}
+          sandbox="allow-scripts allow-same-origin allow-popups"
+        />
       </div>
     );
   }

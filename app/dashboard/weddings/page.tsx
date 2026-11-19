@@ -51,20 +51,25 @@ export default function WeddingsPage() {
   const [slug, setSlug] = useState("");
   const [clientId, setClientId] = useState("");
   const [packageTier, setPackageTier] = useState("basic");
+  const [templateId, setTemplateId] = useState("");
+  const [templatesList, setTemplatesList] = useState<{ _id: string; name: string; slug: string }[]>([]);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [resW, resC] = await Promise.all([
+      const [resW, resC, resT] = await Promise.all([
         fetch("/api/admin/weddings"),
         fetch("/api/admin/clients"),
+        fetch("/api/templates"),
       ]);
 
       const dataW = await resW.json();
       const dataC = await resC.json();
+      const dataT = await resT.json();
 
       if (dataW.success) setWeddings(dataW.weddings || []);
       if (dataC.success) setClients(dataC.clients || []);
+      if (dataT.success) setTemplatesList(dataT.templates || []);
     } catch (err) {
       console.error("Failed to load weddings", err);
     } finally {
@@ -94,6 +99,7 @@ export default function WeddingsPage() {
           slug,
           clientId: clientId || undefined,
           packageTier,
+          templateId: templateId || undefined,
         }),
       });
 
@@ -357,6 +363,24 @@ export default function WeddingsPage() {
                     <option value="subscription">Business Subscription</option>
                   </select>
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                  Master Template (Theme Design)
+                </label>
+                <select
+                  value={templateId}
+                  onChange={(e) => setTemplateId(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+                >
+                  <option value="">Standard Royal Patrika (Default)</option>
+                  {templatesList.map((t) => (
+                    <option key={t._id} value={t._id}>
+                      {t.name} (/{t.slug})
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>

@@ -18,9 +18,11 @@ export async function GET(req: NextRequest, context: RouteContext) {
     const wedding = await Wedding.findOne({
       slug: slug.toLowerCase(),
       status: { $in: ["published", "draft"] }, // draft permitted in dev preview
-    }).select(
-      "title brideName groomName weddingDate venue city coverPhoto story familyMessage contactPersons rsvpDeadline settings status"
-    );
+    })
+      .populate("templateId", "name slug description thumbnail manifest designSettings")
+      .select(
+        "title brideName groomName weddingDate venue city coverPhoto story familyMessage contactPersons rsvpDeadline settings status templateId templateContent"
+      );
 
     if (!wedding) {
       return NextResponse.json(

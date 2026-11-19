@@ -99,6 +99,8 @@ export async function PUT(req: NextRequest, context: RouteContext) {
       "contactPersons",
       "rsvpDeadline",
       "settings",
+      "templateId",
+      "templateContent",
     ];
 
     allowedFields.forEach((field) => {
