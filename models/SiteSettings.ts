@@ -40,7 +40,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
   {
     siteName: {
       type: String,
-      default: "ShaadiConnect",
+      default: "VivahVaani",
       trim: true,
     },
     siteTagline: {
@@ -55,7 +55,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     },
     logoText: {
       type: String,
-      default: "ShaadiConnect",
+      default: "VivahVaani",
       trim: true,
     },
     faviconUrl: {
@@ -93,7 +93,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     contact: {
       email: {
         type: String,
-        default: "namaste@shaadiconnect.com",
+        default: "namaste@vivahvaani.kodetri.com",
         trim: true,
       },
       phone: {
@@ -121,7 +121,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     footer: {
       copyrightText: {
         type: String,
-        default: "© 2026 ShaadiConnect. Crafted with shradha & modern technology in Indore, Madhya Pradesh.",
+        default: "© 2026 VivahVaani. A Product by Kodetri Technologies.",
         trim: true,
       },
       tagline: {

@@ -14,6 +14,7 @@ import {
   MessageCircle,
   HelpCircle,
   ArrowRight,
+  AlertCircle,
 } from "lucide-react";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
@@ -28,6 +29,13 @@ interface SiteSettings {
   businessName?: string;
 }
 
+interface FormErrors {
+  name?: string;
+  phone?: string;
+  email?: string;
+  message?: string;
+}
+
 export default function ContactPage() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [name, setName] = useState("");
@@ -40,6 +48,7 @@ export default function ContactPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
     fetch("/api/public/settings")
@@ -59,9 +68,48 @@ export default function ContactPage() {
   const contactWhatsapp = settings?.contactWhatsapp || BRAND.whatsapp;
   const workingHours = settings?.workingHours || BRAND.workingHours;
 
+  const validate = (): boolean => {
+    const errs: FormErrors = {};
+
+    // Name validation
+    if (!name.trim()) {
+      errs.name = "Kripya apna naam darj karein";
+    } else if (name.trim().length < 2) {
+      errs.name = "Naam kam se kam 2 aksharon ka hona chahiye";
+    }
+
+    // Phone validation
+    const cleanPhone = phone.replace(/[\s-]/g, "");
+    if (!phone.trim()) {
+      errs.phone = "Kripya apna mobile / WhatsApp number darj karein";
+    } else if (!/^\+?[0-9]{10,14}$/.test(cleanPhone)) {
+      errs.phone = "Kripya 10 ankon ka valid mobile number darj karein";
+    }
+
+    // Email validation (optional field, but if entered, must be valid email format)
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      errs.email = "Kripya valid email address darj karein (jaise: amit@example.com)";
+    }
+
+    // Message validation
+    if (!message.trim()) {
+      errs.message = "Kripya apna sandesh ya sawal darj karein";
+    } else if (message.trim().length < 5) {
+      errs.message = "Sandesh kam se kam 5 aksharon ka hona chahiye";
+    }
+
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
+
+    if (!validate()) {
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -69,12 +117,12 @@ export default function ContactPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name,
-          phone,
-          email,
+          name: name.trim(),
+          phone: phone.trim(),
+          email: email.trim(),
           role,
-          eventDate,
-          message,
+          eventDate: eventDate.trim(),
+          message: message.trim(),
           honeypot,
         }),
       });
@@ -82,6 +130,7 @@ export default function ContactPage() {
       const data = await res.json();
       if (res.ok && data.success) {
         setSubmitted(true);
+        setErrors({});
       } else {
         setErrorMsg(data.error || "Unable to send message. Please try again or message via WhatsApp.");
       }
@@ -235,6 +284,7 @@ export default function ContactPage() {
                         setPhone("");
                         setEmail("");
                         setMessage("");
+                        setErrors({});
                       }}
                       className="px-6 py-2.5 rounded-xl bg-stone-900 text-white text-xs font-semibold hover:bg-stone-800 transition-colors"
                     >
@@ -242,7 +292,7 @@ export default function ContactPage() {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="space-y-5">
+                  <form onSubmit={handleSubmit} noValidate className="space-y-5">
                     <div>
                       <h2 className="text-xl font-bold text-stone-900">Hamein Sandesh Bhejein</h2>
                       <p className="text-xs text-stone-500 mt-1">
@@ -251,8 +301,9 @@ export default function ContactPage() {
                     </div>
 
                     {errorMsg && (
-                      <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium">
-                        {errorMsg}
+                      <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                        <span>{errorMsg}</span>
                       </div>
                     )}
 
@@ -275,12 +326,24 @@ export default function ContactPage() {
                         </label>
                         <input
                           type="text"
-                          required
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => {
+                            setName(e.target.value);
+                            if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+                          }}
                           placeholder="Jaise: Amit Sharma"
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
+                          className={`w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition ${
+                            errors.name
+                              ? "border-rose-500 bg-rose-50/20 focus:ring-rose-500/20 focus:border-rose-600"
+                              : "border-stone-300 focus:ring-rose-500/20 focus:border-rose-600"
+                          }`}
                         />
+                        {errors.name && (
+                          <p className="text-[11px] text-rose-600 mt-1.5 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                            <span>{errors.name}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -289,12 +352,24 @@ export default function ContactPage() {
                         </label>
                         <input
                           type="tel"
-                          required
                           value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
+                          onChange={(e) => {
+                            setPhone(e.target.value);
+                            if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+                          }}
                           placeholder="+91 98765 43210"
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
+                          className={`w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition ${
+                            errors.phone
+                              ? "border-rose-500 bg-rose-50/20 focus:ring-rose-500/20 focus:border-rose-600"
+                              : "border-stone-300 focus:ring-rose-500/20 focus:border-rose-600"
+                          }`}
                         />
+                        {errors.phone && (
+                          <p className="text-[11px] text-rose-600 mt-1.5 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                            <span>{errors.phone}</span>
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -304,10 +379,23 @@ export default function ContactPage() {
                         <input
                           type="email"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+                          }}
                           placeholder="amit@example.com (Optional)"
-                          className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
+                          className={`w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition ${
+                            errors.email
+                              ? "border-rose-500 bg-rose-50/20 focus:ring-rose-500/20 focus:border-rose-600"
+                              : "border-stone-300 focus:ring-rose-500/20 focus:border-rose-600"
+                          }`}
                         />
+                        {errors.email && (
+                          <p className="text-[11px] text-rose-600 mt-1.5 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                            <span>{errors.email}</span>
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -345,12 +433,24 @@ export default function ContactPage() {
                       </label>
                       <textarea
                         rows={4}
-                        required
                         value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        onChange={(e) => {
+                          setMessage(e.target.value);
+                          if (errors.message) setErrors((prev) => ({ ...prev, message: undefined }));
+                        }}
                         placeholder="Aapko kaisa card design chahiye, Sanskrit shlok jodhna hai ya koi specific requirements hain..."
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-600 transition"
+                        className={`w-full px-3.5 py-2.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition ${
+                          errors.message
+                            ? "border-rose-500 bg-rose-50/20 focus:ring-rose-500/20 focus:border-rose-600"
+                            : "border-stone-300 focus:ring-rose-500/20 focus:border-rose-600"
+                        }`}
                       />
+                      {errors.message && (
+                        <p className="text-[11px] text-rose-600 mt-1.5 flex items-center gap-1 font-medium">
+                          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                          <span>{errors.message}</span>
+                        </p>
+                      )}
                     </div>
 
                     <button

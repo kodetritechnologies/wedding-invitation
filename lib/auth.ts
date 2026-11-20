@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 
 export type UserRole = "super_admin" | "admin";
 
-const JWT_SECRET = process.env.JWT_SECRET || "shaadiconnect_jwt_secret_dev_key";
+const JWT_SECRET = process.env.JWT_SECRET || "vivahvaani_jwt_secret_dev_key";
 
 export interface AuthTokenPayload {
   userId: string;

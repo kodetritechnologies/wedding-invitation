@@ -733,9 +733,14 @@ function WeddingDetailContent({ weddingId }: { weddingId: string }) {
 
                     <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400 font-mono">
                       <span>/{tmpl.slug}</span>
-                      <span className="text-rose-600 font-sans font-medium">
-                        {tmpl.manifest?.customerFields?.length || 0} Dynamic Fields
-                      </span>
+                      <div className="flex items-center gap-1.5 font-sans">
+                        <span className="text-[10px] text-amber-800 bg-amber-50 px-2 py-0.5 rounded uppercase font-semibold">
+                          {tmpl.category || "wedding"}
+                        </span>
+                        <span className="text-rose-600 font-medium">
+                          {tmpl.manifest?.customerFields?.length || 0} Fields
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );

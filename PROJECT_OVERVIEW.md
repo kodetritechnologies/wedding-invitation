@@ -1,7 +1,7 @@
 # VivahVaani (Wedding Invitation SaaS) — Project Overview & Product Discovery
 
 > **Document Type:** Product Discovery, Functional Architecture & Executive Overview  
-> **Brand Identity:** **VivahVaani** (विवाहवाणी) — *Powered by Kodetri Technologies* (Historically referenced as *ShaadiConnect* / *Amantran*)  
+> **Brand Identity:** **VivahVaani** (विवाहवाणी) — *Powered by Kodetri Technologies* (Historically referenced as *VivahVaani* / *Amantran*)  
 > **Author / Role:** Senior Software Architect, Product Manager & Technical Documentation Lead  
 > **Date:** November 2026  
 > **Repository Directory:** `wedding-invitation` | **Workspace Root:** `e:\Amantran`  
@@ -60,7 +60,7 @@ In contemporary Indian weddings, invitations present four major structural, fina
 
 VivahVaani directly solves every one of these problems through a unified web platform:
 
-1. **Sub-15-Minute Digital Delivery:** Create a live royal wedding patrika URL (e.g., `vivahvaani.com/w/aarav-diya`) in 15 minutes at a fraction of printing costs (packages starting from ₹299).
+1. **Sub-15-Minute Digital Delivery:** Create a live royal wedding patrika URL (e.g., `vivahvaani.kodetri.com/w/aarav-diya`) in 15 minutes at a fraction of printing costs (packages starting from ₹299).
 2. **Zero App Download / Instant Browser Access:** Guests tap a single WhatsApp link and instantly access the card on any modern iOS or Android mobile browser without registering, entering passwords, or installing apps.
 3. **1-Click Turn-by-Turn GPS Navigation:** Every function (Haldi, Mehendi, Sangeet, Shubh Vivah, Reception) embeds verified Google Maps GPS links taking guests straight to the venue's entry gate.
 4. **Live RSVP Headcount Tracker:** Guests submit attendance status (Attending / Declined), guest counts (e.g., 3 members), and dietary preferences (e.g., Jain meals) in 2 seconds. The client's dashboard updates in real time with exact plate counts.
@@ -287,7 +287,7 @@ sequenceDiagram
     participant Auth as Auth API (/api/auth)
     participant DB as MongoDB Atlas
 
-    Visitor->>Web: Visits https://vivahvaani.com/
+    Visitor->>Web: Visits https://vivahvaani.kodetri.com/
     Web-->>Visitor: Displays Hero, Live Sample Patrika, Pain Points & Calculator
     Visitor->>Web: Clicks "See Live Sample Patrika" (/w/aarav-diya)
     Web-->>Visitor: Opens interactive card with real ceremonies & Google Maps
@@ -331,7 +331,7 @@ sequenceDiagram
     Dash->>API: PUT /api/admin/weddings/[id] { status: "published" }
     API->>DB: Update wedding status
     Host->>Dash: Clicks "Copy WhatsApp Invite"
-    Dash-->>Host: Copies "https://vivahvaani.com/w/aarav-diya?guest=SHARMA26"
+    Dash-->>Host: Copies "https://vivahvaani.kodetri.com/w/aarav-diya?guest=SHARMA26"
 ```
 
 ### Journey 3: Wedding Guest Opening Patrika & Submitting RSVP
@@ -343,7 +343,7 @@ sequenceDiagram
     participant API as Public API (/api/public)
     participant DB as MongoDB Atlas
 
-    Guest->>Browser: Taps WhatsApp link (vivahvaani.com/w/aarav-diya?guest=SHARMA26)
+    Guest->>Browser: Taps WhatsApp link (vivahvaani.kodetri.com/w/aarav-diya?guest=SHARMA26)
     Browser->>API: GET /api/public/wedding/aarav-diya?guest=SHARMA26
     API->>DB: Fetch published wedding, related events & guest by invite code
     API-->>Browser: Returns wedding details, itinerary, and guest personal info

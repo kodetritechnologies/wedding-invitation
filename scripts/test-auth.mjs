@@ -57,10 +57,10 @@ async function testAuth() {
         role: foundAdmin.role,
         name: foundAdmin.name,
       },
-      JWT_SECRET || "shaadiconnect_jwt_secret_dev_key",
+      JWT_SECRET || "vivahvaani_jwt_secret_dev_key",
       { expiresIn: "7d" }
     );
-    const decoded = jwt.verify(token, JWT_SECRET || "shaadiconnect_jwt_secret_dev_key");
+    const decoded = jwt.verify(token, JWT_SECRET || "vivahvaani_jwt_secret_dev_key");
     console.log("4. JWT Token verified. Payload:", {
       userId: decoded.userId,
       email: decoded.email,

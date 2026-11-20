@@ -55,11 +55,11 @@ export async function renderTemplateHtml(options: RenderTemplateOptions): Promis
   } = options;
 
   const entryFileName = manifest.entry || "index.html";
-  const entryFilePath = path.join(templateRootPath, entryFileName);
+  const entryFilePath = path.join(/*turbopackIgnore: true*/ templateRootPath, entryFileName);
 
   let rawHtml: string;
   try {
-    rawHtml = await fs.readFile(entryFilePath, "utf-8");
+    rawHtml = await fs.readFile(/*turbopackIgnore: true*/ entryFilePath, "utf-8");
   } catch (err: any) {
     throw new Error(`Failed to load entry HTML file at '${entryFilePath}': ${err?.message || "File not found"}`);
   }

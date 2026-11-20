@@ -418,7 +418,7 @@ export default function WebsiteSettingsPage() {
                       contact: { ...siteSettings.contact, email: e.target.value },
                     })
                   }
-                  placeholder="namaste@shaadiconnect.com"
+                  placeholder="namaste@vivahvaani.kodetri.com"
                   className="w-full pl-8 pr-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-white text-xs focus:outline-none focus:border-amber-500"
                 />
               </div>

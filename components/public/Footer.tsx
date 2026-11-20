@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BRAND } from "@/lib/brand";
+import { MdLocationOn } from "react-icons/md";
 
 interface FooterSettings {
   siteName: string;
@@ -29,6 +30,8 @@ interface FooterSettings {
 }
 
 export default function PublicFooter() {
+  const [footerCategories, setFooterCategories] = useState<{ name: string; href: string }[]>([]);
+
   const [settings, setSettings] = useState<FooterSettings>({
     siteName: BRAND.name,
     logoUrl: "/logo-dark.png",
@@ -41,7 +44,7 @@ export default function PublicFooter() {
       workingHours: BRAND.workingHours,
     },
     footer: {
-      copyrightText: `© 2026 ${BRAND.name}. Designed & Developed by Kodetri Technologies.`,
+      copyrightText: `© 2026 ${BRAND.name}. A Product by Kodetri Technologies.`,
       tagline: BRAND.tagline,
     },
   });
@@ -71,7 +74,7 @@ export default function PublicFooter() {
               footer: {
                 copyrightText:
                   data.settings.footer?.copyrightText?.replace(/ShaadiConnect|VivahVaani/g, data.settings.siteName || BRAND.name) ||
-                  `© ${currentYear} ${data.settings.siteName || BRAND.name}. Designed & Developed by Kodetri Technologies.`,
+                  `© ${currentYear} ${data.settings.siteName || BRAND.name}. A Product by Kodetri Technologies.`,
                 tagline: data.settings.footer?.tagline || BRAND.tagline,
               },
             });
@@ -83,6 +86,30 @@ export default function PublicFooter() {
     }
 
     fetchFooterSettings();
+  }, []);
+
+  useEffect(() => {
+    async function loadFooterCategories() {
+      try {
+        const res = await fetch("/api/public/categories");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.categories)) {
+            setFooterCategories(
+              data.categories.map((c: { name: string; href?: string; slug?: string }) => ({
+                name: c.name,
+                href: c.href || `/${c.slug}`,
+              }))
+            );
+          } else {
+            setFooterCategories([]);
+          }
+        }
+      } catch {
+        setFooterCategories([]);
+      }
+    }
+    loadFooterCategories();
   }, []);
 
   const formattedAddress = settings.address?.formattedAddress || "Vijay Nagar, Indore, Madhya Pradesh - 452010";
@@ -179,7 +206,7 @@ export default function PublicFooter() {
             </p>
 
             <div className="pt-2 text-sm text-[#FDFBF7]/80 flex items-start gap-2.5">
-              <span className="text-[#D6A64B] text-base mt-0.5 font-bold">📍</span>
+              <MdLocationOn className="w-5 h-5 text-[#D6A64B] mt-0.5 shrink-0" />
               <p className="leading-snug">{formattedAddress}</p>
             </div>
           </div>
@@ -191,36 +218,16 @@ export default function PublicFooter() {
               Occasions
             </h3>
             <ul className="space-y-3 text-sm text-[#FDFBF7]/85">
-              <li>
-                <Link href="/wedding" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  Wedding
-                </Link>
-              </li>
-              <li>
-                <Link href="/engagement" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  Engagement
-                </Link>
-              </li>
-              <li>
-                <Link href="/anniversary" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  Anniversary
-                </Link>
-              </li>
-              <li>
-                <Link href="/birthday" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  Birthday
-                </Link>
-              </li>
-              <li>
-                <Link href="/housewarming" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  House Warming
-                </Link>
-              </li>
-              <li>
-                <Link href="/reception" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  Reception
-                </Link>
-              </li>
+              {footerCategories.map((cat, idx) => (
+                <li key={idx}>
+                  <Link
+                    href={cat.href}
+                    className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150"
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
 
@@ -262,13 +269,13 @@ export default function PublicFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  Contact Us
+                <Link href="/pricing" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
+                  Pricing Plans
                 </Link>
               </li>
               <li>
-                <Link href="/my-account" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  My Account
+                <Link href="/contact" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
+                  Contact Us
                 </Link>
               </li>
               <li>
@@ -284,11 +291,6 @@ export default function PublicFooter() {
               <li>
                 <Link href="/refund-policy" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
                   Refund &amp; Cancellation Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/sitemap.xml" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  Sitemap
                 </Link>
               </li>
             </ul>
@@ -315,7 +317,7 @@ export default function PublicFooter() {
       <div className="relative border-t border-[#D6A64B]/30 bg-[#50080E]/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-[#FDFBF7]/80">
           <p className="text-center md:text-left">
-            © 2026 {settings.siteName}. Designed & Developed by{" "}
+            © 2026 {settings.siteName}. A Product by{" "}
             <a
               href="https://www.kodetri.com/"
               target="_blank"

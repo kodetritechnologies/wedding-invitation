@@ -32,9 +32,9 @@ export default function MyAccountClient() {
             return;
           }
         }
-        router.replace("/login");
+        router.replace("/?login=true");
       } catch {
-        router.replace("/login");
+        router.replace("/?login=true");
       }
     }
 

@@ -1,0 +1,158 @@
+{
+  "name": "Vedic Royal Card Slider",
+  "description": "Luxury 8-slide interactive Vedic wedding card slider with Ganpati Darshan, Haldi, Sangeet, Jaimala, Saat Phere and Google Maps GPS navigation.",
+  "category": "wedding",
+  "entry": "index.html",
+  "version": "1.0.0",
+  "customerFields": [
+    {
+      "key": "brideName",
+      "label": "Bride Name",
+      "type": "text",
+      "required": true,
+      "placeholder": "e.g. Ananya",
+      "defaultValue": "Ananya"
+    },
+    {
+      "key": "groomName",
+      "label": "Groom Name",
+      "type": "text",
+      "required": true,
+      "placeholder": "e.g. Rohan",
+      "defaultValue": "Rohan"
+    },
+    {
+      "key": "weddingDate",
+      "label": "Wedding Date",
+      "type": "date",
+      "required": true,
+      "placeholder": "Select wedding date",
+      "defaultValue": "2026-12-15"
+    },
+    {
+      "key": "weddingTime",
+      "label": "Main Ceremony Time",
+      "type": "time",
+      "placeholder": "e.g. 04:00 PM",
+      "defaultValue": "16:00"
+    },
+    {
+      "key": "venueName",
+      "label": "Wedding Venue Name",
+      "type": "text",
+      "required": true,
+      "placeholder": "e.g. Grand Heritage Ballroom",
+      "defaultValue": "Grand Heritage Ballroom"
+    },
+    {
+      "key": "venueAddress",
+      "label": "Venue Street Address",
+      "type": "text",
+      "placeholder": "e.g. 123 Elegance Blvd, Suite 500",
+      "defaultValue": "123 Elegance Blvd, Suite 500"
+    },
+    {
+      "key": "venueCity",
+      "label": "Venue City & State",
+      "type": "text",
+      "placeholder": "e.g. Jaipur, Rajasthan",
+      "defaultValue": "Jaipur, Rajasthan"
+    },
+    {
+      "key": "googleMapsUrl",
+      "label": "Google Maps Location Link",
+      "type": "url",
+      "placeholder": "https://maps.google.com/...",
+      "defaultValue": "https://maps.google.com"
+    },
+    {
+      "key": "weddingQuote",
+      "label": "Invitation Quote",
+      "type": "text",
+      "placeholder": "e.g. Do dilon ka milan, do parivaron ka bandhan",
+      "defaultValue": "Do dilon ka milan, do parivaron ka bandhan"
+    },
+    {
+      "key": "mataPujanTime",
+      "label": "Mata Pujan Muhurat",
+      "type": "text",
+      "placeholder": "e.g. 09:30 AM IST",
+      "defaultValue": "09:30 AM IST"
+    },
+    {
+      "key": "mataPujanVenue",
+      "label": "Mata Pujan Venue",
+      "type": "text",
+      "placeholder": "e.g. Heritage Mandapam",
+      "defaultValue": "Heritage Mandapam"
+    },
+    {
+      "key": "haldiTime",
+      "label": "Haldi & Mehndi Timing",
+      "type": "text",
+      "placeholder": "e.g. 04:00 PM onwards",
+      "defaultValue": "04:00 PM onwards"
+    },
+    {
+      "key": "haldiDressCode",
+      "label": "Haldi Dress Code",
+      "type": "text",
+      "placeholder": "e.g. Yellow & Festive",
+      "defaultValue": "Yellow & Festive"
+    },
+    {
+      "key": "haldiVenue",
+      "label": "Haldi Venue",
+      "type": "text",
+      "placeholder": "e.g. Royal Orchid Gardens, Jaipur",
+      "defaultValue": "Royal Orchid Gardens, Jaipur"
+    },
+    {
+      "key": "sangeetTime",
+      "label": "Sangeet Grand Entry Time",
+      "type": "text",
+      "placeholder": "e.g. 07:30 PM",
+      "defaultValue": "07:30 PM"
+    },
+    {
+      "key": "jaimalaTime",
+      "label": "Jai Mala Time",
+      "type": "text",
+      "placeholder": "e.g. 08:30 PM",
+      "defaultValue": "08:30 PM"
+    },
+    {
+      "key": "pheraTime",
+      "label": "Saat Phere Muhurat",
+      "type": "text",
+      "placeholder": "e.g. 11:15 PM",
+      "defaultValue": "11:15 PM"
+    }
+  ],
+  "designSettings": [
+    {
+      "key": "primaryColor",
+      "label": "Primary Royal Maroon",
+      "type": "color",
+      "default": "#b81414"
+    },
+    {
+      "key": "goldColor",
+      "label": "Royal Gold Accent",
+      "type": "color",
+      "default": "#facc15"
+    },
+    {
+      "key": "backgroundColor",
+      "label": "Card Background",
+      "type": "color",
+      "default": "#0a0505"
+    },
+    {
+      "key": "textColor",
+      "label": "Light Text Color",
+      "type": "color",
+      "default": "#f1f5f9"
+    }
+  ]
+}

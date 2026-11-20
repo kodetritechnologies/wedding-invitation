@@ -19,7 +19,7 @@ async function testSeparateCollections() {
     const adminCol = mongoose.connection.collection("admins");
 
     // 1. Verify SuperAdmin collection exists and has Super Admin
-    const superAdmin = await superAdminCol.findOne({ email: "admin@shaadiconnect.com" });
+    const superAdmin = await superAdminCol.findOne({ email: "admin@vivahvaani.kodetri.com" });
     if (!superAdmin) throw new Error("Super Admin not found in 'superadmins' collection!");
     console.log("✅ 1. Found Super Admin in dedicated 'superadmins' collection:", superAdmin.email);
 
@@ -49,7 +49,7 @@ async function testSeparateCollections() {
     console.log("✅ 3. Verified: Admin DOES NOT exist in 'superadmins' collection.");
 
     // Try to find the Super Admin in 'admins' collection
-    const superInAdminCol = await adminCol.findOne({ email: "admin@shaadiconnect.com" });
+    const superInAdminCol = await adminCol.findOne({ email: "admin@vivahvaani.kodetri.com" });
     console.log("Cross check - SuperAdmin email in 'admins' collection:", superInAdminCol);
     if (superInAdminCol !== null) {
       throw new Error("SECURITY FAILURE: Super Admin found in 'admins' collection!");

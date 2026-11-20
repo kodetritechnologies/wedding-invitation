@@ -22,6 +22,7 @@ import {
   Heart,
   IndianRupee,
 } from "lucide-react";
+import { MdSavings } from "react-icons/md";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
 
@@ -135,8 +136,9 @@ export default function FeaturesPage() {
         <section className="max-w-5xl mx-auto px-6 py-12">
           <div className="bg-gradient-to-br from-amber-950 via-rose-950 to-stone-950 text-amber-50 rounded-3xl p-8 sm:p-12 shadow-xl border border-amber-400/30 relative overflow-hidden">
             <div className="max-w-2xl space-y-2 mb-8">
-              <span className="text-xs uppercase font-cinzel tracking-widest text-amber-300 font-bold">
-                💰 Real Wedding Savings Calculator
+              <span className="text-xs uppercase font-cinzel tracking-widest text-amber-300 font-bold inline-flex items-center gap-1.5">
+                <MdSavings className="w-4 h-4 text-amber-400" />
+                <span>Real Wedding Savings Calculator</span>
               </span>
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-100">
                 Dekhiye Live RSVP Se Aapka Kitna Kharcha Bachega

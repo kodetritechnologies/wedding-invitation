@@ -11,10 +11,10 @@ export async function GET() {
     if (!settings) {
       // Seed default settings on initial call
       settings = await SiteSettings.create({
-        siteName: "ShaadiConnect",
+        siteName: "VivahVaani",
         siteTagline: "Royal Digital Wedding Patrika & Multi-Client SaaS",
         logoUrl: "",
-        logoText: "ShaadiConnect",
+        logoText: "VivahVaani",
         faviconUrl: "/favicon.ico",
         address: {
           formattedAddress: "Vijay Nagar, Indore, Madhya Pradesh • 452010",
@@ -24,7 +24,7 @@ export async function GET() {
           country: "India",
         },
         contact: {
-          email: "namaste@shaadiconnect.com",
+          email: "namaste@vivahvaani.kodetri.com",
           phone: "+91 98260 12345",
           whatsapp: "919826012345",
           workingHours: "Mon - Sun: 10:00 AM - 7:00 PM IST",
@@ -37,7 +37,7 @@ export async function GET() {
         },
         footer: {
           copyrightText:
-            "© 2026 ShaadiConnect. Crafted with shradha & modern technology in Indore, Madhya Pradesh.",
+            "© 2026 VivahVaani. A Product by Kodetri Technologies.",
           tagline:
             "“Kalyanam, Mangalyam, Shubham.” Reimagining Indian wedding invitations into timeless, interactive digital patrika experiences.",
         },

@@ -55,8 +55,8 @@ The following features have been thoroughly verified in the codebase as fully fu
 
 The following items are present in the codebase but require remediation:
 
-### B-1. Inconsistent Branding Strings ("ShaadiConnect" vs "VivahVaani")
-- **Issue:** The project was rebranded to **VivahVaani**, but several files still hardcode "ShaadiConnect":
+### B-1. Inconsistent Branding Strings ("VivahVaani" vs "VivahVaani")
+- **Issue:** The project was rebranded to **VivahVaani**, but several files still hardcode "VivahVaani":
   - `app/login/page.tsx` (Line 58)
   - `app/register/page.tsx` (Line 64)
   - `app/dashboard/layout.tsx` (Line 158)
@@ -159,7 +159,7 @@ These features are **not** present in the current codebase, but represent high-v
 
 | Priority | Item | Target Phase | Description |
 |---|---|---|---|
-| **P0 (Immediate)** | Brand String Unification | Code Cleanup | Replace all residual "ShaadiConnect" references with "VivahVaani". |
+| **P0 (Immediate)** | Brand String Unification | Code Cleanup | Replace all residual "VivahVaani" references with "VivahVaani". |
 | **P0 (Immediate)** | Link Client Page in Sidebar | Navigation | Add `/dashboard/clients` to `app/dashboard/layout.tsx`. |
 | **P0 (Immediate)** | Add Privacy & Terms Pages | Legal / Credibility | Create `app/privacy/page.tsx` and `app/terms/page.tsx`. |
 | **P0 (Immediate)** | Fix 5 ESLint Hook Errors | Code Quality | Refactor `useEffect` data fetching routines to remove cascading render warnings. |

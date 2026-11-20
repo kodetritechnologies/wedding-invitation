@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+import FloatingWhatsApp from "@/components/public/FloatingWhatsApp";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -10,6 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://vivahvaani.kodetri.com"),
   title: "VivahVaani — Har Shaadi Ki Shuruaat, Ek Khoobsurat Nimantran",
   description:
     "VivahVaani by Kodetri Technologies — Royal interactive digital wedding patrika with Google Maps navigation, live RSVP headcount tracking, and 1-click WhatsApp distribution.",
@@ -34,7 +37,12 @@ export default function RootLayout({
       lang="hi"
       className={`${poppins.variable} font-sans h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        {children}
+        <Suspense fallback={null}>
+          <FloatingWhatsApp />
+        </Suspense>
+      </body>
     </html>
   );
 }

@@ -571,7 +571,7 @@ The application requires the following environment variables (configured via `.e
 | `DB_USERNAME` | Alternative | `""` | Database username when constructing Atlas replica URI |
 | `DB_PASS` | Alternative | `""` | Database password when constructing Atlas replica URI |
 | `DB_NAME` | Alternative | `"weddinginvitation"` | Target database name in MongoDB |
-| `JWT_SECRET` | Critical | `"shaadiconnect_jwt_secret_dev_key"` | Secret key used to sign and verify JWT authentication tokens |
+| `JWT_SECRET` | Critical | `"vivahvaani_jwt_secret_dev_key"` | Secret key used to sign and verify JWT authentication tokens |
 | `NODE_ENV` | Optional | `"development"` | Node environment (`development` / `production`) |
 
 ---

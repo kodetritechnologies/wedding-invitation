@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Sparkles,
@@ -16,6 +16,9 @@ import {
   Flame,
   Calendar,
 } from "lucide-react";
+import { GiCrown, GiLotus } from "react-icons/gi";
+import { FaOm } from "react-icons/fa";
+import { MdAutoAwesome, MdStar, MdGridView, MdMusicNote, MdTempleHindu } from "react-icons/md";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
 
@@ -23,9 +26,10 @@ interface TemplateItem {
   id: string;
   title: string;
   regionalTheme: string;
-  category: "all" | "royal" | "floral" | "traditional" | "modern" | "south";
+  category: string;
   tier: "Royal" | "Premium" | "Essential";
   popularBadge?: string;
+  popularIcon?: "star" | "lotus" | "om" | "sparkle";
   couples: string;
   subTitle: string;
   location: string;
@@ -35,6 +39,7 @@ interface TemplateItem {
   bgGradient: string;
   accentColor: string;
   demoSlug: string;
+  previewUrl?: string;
 }
 
 const TEMPLATES_CATALOG: TemplateItem[] = [
@@ -44,7 +49,8 @@ const TEMPLATES_CATALOG: TemplateItem[] = [
     regionalTheme: "Jaipur & Udaipur Heritage",
     category: "royal",
     tier: "Royal",
-    popularBadge: "⭐ Most Loved in Indore & Rajasthan",
+    popularBadge: "Most Loved in Indore & Rajasthan",
+    popularIcon: "star",
     couples: "Aarav & Diya",
     subTitle: "|| श्री गणेशाय नमः || शुभ विवाह",
     location: "Indore & Udaipur",
@@ -61,7 +67,8 @@ const TEMPLATES_CATALOG: TemplateItem[] = [
     regionalTheme: "Romantic Pastel Lawn Soiree",
     category: "floral",
     tier: "Premium",
-    popularBadge: "🌸 Trending for Day Weddings",
+    popularBadge: "Trending for Day Weddings",
+    popularIcon: "lotus",
     couples: "Ananya & Kabir",
     subTitle: "Two Hearts &bull; One Soul",
     location: "Goa & Mumbai",
@@ -78,7 +85,8 @@ const TEMPLATES_CATALOG: TemplateItem[] = [
     regionalTheme: "Sacred Vedic & Temple Sanskriti",
     category: "traditional",
     tier: "Essential",
-    popularBadge: "🕉️ Authentic Sanskrit Shlokas",
+    popularBadge: "Authentic Sanskrit Shlokas",
+    popularIcon: "om",
     couples: "Meera & Rohan",
     subTitle: "माङ्गल्यं तन्तुनानेन &bull; सप्तपदी",
     location: "Varanasi & Bhopal",
@@ -111,7 +119,8 @@ const TEMPLATES_CATALOG: TemplateItem[] = [
     regionalTheme: "Opulent Sangeet & Reception",
     category: "modern",
     tier: "Royal",
-    popularBadge: "✨ Sangeet & Cocktail Favorite",
+    popularBadge: "Sangeet & Cocktail Favorite",
+    popularIcon: "sparkle",
     couples: "Zoya & Farhan",
     subTitle: "Dawat-e-Ishq & Celebration",
     location: "Lucknow & Delhi",
@@ -140,20 +149,90 @@ const TEMPLATES_CATALOG: TemplateItem[] = [
   },
 ];
 
-const CATEGORY_TABS = [
-  { id: "all", label: "Sabhi Designs (All)" },
-  { id: "royal", label: "👑 Rajwada & Royal Palace" },
-  { id: "floral", label: "🌸 Floral & Pastel Lawn" },
-  { id: "traditional", label: "🕉️ Vedic & Shubh Vivah" },
-  { id: "modern", label: "✨ Contemporary Minimal" },
-  { id: "south", label: "🪔 South Indian Kalyanam" },
-];
+interface CategoryTab {
+  id: string;
+  label: string;
+}
 
 export default function TemplatesPage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [dbTemplates, setDbTemplates] = useState<TemplateItem[]>([]);
+  const [categoryTabs, setCategoryTabs] = useState<CategoryTab[]>([
+    { id: "all", label: "Sabhi Designs (All)" },
+  ]);
 
-  const filteredTemplates = TEMPLATES_CATALOG.filter((t) => {
+  // Load active service categories dynamically
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await fetch("/api/public/categories");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.categories)) {
+            const dynamicTabs: CategoryTab[] = [
+              { id: "all", label: "Sabhi Designs (All)" },
+              ...data.categories.map((c: any) => ({
+                id: c.slug,
+                label: c.name,
+              })),
+            ];
+            setCategoryTabs(dynamicTabs);
+          }
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    loadCategories();
+  }, []);
+
+  useEffect(() => {
+    async function loadDb() {
+      try {
+        const res = await fetch("/api/templates");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.templates) && data.templates.length > 0) {
+            const mapped: TemplateItem[] = data.templates.map((t: any) => ({
+              id: `db-${t.slug}`,
+              title: t.name,
+              regionalTheme: `${t.category ? t.category.toUpperCase() : "WEDDING"} Master Theme`,
+              category: (t.category || "wedding").toLowerCase(),
+              tier: "Royal" as const,
+              popularBadge: "⭐ Live Master Theme",
+              couples: "Rahul & Priya",
+              subTitle: "|| श्री गणेशाय नमः || शुभ विवाह",
+              location: "Indore & Across India",
+              description:
+                t.description ||
+                "Master HTML/CSS/JS template with dynamic countdown, Vedic motifs, and Google Maps GPS navigation.",
+              features: [
+                "Dynamic Manifest Form",
+                "Live Countdown Timer",
+                "Google Maps Navigation",
+                "CSS Variable Styling",
+              ],
+              colors: ["#7F1D1D", "#D97706", "#FFFBEB"],
+              bgGradient: "from-[#450a0a] via-[#781212] to-[#2b0505]",
+              accentColor: "border-amber-400/60 text-amber-300",
+              demoSlug: t.slug,
+              previewUrl: `/api/public/templates/${t.slug}/preview`,
+            }));
+            setDbTemplates(mapped);
+          }
+        }
+      } catch {
+        // Keep catalog
+      }
+    }
+    loadDb();
+  }, []);
+
+  // 100% Pure Dynamic: Only templates published by Super Admin
+  const allTemplates = dbTemplates;
+
+  const filteredTemplates = allTemplates.filter((t) => {
     const matchesCategory = activeCategory === "all" || t.category === activeCategory;
     const matchesSearch =
       searchQuery.trim() === "" ||
@@ -210,19 +289,22 @@ export default function TemplatesPage() {
         {/* CATEGORY FILTER PILLS */}
         <section className=" mx-auto px-6 pt-8 pb-4">
           <div className="flex flex-wrap items-center justify-center gap-2">
-            {CATEGORY_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveCategory(tab.id)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                  activeCategory === tab.id
-                    ? "bg-rose-700 text-amber-50 shadow-sm border border-rose-800 scale-102"
-                    : "bg-white border border-stone-200/90 text-stone-700 hover:bg-stone-50 hover:border-stone-300"
-                }`}
-              >
-                <span>{tab.label}</span>
-              </button>
-            ))}
+            {categoryTabs.map((tab) => {
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveCategory(tab.id)}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 capitalize ${
+                    activeCategory === tab.id
+                      ? "bg-rose-700 text-amber-50 shadow-sm border border-rose-800 scale-102"
+                      : "bg-white border border-stone-200/90 text-stone-700 hover:bg-stone-50 hover:border-stone-300"
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
         </section>
 
@@ -316,7 +398,11 @@ export default function TemplatesPage() {
                   <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
                     <div className="space-y-3">
                       {item.popularBadge && (
-                        <div className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 font-body">
+                        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 font-body">
+                          {item.popularIcon === "star" && <MdStar className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
+                          {item.popularIcon === "lotus" && <GiLotus className="w-3.5 h-3.5 text-pink-500 shrink-0" />}
+                          {item.popularIcon === "om" && <FaOm className="w-3.5 h-3.5 text-red-600 shrink-0" />}
+                          {item.popularIcon === "sparkle" && <MdAutoAwesome className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
                           <span>{item.popularBadge}</span>
                         </div>
                       )}
@@ -343,7 +429,7 @@ export default function TemplatesPage() {
                     {/* Action Buttons */}
                     <div className="pt-4 border-t border-stone-100 flex items-center justify-between gap-3 font-body">
                       <Link
-                        href={`/w/${item.demoSlug}`}
+                        href={item.previewUrl || `/w/${item.demoSlug}`}
                         target="_blank"
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-700 hover:text-rose-700 transition py-2 px-3 rounded-xl hover:bg-stone-50 border border-stone-200"
                       >

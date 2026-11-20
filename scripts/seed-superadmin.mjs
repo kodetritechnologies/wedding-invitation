@@ -15,7 +15,7 @@ async function seedSuperAdmin() {
     // Explicit separate collection `superadmins`
     const SuperAdminCollection = mongoose.connection.collection("superadmins");
 
-    const superAdminEmail = "admin@shaadiconnect.com";
+    const superAdminEmail = "admin@vivahvaani.kodetri.com";
     const existing = await SuperAdminCollection.findOne({ email: superAdminEmail });
 
     if (existing) {
@@ -23,7 +23,7 @@ async function seedSuperAdmin() {
     } else {
       const passwordHash = await bcrypt.hash("ShaadiAdmin@2026", 10);
       const superAdminUser = {
-        name: "ShaadiConnect Super Admin",
+        name: "VivahVaani Super Admin",
         email: superAdminEmail,
         password: passwordHash,
         role: "super_admin",
@@ -34,7 +34,7 @@ async function seedSuperAdmin() {
 
       const result = await SuperAdminCollection.insertOne(superAdminUser);
       console.log("✅ Super Admin created in separate 'superadmins' collection! ID:", result.insertedId);
-      console.log("Email: admin@shaadiconnect.com");
+      console.log("Email: admin@vivahvaani.kodetri.com");
       console.log("Password: ShaadiAdmin@2026");
     }
 

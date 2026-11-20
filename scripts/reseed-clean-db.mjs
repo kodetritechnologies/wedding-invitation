@@ -43,8 +43,8 @@ async function reseedCleanDb() {
   // 3. Seed Super Admin
   const superAdminHash = await bcrypt.hash("ShaadiAdmin@2026", 10);
   const superAdminRes = await superAdminCol.insertOne({
-    name: "ShaadiConnect Super Admin",
-    email: "admin@shaadiconnect.com",
+    name: "VivahVaani Super Admin",
+    email: "admin@vivahvaani.kodetri.com",
     password: superAdminHash,
     role: "super_admin",
     status: "active",
@@ -57,7 +57,7 @@ async function reseedCleanDb() {
   const clientHash = await bcrypt.hash("Client@2026", 10);
   const clientRes = await adminCol.insertOne({
     name: "Aarav Sharma",
-    email: "client@shaadiconnect.com",
+    email: "client@vivahvaani.kodetri.com",
     password: clientHash,
     phone: "+91 98260 12345",
     role: "admin",

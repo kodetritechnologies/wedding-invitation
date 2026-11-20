@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState, ReactNode, Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -19,6 +19,9 @@ import {
   MessageSquareQuote,
   LayoutTemplate,
   HelpCircle,
+  FolderTree,
+  Compass,
+  Mail,
 } from "lucide-react";
 
 interface SuperAdminUser {
@@ -27,7 +30,7 @@ interface SuperAdminUser {
   email: string;
 }
 
-export default function SuperAdminLayout({
+function SuperAdminLayoutInner({
   children,
 }: {
   children: ReactNode;
@@ -105,8 +108,11 @@ export default function SuperAdminLayout({
   const isClientsActive = pathname.startsWith("/admin/clients");
   const isWeddingsActive = pathname.startsWith("/admin/weddings");
   const isTemplatesActive = pathname.startsWith("/admin/templates");
+  const isCategoriesActive = pathname.startsWith("/admin/categories");
+  const isNavigationActive = pathname.startsWith("/admin/navigation");
   const isTestimonialsActive = pathname.startsWith("/admin/testimonials");
   const isFaqsActive = pathname.startsWith("/admin/faqs");
+  const isEnquiriesActive = pathname.startsWith("/admin/enquiries");
   const isWebsiteSettingsActive = pathname.startsWith("/admin/settings/website");
 
   return (
@@ -210,6 +216,34 @@ export default function SuperAdminLayout({
             <span>Templates</span>
           </Link>
 
+          {/* 5. Categories */}
+          <Link
+            href="/admin/categories"
+            onClick={() => setSidebarOpen(false)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition ${
+              isCategoriesActive
+                ? "bg-zinc-800 text-amber-400 font-semibold border-l-2 border-amber-500"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+            }`}
+          >
+            <FolderTree className="w-4 h-4" />
+            <span>Categories</span>
+          </Link>
+
+          {/* 6. Navigation */}
+          <Link
+            href="/admin/navigation"
+            onClick={() => setSidebarOpen(false)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition ${
+              isNavigationActive
+                ? "bg-zinc-800 text-amber-400 font-semibold border-l-2 border-amber-500"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+            }`}
+          >
+            <Compass className="w-4 h-4" />
+            <span>Navigation</span>
+          </Link>
+
           {/* 4. Testimonials */}
           <Link
             href="/admin/testimonials"
@@ -236,6 +270,20 @@ export default function SuperAdminLayout({
           >
             <HelpCircle className="w-4 h-4" />
             <span>FAQs</span>
+          </Link>
+
+          {/* 6. Enquiries / Leads */}
+          <Link
+            href="/admin/enquiries"
+            onClick={() => setSidebarOpen(false)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition ${
+              isEnquiriesActive
+                ? "bg-zinc-800 text-amber-400 font-semibold border-l-2 border-amber-500"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+            }`}
+          >
+            <Mail className="w-4 h-4" />
+            <span>Enquiries</span>
           </Link>
 
           {/* 5. Settings (Collapsible Parent) */}
@@ -282,7 +330,7 @@ export default function SuperAdminLayout({
               {adminUser?.name || "Super Admin"}
             </p>
             <p className="text-[11px] text-zinc-400 truncate font-mono">
-              {adminUser?.email || "admin@shaadiconnect.com"}
+              {adminUser?.email || "admin@vivahvaani.kodetri.com"}
             </p>
           </div>
 
@@ -339,5 +387,24 @@ export default function SuperAdminLayout({
         </main>
       </div>
     </div>
+  );
+}
+
+export default function SuperAdminLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center gap-3 text-zinc-400">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+          <p className="text-sm font-medium">Loading control panel...</p>
+        </div>
+      }
+    >
+      <SuperAdminLayoutInner>{children}</SuperAdminLayoutInner>
+    </Suspense>
   );
 }

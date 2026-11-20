@@ -7,6 +7,7 @@ export interface IContact extends Document {
   role?: string;
   eventDate?: string;
   message: string;
+  status: "unread" | "read" | "replied";
   createdAt: Date;
 }
 
@@ -17,6 +18,12 @@ const ContactSchema: Schema = new Schema({
   role: { type: String, trim: true, default: "couple" },
   eventDate: { type: String, trim: true },
   message: { type: String, required: true, trim: true, maxlength: 2000 },
+  status: {
+    type: String,
+    enum: ["unread", "read", "replied"],
+    default: "unread",
+    index: true,
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

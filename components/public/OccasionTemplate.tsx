@@ -50,6 +50,45 @@ export default function OccasionTemplate({
   const [selectedPriceSort, setSelectedPriceSort] = useState<"default" | "lowToHigh" | "highToLow">("default");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [currentFaqs, setCurrentFaqs] = useState<FaqItem[]>(faqs);
+  const [dbTemplates, setDbTemplates] = useState<CatalogItem[]>([]);
+
+  // Fetch real master templates uploaded by Super Admin for this specific occasion category
+  useEffect(() => {
+    async function loadDbTemplates() {
+      try {
+        const res = await fetch(`/api/templates?category=${encodeURIComponent(occasion)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.templates) && data.templates.length > 0) {
+            const mapped: CatalogItem[] = data.templates.map((t: any) => ({
+              id: `db-${t._id || t.slug}`,
+              slug: t.slug,
+              title: t.name,
+              occasion: (t.category || occasion) as OccasionType,
+              format: "website" as FormatType,
+              tradition: "Royal Heritage",
+              style: "Palace Gold & Crimson",
+              price: 399,
+              badge: "trending" as const,
+              language: "Hindi & English",
+              bgGradient: "from-rose-950 via-rose-900 to-amber-950",
+              demoSlug: t.slug,
+              description:
+                t.description ||
+                "Full interactive master theme with dynamic countdown, Vedic shlokas, and Google Maps GPS navigation.",
+              isDynamicMaster: true,
+            }));
+            setDbTemplates(mapped);
+          } else {
+            setDbTemplates([]);
+          }
+        }
+      } catch {
+        setDbTemplates([]);
+      }
+    }
+    loadDbTemplates();
+  }, [occasion]);
 
   // Sync when prop changes
   useEffect(() => {
@@ -79,15 +118,15 @@ export default function OccasionTemplate({
     loadFaqs();
   }, [occasion]);
 
-  // Available traditions for this occasion
+  // Available traditions for this occasion (Strictly dynamic from DB when available)
   const traditions = useMemo(() => {
-    const list = CATALOG.filter((item) => item.occasion === occasion).map((item) => item.tradition);
+    const list = dbTemplates.map((item) => item.tradition);
     return Array.from(new Set(list));
-  }, [occasion]);
+  }, [dbTemplates]);
 
-  // Filtered and sorted items
+  // Filtered and sorted items - 100% Pure Dynamic from Database
   const filteredItems: CatalogItem[] = useMemo(() => {
-    let items = CATALOG.filter((item) => item.occasion === occasion);
+    let items = [...dbTemplates];
 
     // Format filter
     if (selectedFormat !== "all") {
@@ -107,7 +146,7 @@ export default function OccasionTemplate({
     }
 
     return items;
-  }, [occasion, selectedFormat, selectedTradition, selectedPriceSort]);
+  }, [selectedFormat, selectedTradition, selectedPriceSort, dbTemplates]);
 
   // JSON-LD Schema for ItemList, BreadcrumbList, and FAQPage
   const jsonLd = {
@@ -328,7 +367,11 @@ export default function OccasionTemplate({
                     <div className="pt-3 border-t border-stone-100 flex items-center justify-between gap-3">
                       {item.demoSlug ? (
                         <Link
-                          href={`/w/${item.demoSlug}`}
+                          href={
+                            (item as any).isDynamicMaster
+                              ? `/api/public/templates/${item.slug}/preview`
+                              : `/w/${item.demoSlug}`
+                          }
                           target="_blank"
                           className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-700 hover:text-rose-700 transition py-2 px-3 rounded-xl border border-stone-200 min-h-[44px]"
                         >

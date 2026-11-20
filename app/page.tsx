@@ -20,7 +20,12 @@ import {
   Wine,
   PartyPopper,
   CheckCircle2,
+  Gift,
+  Music,
+  Baby,
 } from "lucide-react";
+import { GiRing, GiCastle, GiLotus, GiFireBowl } from "react-icons/gi";
+import { MdBolt, MdDescription, MdLink, MdLanguage } from "react-icons/md";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
 import { BRAND } from "@/lib/brand";
@@ -36,79 +41,126 @@ interface TestimonialItem {
   content: string;
 }
 
-const initialTestimonials: TestimonialItem[] = [
-  {
-    _id: "1",
-    name: "Rajesh & Sunita Verma",
-    role: "Bride's Parents",
-    city: "Vijay Nagar, Indore",
-    rating: 5,
-    content:
-      "Beti ki shaadi me sabse badi tension thi ki outstation rishtedaar BCC convention centre kaise pahuchenge. Google Maps button se sab log bina kisi call ke seedha gate par pahunch gaye!",
-  },
-  {
-    _id: "2",
-    name: "Mayank Soni",
-    role: "Wedding Planner",
-    city: "Shubh Lagan Events, Indore",
-    rating: 5,
-    content:
-      "RSVP dashboard se hume catering ka exact headcount mil gaya. Client ke lagbhag ₹45,000 khane ki wastage me bach gaye. Shaandaar experience!",
-  },
-  {
-    _id: "3",
-    name: "Kunal & Team",
-    role: "Studio Director",
-    city: "Kunal Studios, Bhopal",
-    rating: 5,
-    content:
-      "Hum apne studio ke har wedding package ke sath ek digital patrika gift karte hain. Clients itne khush hote hain ki physical cards print karane ki zaroorat hi nahi lagti.",
-  },
-];
+interface CategoryItem {
+  _id?: string;
+  name: string;
+  slug?: string;
+  subtitle?: string;
+  line?: string;
+  href: string;
+  icon?: string;
+  imageUrl?: string;
+}
 
-const initialFaqs = [
-  {
-    q: "What is a digital wedding invitation?",
-    a: "An online invitation shared as a video, PDF or web link on WhatsApp, so you do not need to print or deliver physical cards door-to-door.",
-  },
-  {
-    q: "What is the difference between Video, PDF and Website invitations?",
-    a: "Video is an animated clip with music, ideal for WhatsApp Status and Reels. PDF is a clean printable card. Website is an interactive single link with all events, Google Maps navigation and live RSVP headcount.",
-  },
-  {
-    q: "Do I get a PDF if I choose the Website invitation?",
-    a: "Yes. The Website invitation includes a free downloadable PDF and a shareable web link. Video is a separate animated product.",
-  },
-  {
-    q: "Do guests need to install an app?",
-    a: "No. The invitation link opens instantly in any smartphone browser (Chrome, Safari, WhatsApp in-app browser).",
-  },
-  {
-    q: "Can I add Haldi, Mehndi, Sangeet, Wedding and Reception in one invitation?",
-    a: "Yes. On the Website invitation you can add every ceremony with its own shubh muhurat time, venue address, and 1-click Google Maps GPS link.",
-  },
-  {
-    q: "Can guests see the venue location?",
-    a: "Yes. Every ceremony card features a direct Google Maps button for turn-by-turn driving navigation.",
-  },
-  {
-    q: "Can I track who is coming?",
-    a: "Yes. Website invitations include built-in RSVP tracking with real-time guest headcount submission.",
-  },
-  {
-    q: "Can I make invitations for birthdays and other occasions?",
-    a: "Yes. In addition to weddings, we offer dedicated designs for Engagement, Birthday, Anniversary, Griha Pravesh (House Warming), and Reception.",
-  },
-];
+function renderCategoryIcon(iconKey?: string, imageUrl?: string) {
+  if (imageUrl) {
+    return (
+      <img
+        src={imageUrl}
+        alt="Category icon"
+        className="w-7 h-7 object-contain"
+      />
+    );
+  }
+
+  switch (iconKey) {
+    case "rings":
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="9" cy="14" r="5" />
+          <circle cx="15" cy="11" r="5" />
+          <path d="M15 6 L16 4 L14 4 Z" fill="currentColor" />
+        </svg>
+      );
+    case "diamond":
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M8 21 L8 14 L5 8 L11 8 L8 14" />
+          <path d="M16 21 L16 14 L13 8 L19 8 L16 14" />
+          <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+        </svg>
+      );
+    case "cake":
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="4" y="10" width="16" height="11" rx="2" />
+          <line x1="4" y1="15" x2="20" y2="15" />
+          <line x1="8" y1="10" x2="8" y2="6" />
+          <line x1="12" y1="10" x2="12" y2="6" />
+          <line x1="16" y1="10" x2="16" y2="6" />
+        </svg>
+      );
+    case "heart":
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M5 14 C5 18 19 18 19 14 C19 12 12 11 12 11 C12 11 5 12 5 14 Z" />
+          <path d="M12 4 C12 4 10 7 10 9 C10 10.1 10.9 11 12 11 C13.1 11 14 10.1 14 9 C14 7 12 4 12 4 Z" fill="currentColor" />
+          <line x1="12" y1="18" x2="12" y2="21" />
+          <line x1="9" y1="21" x2="15" y2="21" />
+        </svg>
+      );
+    case "home":
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 10.5 L12 3 L21 10.5" />
+          <path d="M6 9.5 V20 H18 V9.5" />
+          <rect x="10" y="14" width="4" height="6" />
+        </svg>
+      );
+    case "glass":
+      return (
+        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="8" width="18" height="4" rx="1" />
+          <rect x="4" y="12" width="16" height="9" rx="1" />
+          <path d="M12 8 V21" />
+          <path d="M8 8 C8 5 12 5 12 8 C12 5 16 5 16 8" />
+        </svg>
+      );
+    case "baby":
+      return <Baby className="w-6 h-6" />;
+    case "flame":
+      return <Flame className="w-6 h-6" />;
+    case "party":
+      return <PartyPopper className="w-6 h-6" />;
+    case "gift":
+      return <Gift className="w-6 h-6" />;
+    case "music":
+      return <Music className="w-6 h-6" />;
+    case "sparkles":
+    default:
+      return <Sparkles className="w-6 h-6" />;
+  }
+}
 
 export default function HomePage() {
   const [themeFormat, setThemeFormat] = useState<"all" | "video" | "website" | "pdf">("all");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [faqs, setFaqs] = useState<{ q: string; a: string }[]>(initialFaqs);
-  const [testimonials, setTestimonials] = useState<TestimonialItem[]>(initialTestimonials);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [faqs, setFaqs] = useState<{ q: string; a: string }[]>([]);
+  const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [sliderIndex, setSliderIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [phoneActiveTab, setPhoneActiveTab] = useState<"haldi" | "sangeet" | "vivah" | "reception">("vivah");
+
+  // Fetch categories dynamically from public API
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await fetch("/api/public/categories");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.categories)) {
+            setCategories(data.categories);
+          } else {
+            setCategories([]);
+          }
+        }
+      } catch {
+        setCategories([]);
+      }
+    }
+    loadCategories();
+  }, []);
 
   // Fetch testimonials dynamically from existing API
   useEffect(() => {
@@ -117,12 +169,14 @@ export default function HomePage() {
         const res = await fetch("/api/public/testimonials");
         if (res.ok) {
           const data = await res.json();
-          if (data.success && Array.isArray(data.testimonials) && data.testimonials.length > 0) {
+          if (data.success && Array.isArray(data.testimonials)) {
             setTestimonials(data.testimonials);
+          } else {
+            setTestimonials([]);
           }
         }
       } catch {
-        // Fallback to initial testimonials
+        setTestimonials([]);
       }
     }
     loadTestimonials();
@@ -135,17 +189,19 @@ export default function HomePage() {
         const res = await fetch("/api/public/faqs?category=general");
         if (res.ok) {
           const data = await res.json();
-          if (data.success && Array.isArray(data.faqs) && data.faqs.length > 0) {
+          if (data.success && Array.isArray(data.faqs)) {
             setFaqs(
               data.faqs.map((f: { question: string; answer: string }) => ({
                 q: f.question,
                 a: f.answer,
               }))
             );
+          } else {
+            setFaqs([]);
           }
         }
       } catch {
-        // Fallback to initial static FAQs
+        setFaqs([]);
       }
     }
     loadFaqs();
@@ -305,7 +361,10 @@ export default function HomePage() {
                   href="/wedding"
                   className="px-7 py-3.5 bg-gradient-to-r from-[#DFB76C] via-[#EDD08D] to-[#D5A958] hover:from-[#EDD08D] hover:to-[#DFB76C] text-[#42050D] font-bold rounded-full shadow-lg transition flex items-center justify-center gap-2 text-sm sm:text-base border border-amber-300 min-h-[46px] group"
                 >
-                  <span className="font-semibold">💍 Create Your Invitation</span>
+                  <span className="font-semibold flex items-center gap-1.5">
+                    <GiRing className="w-4 h-4 text-amber-900" />
+                    <span>Create Your Invitation</span>
+                  </span>
                   <ArrowRight className="w-4 h-4 text-[#42050D] group-hover:translate-x-1 transition-transform" />
                 </Link>
 
@@ -322,7 +381,7 @@ export default function HomePage() {
               {/* 3 Value Props Bar */}
               <div className="pt-4 flex flex-wrap items-center gap-6 sm:gap-8 text-xs sm:text-sm text-amber-100/95 font-medium border-t border-amber-400/20">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-amber-400 text-base">⚡</span>
+                  <MdBolt className="w-5 h-5 text-amber-400 shrink-0" />
                   <div>
                     <span className="block font-semibold text-white">Instant</span>
                     <span className="text-amber-200/80 text-[11px]">Shareable Link</span>
@@ -330,7 +389,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  <span className="text-amber-400 text-base">📄</span>
+                  <MdDescription className="w-5 h-5 text-amber-400 shrink-0" />
                   <div>
                     <span className="block font-semibold text-white">Download</span>
                     <span className="text-amber-200/80 text-[11px]">PDF</span>
@@ -338,7 +397,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  <span className="text-amber-400 text-base">🔗</span>
+                  <MdLink className="w-5 h-5 text-amber-400 shrink-0" />
                   <div>
                     <span className="block font-semibold text-white">Easy to Share</span>
                     <span className="text-amber-200/80 text-[11px]">Via WhatsApp</span>
@@ -360,13 +419,107 @@ export default function HomePage() {
         {/* ========================================================================= */}
         {/* SECTION 4.2: CATEGORIES (Royal Maroon Indian Arch Cards)                  */}
         {/* ========================================================================= */}
-        <section className="py-20 px-4 sm:px-8 bg-[#FDFBF7] relative">
-          <div className="max-w-7xl mx-auto space-y-12">
-            {/* Header with Traditional Lotus divider */}
-            <div className="text-center max-w-3xl mx-auto space-y-3">
-              {/* Top Ornamental Lotus Motif with thin gold rules */}
-              <div className="flex items-center justify-center gap-3 text-[#D6A64B]">
-                <div className="h-[1.5px] w-20 sm:w-36 bg-gradient-to-r from-transparent to-[#D6A64B]" />
+        {categories.length > 0 && (
+          <section className="py-20 px-4 sm:px-8 bg-[#FDFBF7] relative">
+            <div className="max-w-7xl mx-auto space-y-12">
+              {/* Header with Traditional Lotus divider */}
+              <div className="text-center max-w-3xl mx-auto space-y-3">
+                {/* Top Ornamental Lotus Motif with thin gold rules */}
+                <div className="flex items-center justify-center gap-3 text-[#D6A64B]">
+                  <div className="h-[1.5px] w-20 sm:w-36 bg-gradient-to-r from-transparent to-[#D6A64B]" />
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-[#D6A64B]">◇</span>
+                    <svg className="w-8 h-8 text-[#D6A64B]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M32 8 C32 8 20 28 32 48 C44 28 32 8 32 8 Z" fill="currentColor" fillOpacity="0.15" />
+                      <path d="M32 20 C22 28 14 38 18 48 C26 48 32 40 32 40 C32 40 38 48 46 48 C50 38 42 28 32 20 Z" fill="currentColor" fillOpacity="0.2" />
+                      <circle cx="32" cy="48" r="2" fill="currentColor" />
+                      <path d="M12 44 C8 44 6 40 10 36 C14 36 18 40 18 44 Z" fill="currentColor" />
+                      <path d="M52 44 C56 44 58 40 54 36 C50 36 46 40 46 44 Z" fill="currentColor" />
+                    </svg>
+                    <span className="text-[10px] text-[#D6A64B]">◇</span>
+                  </div>
+                  <div className="h-[1.5px] w-20 sm:w-36 bg-gradient-to-l from-transparent to-[#D6A64B]" />
+                </div>
+
+                {/* Title */}
+                <h2 className="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-[#720E16]">
+                  Invitations for Every <span className="text-[#D6A64B]">Celebration</span>
+                </h2>
+
+                {/* Subtitle */}
+                <p className="text-sm sm:text-base text-stone-600 max-w-2xl mx-auto font-normal">
+                  Explore a wide range of beautifully designed invitation cards for all your special moments.
+                </p>
+
+                {/* Bottom Lotus Divider */}
+                <div className="flex items-center justify-center gap-3 pt-1 text-[#D6A64B]">
+                  <div className="h-[1.5px] w-14 sm:w-24 bg-gradient-to-r from-transparent to-[#D6A64B]" />
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs">✦</span>
+                    <svg className="w-5 h-5 text-[#D6A64B]" viewBox="0 0 32 32" fill="currentColor">
+                      <path d="M16 4 C16 4 10 14 16 24 C22 14 16 4 16 4 Z" />
+                      <path d="M16 10 C11 14 7 19 9 24 C13 24 16 20 16 20 C16 20 19 24 23 24 C25 19 21 14 16 10 Z" opacity="0.7" />
+                    </svg>
+                    <span className="text-xs">✦</span>
+                  </div>
+                  <div className="h-[1.5px] w-14 sm:w-24 bg-gradient-to-l from-transparent to-[#D6A64B]" />
+                </div>
+              </div>
+
+              {/* Arch Categories Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
+                {categories.map((cat, idx) => (
+                  <Link
+                    key={cat._id || idx}
+                    href={cat.href || `/${cat.slug || ""}`}
+                    className="group relative bg-[#720E16] text-center flex flex-col items-center justify-between p-5 pt-8 pb-6 transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1.5 border-2 border-[#D6A64B] hover:border-[#F2C76E]"
+                    style={{
+                      borderRadius: "48px 48px 20px 20px",
+                    }}
+                  >
+                    {/* Subtle Inner Golden Hairline Arch (Double Border Effect) */}
+                    <div
+                      className="absolute inset-1.5 pointer-events-none border border-[#D6A64B]/60 group-hover:border-[#F2C76E] transition-colors"
+                      style={{ borderRadius: "42px 42px 16px 16px" }}
+                    />
+
+                    {/* Top Traditional Arch Crown Motif */}
+                    <div className="absolute top-2.5 left-1/2 -translate-x-1/2 text-[#D6A64B] group-hover:text-[#F2C76E] transition-colors">
+                      <svg className="w-6 h-3.5" viewBox="0 0 32 16" fill="currentColor">
+                        <path d="M16 1 C18 5 24 7 28 8 C22 9 18 12 16 16 C14 12 10 9 4 8 C8 7 14 5 16 1 Z" />
+                        <circle cx="16" cy="3" r="1.5" />
+                      </svg>
+                    </div>
+
+                    {/* Circular Icon Container */}
+                    <div className="w-14 h-14 rounded-full bg-[#5A0910] text-[#D6A64B] group-hover:text-[#F2C76E] border-2 border-[#D6A64B] group-hover:border-[#F2C76E] flex items-center justify-center shadow-inner group-hover:scale-105 transition-all duration-300 mt-2">
+                      {renderCategoryIcon(cat.icon, cat.imageUrl)}
+                    </div>
+
+                    {/* Category Title & Description */}
+                    <div className="mt-4 mb-3">
+                      <h3 className="font-serif font-bold text-base sm:text-lg text-[#FFF3DA] tracking-tight">
+                        {cat.name}
+                      </h3>
+                      <p className="text-[11px] sm:text-xs text-[#FFF3DA]/80 mt-1 font-normal">
+                        {cat.subtitle || cat.line}
+                      </p>
+                    </div>
+
+                    {/* Button: View Designs -> */}
+                    <div className="w-full pt-1">
+                      <span className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full border border-[#D6A64B] bg-[#5A0910]/60 text-[#FFF3DA] font-semibold text-[11px] sm:text-xs group-hover:bg-[#D6A64B] group-hover:text-[#720E16] group-hover:border-[#D6A64B] transition-all duration-300 shadow-2xs">
+                        <span>View Designs</span>
+                        <span className="text-xs transition-transform group-hover:translate-x-0.5">→</span>
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Bottom Ornamental Ending */}
+              <div className="flex items-center justify-center gap-3 text-[#D6A64B] pt-4">
+                <div className="h-[1.5px] w-24 sm:w-44 bg-gradient-to-r from-transparent to-[#D6A64B]" />
                 <div className="flex items-center gap-1.5">
                   <span className="text-[10px] text-[#D6A64B]">◇</span>
                   <svg className="w-8 h-8 text-[#D6A64B]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -378,180 +531,11 @@ export default function HomePage() {
                   </svg>
                   <span className="text-[10px] text-[#D6A64B]">◇</span>
                 </div>
-                <div className="h-[1.5px] w-20 sm:w-36 bg-gradient-to-l from-transparent to-[#D6A64B]" />
-              </div>
-
-              {/* Title */}
-              <h2 className="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-[#720E16]">
-                Invitations for Every <span className="text-[#D6A64B]">Celebration</span>
-              </h2>
-
-              {/* Subtitle */}
-              <p className="text-sm sm:text-base text-stone-600 max-w-2xl mx-auto font-normal">
-                Explore a wide range of beautifully designed invitation cards for all your special moments.
-              </p>
-
-              {/* Bottom Lotus Divider */}
-              <div className="flex items-center justify-center gap-3 pt-1 text-[#D6A64B]">
-                <div className="h-[1.5px] w-14 sm:w-24 bg-gradient-to-r from-transparent to-[#D6A64B]" />
-                <div className="flex items-center gap-1">
-                  <span className="text-xs">✦</span>
-                  <svg className="w-5 h-5 text-[#D6A64B]" viewBox="0 0 32 32" fill="currentColor">
-                    <path d="M16 4 C16 4 10 14 16 24 C22 14 16 4 16 4 Z" />
-                    <path d="M16 10 C11 14 7 19 9 24 C13 24 16 20 16 20 C16 20 19 24 23 24 C25 19 21 14 16 10 Z" opacity="0.7" />
-                  </svg>
-                  <span className="text-xs">✦</span>
-                </div>
-                <div className="h-[1.5px] w-14 sm:w-24 bg-gradient-to-l from-transparent to-[#D6A64B]" />
+                <div className="h-[1.5px] w-24 sm:w-44 bg-gradient-to-l from-transparent to-[#D6A64B]" />
               </div>
             </div>
-
-            {/* Arch Categories Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
-              {[
-                {
-                  name: "Wedding",
-                  line: "For your big day",
-                  href: "/wedding",
-                  icon: (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="9" cy="14" r="5" />
-                      <circle cx="15" cy="11" r="5" />
-                      <path d="M15 6 L16 4 L14 4 Z" fill="currentColor" />
-                    </svg>
-                  ),
-                },
-                {
-                  name: "Engagement",
-                  line: "Mark the beginning",
-                  href: "/engagement",
-                  icon: (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M8 21 L8 14 L5 8 L11 8 L8 14" />
-                      <path d="M16 21 L16 14 L13 8 L19 8 L16 14" />
-                      <circle cx="12" cy="5" r="1.5" fill="currentColor" />
-                    </svg>
-                  ),
-                },
-                {
-                  name: "Birthday",
-                  line: "Celebrate life",
-                  href: "/birthday",
-                  icon: (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="4" y="10" width="16" height="11" rx="2" />
-                      <line x1="4" y1="15" x2="20" y2="15" />
-                      <line x1="8" y1="10" x2="8" y2="6" />
-                      <line x1="12" y1="10" x2="12" y2="6" />
-                      <line x1="16" y1="10" x2="16" y2="6" />
-                    </svg>
-                  ),
-                },
-                {
-                  name: "Anniversary",
-                  line: "Cherish together",
-                  href: "/anniversary",
-                  icon: (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M5 14 C5 18 19 18 19 14 C19 12 12 11 12 11 C12 11 5 12 5 14 Z" />
-                      <path d="M12 4 C12 4 10 7 10 9 C10 10.1 10.9 11 12 11 C13.1 11 14 10.1 14 9 C14 7 12 4 12 4 Z" fill="currentColor" />
-                      <line x1="12" y1="18" x2="12" y2="21" />
-                      <line x1="9" y1="21" x2="15" y2="21" />
-                    </svg>
-                  ),
-                },
-                {
-                  name: "House Warming",
-                  line: "Welcome home",
-                  href: "/housewarming",
-                  icon: (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 10.5 L12 3 L21 10.5" />
-                      <path d="M6 9.5 V20 H18 V9.5" />
-                      <rect x="10" y="14" width="4" height="6" />
-                    </svg>
-                  ),
-                },
-                {
-                  name: "Reception",
-                  line: "Share the joy",
-                  href: "/reception",
-                  icon: (
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="8" width="18" height="4" rx="1" />
-                      <rect x="4" y="12" width="16" height="9" rx="1" />
-                      <path d="M12 8 V21" />
-                      <path d="M8 8 C8 5 12 5 12 8 C12 5 16 5 16 8" />
-                    </svg>
-                  ),
-                },
-              ].map((cat, idx) => (
-                <Link
-                  key={idx}
-                  href={cat.href}
-                  className="group relative bg-[#720E16] text-center flex flex-col items-center justify-between p-5 pt-8 pb-6 transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1.5 border-2 border-[#D6A64B] hover:border-[#F2C76E]"
-                  style={{
-                    borderRadius: "48px 48px 20px 20px",
-                  }}
-                >
-                  {/* Subtle Inner Golden Hairline Arch (Double Border Effect) */}
-                  <div
-                    className="absolute inset-1.5 pointer-events-none border border-[#D6A64B]/60 group-hover:border-[#F2C76E] transition-colors"
-                    style={{ borderRadius: "42px 42px 16px 16px" }}
-                  />
-
-                  {/* Top Traditional Arch Crown Motif */}
-                  <div className="absolute top-2.5 left-1/2 -translate-x-1/2 text-[#D6A64B] group-hover:text-[#F2C76E] transition-colors">
-                    <svg className="w-6 h-3.5" viewBox="0 0 32 16" fill="currentColor">
-                      <path d="M16 1 C18 5 24 7 28 8 C22 9 18 12 16 16 C14 12 10 9 4 8 C8 7 14 5 16 1 Z" />
-                      <circle cx="16" cy="3" r="1.5" />
-                    </svg>
-                  </div>
-
-                  {/* Circular Icon Container */}
-                  <div className="w-14 h-14 rounded-full bg-[#5A0910] text-[#D6A64B] group-hover:text-[#F2C76E] border-2 border-[#D6A64B] group-hover:border-[#F2C76E] flex items-center justify-center shadow-inner group-hover:scale-105 transition-all duration-300 mt-2">
-                    {cat.icon}
-                  </div>
-
-                  {/* Category Title & Description */}
-                  <div className="mt-4 mb-3">
-                    <h3 className="font-serif font-bold text-base sm:text-lg text-[#FFF3DA] tracking-tight">
-                      {cat.name}
-                    </h3>
-                    <p className="text-[11px] sm:text-xs text-[#FFF3DA]/80 mt-1 font-normal">
-                      {cat.line}
-                    </p>
-                  </div>
-
-                  {/* Button: View Designs -> */}
-                  <div className="w-full pt-1">
-                    <span className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full border border-[#D6A64B] bg-[#5A0910]/60 text-[#FFF3DA] font-semibold text-[11px] sm:text-xs group-hover:bg-[#D6A64B] group-hover:text-[#720E16] group-hover:border-[#D6A64B] transition-all duration-300 shadow-2xs">
-                      <span>View Designs</span>
-                      <span className="text-xs transition-transform group-hover:translate-x-0.5">→</span>
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Bottom Ornamental Ending */}
-            <div className="flex items-center justify-center gap-3 text-[#D6A64B] pt-4">
-              <div className="h-[1.5px] w-24 sm:w-44 bg-gradient-to-r from-transparent to-[#D6A64B]" />
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] text-[#D6A64B]">◇</span>
-                <svg className="w-8 h-8 text-[#D6A64B]" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M32 8 C32 8 20 28 32 48 C44 28 32 8 32 8 Z" fill="currentColor" fillOpacity="0.15" />
-                  <path d="M32 20 C22 28 14 38 18 48 C26 48 32 40 32 40 C32 40 38 48 46 48 C50 38 42 28 32 20 Z" fill="currentColor" fillOpacity="0.2" />
-                  <circle cx="32" cy="48" r="2" fill="currentColor" />
-                  <path d="M12 44 C8 44 6 40 10 36 C14 36 18 40 18 44 Z" fill="currentColor" />
-                  <path d="M52 44 C56 44 58 40 54 36 C50 36 46 40 46 44 Z" fill="currentColor" />
-                </svg>
-                <span className="text-[10px] text-[#D6A64B]">◇</span>
-              </div>
-              <div className="h-[1.5px] w-24 sm:w-44 bg-gradient-to-l from-transparent to-[#D6A64B]" />
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ========================================================================= */}
         {/* SECTION 4.3: EASY STEPS (Royal Indian Wedding Step Cards)                */}
@@ -944,14 +928,14 @@ export default function HomePage() {
                         <span className="text-3xl text-amber-300 drop-shadow-md">ॐ</span>
                         <span className="text-[11px] font-bold text-amber-200 mt-1">॥ श्री गणेशाय नमः ॥</span>
                         <div className="w-16 h-16 rounded-full bg-amber-400/20 border border-amber-300/40 flex items-center justify-center mt-2 text-2xl text-amber-200">
-                          🪔
+                          <GiFireBowl className="w-8 h-8 text-amber-300" />
                         </div>
                       </div>
                     )}
 
                     {card.visualType === "palace" && (
                       <div className="relative z-10 flex flex-col items-center justify-center text-center p-3">
-                        <span className="text-3xl text-amber-300 drop-shadow-md">🏰</span>
+                        <GiCastle className="w-9 h-9 text-amber-300 drop-shadow-md mb-0.5" />
                         <span className="text-xs font-bold text-amber-200 mt-1 uppercase tracking-wider">Royal Palace</span>
                         <span className="text-[10px] text-amber-100/80">Grand Heritage Decor</span>
                       </div>
@@ -959,7 +943,7 @@ export default function HomePage() {
 
                     {card.visualType === "mandap" && (
                       <div className="relative z-10 flex flex-col items-center justify-center text-center p-3">
-                        <span className="text-3xl text-amber-300 drop-shadow-md">🌺</span>
+                        <GiLotus className="w-9 h-9 text-amber-300 drop-shadow-md mb-0.5" />
                         <span className="text-xs font-bold text-amber-200 mt-1 uppercase tracking-wider">Traditional Mandap</span>
                         <span className="text-[10px] text-amber-100/80">Marigold &amp; Rose Theme</span>
                       </div>
@@ -981,7 +965,14 @@ export default function HomePage() {
                     {/* Top Left Format Tag */}
                     <div className="absolute top-2.5 left-2.5 z-20">
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#6E0C14]/90 text-amber-100 border border-[#D6A64B]/60 text-[10px] font-bold shadow-xs">
-                        {card.formatIcon === "video" ? "▶ VIDEO" : "🌐 WEBSITE"}
+                        {card.formatIcon === "video" ? (
+                          "▶ VIDEO"
+                        ) : (
+                          <span className="inline-flex items-center gap-1">
+                            <MdLanguage className="w-3 h-3 text-amber-200" />
+                            <span>WEBSITE</span>
+                          </span>
+                        )}
                       </span>
                     </div>
 

@@ -14,11 +14,24 @@ export async function GET(req: NextRequest) {
 
       const { searchParams } = new URL(req.url);
       const status = searchParams.get("status");
+      const category = searchParams.get("category");
       const search = searchParams.get("search");
 
       const query: Record<string, any> = {};
       if (status && status !== "all") {
         query.status = status;
+      }
+      if (category && category !== "all") {
+        const cat = category.toLowerCase().trim();
+        if (cat === "wedding") {
+          query.$or = [
+            { category: "wedding" },
+            { category: { $exists: false } },
+            { category: "" },
+          ];
+        } else {
+          query.category = cat;
+        }
       }
       if (search) {
         query.$or = [
@@ -100,7 +113,7 @@ export async function POST(req: NextRequest) {
       await dbConnect();
       const body = await req.json();
 
-      const { name, slug, description, thumbnail } = body;
+      const { name, slug, description, thumbnail, category } = body;
 
       if (!name || !slug) {
         return NextResponse.json(
@@ -127,6 +140,7 @@ export async function POST(req: NextRequest) {
         slug: cleanSlug,
         description: description?.trim() || "",
         thumbnail: thumbnail?.trim() || "",
+        category: (category || "wedding").trim().toLowerCase(),
         packagePath: `templates/${cleanSlug}`,
         manifest: {
           name: name.trim(),

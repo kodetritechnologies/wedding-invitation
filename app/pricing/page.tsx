@@ -92,24 +92,24 @@ export default function PricingPage() {
 
   const initialFaqs = [
     {
-      q: "Agar shaadi ka muhurat ya venue aage peeche hua to kya naya card khareedna padega?",
-      a: "Bilkul nahi! Printed card me ek baar galti ho gayi to re-printing me hazaron rupaye lagte hain. VivahVaani me aap apne login dashboard se 1 second me naya time ya naya address save kar sakte hain — live link open karte hi sabhi mehmaano ko updated details dikhegi.",
-    },
-    {
       q: "Bade buzurg aur gaon ke rishtedaar isko aasani se dekh payenge?",
-      a: "Ji haan! Hamara 'Grandfather Test' certified hai. Mehmaan ko na to koi app download karni hai, na password dalna hai aur na OTP. WhatsApp par aayi link par bas 1 tap karte hi card bina kisi rukawat ke open ho jata hai.",
+      a: "Bilkul! Koi app download karne ki zaroorat nahi hai. WhatsApp par aane wale link par tap karte hi card bina kisi rukawat ke seedha browser me khul jaata hai.",
     },
     {
       q: "Payment kaise karna hota hai?",
-      a: "Hum sabhi standard Indian payment methods support karte hain — UPI (GPay, PhonePe, Paytm), NetBanking, Debit/Credit Cards. One-time packages me koi hidden recurring charges nahi hote.",
+      a: "Aap UPI, Google Pay, PhonePe, Paytm ya debit/credit card ke zariye surakshit one-time payment kar sakte hain. Koi hidden subscription charge nahi hai.",
+    },
+    {
+      q: "Agar shaadi ka muhurat ya venue aage peeche hua to kya naya card khareedna padega?",
+      a: "Nahi, bilkul nahi! Aap apne admin panel se kabhi bhi dates, muhurat ya venue location live update kar sakte hain, jo sabhi mehmaano ko turant dikhega.",
     },
     {
       q: "Kya hamara guest list aur phone numbers private rahenge?",
-      a: "100% Guaranteed. VivahVaani par privacy hamara pehla niyam hai. Aapke mehmaano ka data ya phone number kisi bhi third party ko share ya advertise nahi kiya jata.",
+      a: "Haan, aapka pura data 100% surakshit aur encrypted hai. Hum kisi bhi teesre paksh ke sath aapki ya aapke mehmaano ki jaankari share nahi karte.",
     },
   ];
 
-  const [faqs, setFaqs] = useState(initialFaqs);
+  const [faqs, setFaqs] = useState<{ q: string; a: string }[]>(initialFaqs);
 
   // Fetch Pricing FAQs dynamically from API
   useEffect(() => {
@@ -128,7 +128,7 @@ export default function PricingPage() {
           }
         }
       } catch {
-        // Fallback to initial static FAQs
+        // Fallback to initialFaqs
       }
     }
     loadFaqs();
@@ -144,27 +144,27 @@ export default function PricingPage() {
           <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
 
           <div className="max-w-4xl mx-auto text-center space-y-4 relative">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-cinzel">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs">
               <span>✦</span>
-              <span>Kifayati &bull; Saaf &bull; Zero Hidden Costs</span>
+              <span><span className="font-serif font-bold text-rose-950">शुभ विवाह</span> &bull; 100% Transparent Pricing &bull; Zero Hidden Costs</span>
               <span>✦</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.15]">
-              Ek Physical Card Ka Kharcha ₹250,{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
-                Poori Shaadi Ka Unlimited Card Sirf ₹599 Me.
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.18]">
+              Na Courier Ki Deri, Na Print Ka Kharcha,{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-2">
+                Apno Ko Bhejein <span className="font-sans font-bold">शुभ विवाह</span> Ka Royal <span className="font-sans font-bold">निमंत्रण</span>
               </span>
             </h1>
 
             <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
-              Print aur courier par ₹30,000 kharch karne ki zaroorat nahi. Apni shaadi ke hisaab se seedha one-time package chuniye aur bina kisi jhanjhat ke digital card banayein.
+              Door ho ya paas, WhatsApp par 1 click me har rishtedaar tak pahuche <span className="font-semibold text-stone-900">शुभ मुहूर्त</span>, live venue GPS aur parivar ka <span className="font-semibold text-stone-900">सादर आमंत्रण</span> — affordable one-time packages ke saath.
             </p>
           </div>
         </section>
 
         {/* PACKAGES GRID */}
-        <section className=" mx-auto px-6 py-14">
+        <section className="max-w-7xl mx-auto px-6 py-14">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {plans.map((plan) => (
               <div

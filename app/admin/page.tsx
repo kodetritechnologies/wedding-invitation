@@ -24,6 +24,7 @@ export default function SuperAdminLoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [quickFilled, setQuickFilled] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
 
   // Check if Super Admin is already logged in
   useEffect(() => {
@@ -64,16 +65,41 @@ export default function SuperAdminLoginPage() {
   }, []);
 
   const handleQuickFill = () => {
-    setEmail("admin@shaadiconnect.com");
+    setEmail("admin@vivahvaani.kodetri.com");
     setPassword("ShaadiAdmin@2026");
     setQuickFilled(true);
     setError("");
+    setFieldErrors({});
     setTimeout(() => setQuickFilled(false), 2000);
+  };
+
+  const validate = (): boolean => {
+    const errs: { email?: string; password?: string } = {};
+    const emailTrimmed = email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailTrimmed) {
+      errs.email = "Super admin email enter karein.";
+    } else if (!emailRegex.test(emailTrimmed)) {
+      errs.email = "Valid email address enter karein.";
+    }
+
+    if (!password) {
+      errs.password = "Password enter karein.";
+    }
+
+    setFieldErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!validate()) {
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -163,22 +189,36 @@ export default function SuperAdminLoginPage() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+        <form onSubmit={handleSubmit} noValidate className="space-y-4 text-sm">
           <div>
             <label className="block text-xs font-medium text-zinc-300 mb-1.5">
               Super Admin Email
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <Mail className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 ${fieldErrors.email ? "text-red-400" : "text-zinc-500"}`} />
               <input
                 type="email"
-                required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@shaadiconnect.com"
-                className="w-full pl-9 pr-4 py-2.5 bg-zinc-950 rounded-xl border border-zinc-800 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-amber-500"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) {
+                    setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                  }
+                }}
+                placeholder="admin@vivahvaani.kodetri.com"
+                className={`w-full pl-9 pr-4 py-2.5 bg-zinc-950 rounded-xl border text-white placeholder-zinc-500 text-sm focus:outline-none transition ${
+                  fieldErrors.email
+                    ? "border-red-500 focus:border-red-400"
+                    : "border-zinc-800 focus:border-amber-500"
+                }`}
               />
             </div>
+            {fieldErrors.email && (
+              <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{fieldErrors.email}</span>
+              </p>
+            )}
           </div>
 
           <div>
@@ -186,14 +226,22 @@ export default function SuperAdminLoginPage() {
               Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <Lock className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 ${fieldErrors.password ? "text-red-400" : "text-zinc-500"}`} />
               <input
                 type={showPassword ? "text" : "password"}
-                required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (fieldErrors.password) {
+                    setFieldErrors((prev) => ({ ...prev, password: undefined }));
+                  }
+                }}
                 placeholder="••••••••••••"
-                className="w-full pl-9 pr-10 py-2.5 bg-zinc-950 rounded-xl border border-zinc-800 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-amber-500"
+                className={`w-full pl-9 pr-10 py-2.5 bg-zinc-950 rounded-xl border text-white placeholder-zinc-500 text-sm focus:outline-none transition ${
+                  fieldErrors.password
+                    ? "border-red-500 focus:border-red-400"
+                    : "border-zinc-800 focus:border-amber-500"
+                }`}
               />
               <button
                 type="button"
@@ -207,6 +255,12 @@ export default function SuperAdminLoginPage() {
                 )}
               </button>
             </div>
+            {fieldErrors.password && (
+              <p className="mt-1 text-xs text-red-400 flex items-center gap-1">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>{fieldErrors.password}</span>
+              </p>
+            )}
           </div>
 
           <button
@@ -228,13 +282,13 @@ export default function SuperAdminLoginPage() {
         {/* Footer */}
         <div className="pt-4 border-t border-zinc-800 text-center space-y-2">
           <Link
-            href="/login"
+            href="/?login=true"
             className="text-xs text-zinc-400 hover:text-zinc-200 transition"
           >
             &larr; Switch to Business Admin Login
           </Link>
           <p className="text-[11px] text-zinc-500">
-            Platform Developed by{" "}
+            A Product by{" "}
             <a
               href="https://www.kodetri.com/"
               target="_blank"

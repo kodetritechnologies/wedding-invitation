@@ -242,7 +242,7 @@
   - Navigation links to register and super admin.
 - **Forms & Inputs:** Email input, password input.
 - **API Integrations:** `POST /api/auth/login`.
-- **Functional Status:** **Fully Functional**. Sets HTTP-only cookies and redirects to `/dashboard`. Note: Branding string says "ShaadiConnect".
+- **Functional Status:** **Fully Functional**. Sets HTTP-only cookies and redirects to `/dashboard`. Note: Branding string says "VivahVaani".
 
 ---
 
@@ -265,7 +265,7 @@
   - Navigation link to login.
 - **Forms & Inputs:** Name, phone, email, password.
 - **API Integrations:** `POST /api/auth/register`.
-- **Functional Status:** **Fully Functional**. Creates new `Admin` record and redirects to `/dashboard`. Note: Branding string says "ShaadiConnect".
+- **Functional Status:** **Fully Functional**. Creates new `Admin` record and redirects to `/dashboard`. Note: Branding string says "VivahVaani".
 
 ---
 

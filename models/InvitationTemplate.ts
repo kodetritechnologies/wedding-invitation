@@ -53,6 +53,7 @@ export interface IInvitationTemplate extends Document {
   backupZipPath?: string; // path to previous working ZIP (operational rollback)
   manifest: ITemplateManifest;
   designSettings: Record<string, any>; // active visual settings overrides
+  category: string; // e.g. "wedding", "engagement", "birthday", etc.
   status: "draft" | "published" | "unpublished" | "archived";
   createdBy?: Types.ObjectId;
   createdAt: Date;
@@ -163,6 +164,13 @@ const InvitationTemplateSchema = new Schema<IInvitationTemplate>(
     designSettings: {
       type: Schema.Types.Mixed,
       default: {},
+    },
+    category: {
+      type: String,
+      default: "wedding",
+      trim: true,
+      lowercase: true,
+      index: true,
     },
     status: {
       type: String,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import {
   LayoutTemplate,
   Upload,
@@ -19,6 +20,8 @@ import {
   Palette,
   X,
   FileCode,
+  Sliders,
+  Code2,
 } from "lucide-react";
 
 interface CustomerField {
@@ -41,6 +44,7 @@ interface TemplateItem {
   slug: string;
   description?: string;
   thumbnail?: string;
+  category?: string;
   status: "draft" | "published" | "unpublished" | "archived";
   manifest: {
     name: string;
@@ -61,12 +65,23 @@ export default function AdminTemplatesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [categoriesList, setCategoriesList] = useState<{ _id?: string; name: string; slug: string }[]>([
+    { name: "Wedding", slug: "wedding" },
+    { name: "Engagement", slug: "engagement" },
+    { name: "Birthday", slug: "birthday" },
+    { name: "Anniversary", slug: "anniversary" },
+    { name: "House Warming", slug: "housewarming" },
+    { name: "Reception", slug: "reception" },
+  ]);
 
   // Modals
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState("");
   const [newTemplateSlug, setNewTemplateSlug] = useState("");
   const [newTemplateDesc, setNewTemplateDesc] = useState("");
+  const [newTemplateCategory, setNewTemplateCategory] = useState("wedding");
+  const [newTemplateCustomCat, setNewTemplateCustomCat] = useState("");
   const [creating, setCreating] = useState(false);
 
   // Upload ZIP modal
@@ -89,15 +104,34 @@ export default function AdminTemplatesPage() {
   // Design Settings Modal
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [activeSettingsTemplate, setActiveSettingsTemplate] = useState<TemplateItem | null>(null);
+  const [editTemplateCategory, setEditTemplateCategory] = useState("wedding");
   const [customSettings, setCustomSettings] = useState<Record<string, any>>({});
   const [savingSettings, setSavingSettings] = useState(false);
 
   // Action status message
   const [actionMessage, setActionMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
+  // Fetch active categories from DB
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await fetch("/api/public/categories");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.categories) && data.categories.length > 0) {
+            setCategoriesList(data.categories);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch categories:", err);
+      }
+    }
+    loadCategories();
+  }, []);
+
   useEffect(() => {
     fetchTemplates();
-  }, [statusFilter]);
+  }, [statusFilter, categoryFilter]);
 
   const showNotification = (text: string, type: "success" | "error" = "success") => {
     setActionMessage({ text, type });
@@ -114,6 +148,7 @@ export default function AdminTemplatesPage() {
       let url = "/api/admin/templates";
       const params = new URLSearchParams();
       if (statusFilter !== "all") params.append("status", statusFilter);
+      if (categoryFilter !== "all") params.append("category", categoryFilter);
       if (search) params.append("search", search);
       if (params.toString()) url += `?${params.toString()}`;
 
@@ -135,6 +170,11 @@ export default function AdminTemplatesPage() {
     setCreating(true);
 
     try {
+      const finalCategory =
+        newTemplateCategory === "other"
+          ? (newTemplateCustomCat || "wedding").trim().toLowerCase()
+          : newTemplateCategory;
+
       const token = localStorage.getItem("shaadi_super_admin_token");
       const res = await fetch("/api/admin/templates", {
         method: "POST",
@@ -146,6 +186,7 @@ export default function AdminTemplatesPage() {
           name: newTemplateName,
           slug: newTemplateSlug,
           description: newTemplateDesc,
+          category: finalCategory,
         }),
       });
 
@@ -156,6 +197,8 @@ export default function AdminTemplatesPage() {
         setNewTemplateName("");
         setNewTemplateSlug("");
         setNewTemplateDesc("");
+        setNewTemplateCategory("wedding");
+        setNewTemplateCustomCat("");
         fetchTemplates();
         // Open upload modal right away
         setSelectedTemplate(data.template);
@@ -260,8 +303,38 @@ export default function AdminTemplatesPage() {
     }
   };
 
+  const handleDeleteTemplate = async (template: TemplateItem) => {
+    const affected = template.affectedWeddingsCount || 0;
+    let promptMsg = `Are you sure you want to permanently delete template '${template.name}'? All files will be removed.`;
+    if (affected > 0) {
+      promptMsg = `WARNING: This template is used by ${affected} active customer wedding(s)!\n\nAre you sure you want to permanently delete it?`;
+    }
+
+    if (!confirm(promptMsg)) return;
+
+    try {
+      const token = localStorage.getItem("shaadi_super_admin_token");
+      const url = `/api/admin/templates/${template._id}?force=true`;
+
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: { Authorization: token ? `Bearer ${token}` : "" },
+      });
+      const data = await res.json();
+      if (data.success) {
+        showNotification(data.message);
+        fetchTemplates();
+      } else {
+        showNotification(data.error, "error");
+      }
+    } catch (err: any) {
+      showNotification(err.message, "error");
+    }
+  };
+
   const openSettingsModal = (template: TemplateItem) => {
     setActiveSettingsTemplate(template);
+    setEditTemplateCategory(template.category || "wedding");
     // Initialize current settings
     const current: Record<string, any> = {};
     for (const def of template.manifest?.designSettings || []) {
@@ -280,6 +353,8 @@ export default function AdminTemplatesPage() {
 
     try {
       const token = localStorage.getItem("shaadi_super_admin_token");
+      
+      // Update design settings
       const res = await fetch(`/api/admin/templates/${activeSettingsTemplate._id}/settings`, {
         method: "PATCH",
         headers: {
@@ -289,8 +364,21 @@ export default function AdminTemplatesPage() {
         body: JSON.stringify({ designSettings: customSettings }),
       });
       const data = await res.json();
+
+      // If category was changed, update template metadata
+      if (editTemplateCategory && editTemplateCategory !== activeSettingsTemplate.category) {
+        await fetch(`/api/admin/templates/${activeSettingsTemplate._id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+          body: JSON.stringify({ category: editTemplateCategory }),
+        });
+      }
+
       if (data.success) {
-        showNotification(data.message);
+        showNotification("Template settings & category saved successfully!");
         setSettingsModalOpen(false);
         fetchTemplates();
       } else {
@@ -345,29 +433,59 @@ export default function AdminTemplatesPage() {
       )}
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1">
-          <input
-            type="text"
-            placeholder="Search templates by name, slug or description..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && fetchTemplates()}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500"
-          />
+      <div className="space-y-2.5">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Search templates by name, slug or description..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && fetchTemplates()}
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3.5 py-2 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500"
+            />
+          </div>
+          <div className="flex gap-2">
+            {["all", "published", "draft", "unpublished"].map((status) => (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`px-3 py-1.5 rounded-lg text-xs capitalize transition cursor-pointer ${
+                  statusFilter === status
+                    ? "bg-zinc-800 text-amber-400 border border-amber-500/40 font-medium"
+                    : "bg-zinc-900/60 text-zinc-400 border border-zinc-800 hover:text-white"
+                }`}
+              >
+                {status}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2">
-          {["all", "published", "draft", "unpublished"].map((status) => (
+
+        {/* Category Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+          <span className="text-[11px] text-zinc-500 font-medium mr-1 shrink-0">Service Category:</span>
+          <button
+            onClick={() => setCategoryFilter("all")}
+            className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition cursor-pointer shrink-0 ${
+              categoryFilter === "all"
+                ? "bg-amber-500 text-black font-semibold shadow-xs"
+                : "bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800"
+            }`}
+          >
+            All Categories
+          </button>
+          {categoriesList.map((cat) => (
             <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`px-3 py-1.5 rounded-lg text-xs capitalize transition cursor-pointer ${
-                statusFilter === status
-                  ? "bg-zinc-800 text-amber-400 border border-amber-500/40 font-medium"
-                  : "bg-zinc-900/60 text-zinc-400 border border-zinc-800 hover:text-white"
+              key={cat.slug}
+              onClick={() => setCategoryFilter(cat.slug)}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition cursor-pointer shrink-0 capitalize ${
+                categoryFilter === cat.slug
+                  ? "bg-amber-500 text-black font-semibold shadow-xs"
+                  : "bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800"
               }`}
             >
-              {status}
+              {cat.name}
             </button>
           ))}
         </div>
@@ -404,24 +522,39 @@ export default function AdminTemplatesPage() {
                       <h3 className="text-base font-semibold text-white tracking-tight">
                         {template.name}
                       </h3>
-                      <p className="text-[11px] text-zinc-400 font-mono mt-0.5">
-                        /{template.slug}
-                      </p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <p className="text-[11px] text-zinc-400 font-mono">
+                          /{template.slug}
+                        </p>
+                        <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20 capitalize">
+                          {template.category || "wedding"}
+                        </span>
+                      </div>
                     </div>
 
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
-                        template.status === "published"
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
-                          : template.status === "draft"
-                          ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
-                          : template.status === "unpublished"
-                          ? "bg-zinc-800 text-zinc-400 border border-zinc-700"
-                          : "bg-rose-500/10 text-rose-400 border border-rose-500/30"
-                      }`}
-                    >
-                      {template.status}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
+                          template.status === "published"
+                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                            : template.status === "draft"
+                            ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30"
+                            : template.status === "unpublished"
+                            ? "bg-zinc-800 text-zinc-400 border border-zinc-700"
+                            : "bg-rose-500/10 text-rose-400 border border-rose-500/30"
+                        }`}
+                      >
+                        {template.status}
+                      </span>
+
+                      <button
+                        onClick={() => handleDeleteTemplate(template)}
+                        className="p-1 rounded text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+                        title="Delete Template"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Description */}
@@ -456,6 +589,15 @@ export default function AdminTemplatesPage() {
 
                 {/* Actions Grid */}
                 <div className="mt-5 pt-4 border-t border-zinc-800 space-y-2">
+                  {/* Dedicated Code & Visual Editor */}
+                  <Link
+                    href={`/admin/templates/${template._id}/editor`}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-gradient-to-r from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 text-amber-300 text-xs font-semibold border border-amber-500/40 transition shadow-xs"
+                  >
+                    <Code2 className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Open Code &amp; Theme Editor (Live IDE)</span>
+                  </Link>
+
                   <div className="grid grid-cols-2 gap-2">
                     {/* Live Preview Button */}
                     <button
@@ -517,6 +659,15 @@ export default function AdminTemplatesPage() {
                       <span>Rollback to Previous Package</span>
                     </button>
                   )}
+
+                  {/* Delete Template */}
+                  <button
+                    onClick={() => handleDeleteTemplate(template)}
+                    className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-zinc-950 hover:bg-rose-950/40 text-zinc-500 hover:text-rose-400 text-[11px] font-medium border border-zinc-800/80 hover:border-rose-900/40 transition cursor-pointer"
+                  >
+                    <Trash2 className="w-3 h-3 text-rose-500" />
+                    <span>Delete Template</span>
+                  </button>
                 </div>
               </div>
             );
@@ -578,6 +729,39 @@ export default function AdminTemplatesPage() {
                   onChange={(e) => setNewTemplateSlug(e.target.value.toLowerCase())}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-500"
                 />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-zinc-300 mb-1">
+                  Service Category * (Where this template will appear)
+                </label>
+                <select
+                  value={newTemplateCategory}
+                  onChange={(e) => setNewTemplateCategory(e.target.value)}
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500 capitalize"
+                >
+                  {categoriesList.map((cat) => (
+                    <option key={cat.slug} value={cat.slug} className="bg-zinc-900 text-white">
+                      {cat.name} ({cat.slug})
+                    </option>
+                  ))}
+                  <option value="other" className="bg-zinc-900 text-white">
+                    + Custom Category Slug
+                  </option>
+                </select>
+                {newTemplateCategory === "other" && (
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter custom category slug (e.g. sangeet, haldi, birthday)"
+                    value={newTemplateCustomCat}
+                    onChange={(e) => setNewTemplateCustomCat(e.target.value)}
+                    className="mt-2 w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-500"
+                  />
+                )}
+                <p className="text-[11px] text-zinc-500 mt-1">
+                  This template will be displayed on the public page for this service (e.g. /{newTemplateCategory === "other" ? newTemplateCustomCat || "custom" : newTemplateCategory}).
+                </p>
               </div>
 
               <div>
@@ -688,7 +872,18 @@ export default function AdminTemplatesPage() {
                 <p className="font-semibold">{uploadStatus.message}</p>
                 {uploadStatus.compatibility && (
                   <div className="mt-2 text-[11px] text-zinc-300 space-y-1">
-                    <p>Compatibility: {uploadStatus.compatibility.compatible ? "✅ Fully Compatible" : "⚠️ Breaking Changes Detected"}</p>
+                    <p className="flex items-center gap-1.5">
+                      <span>Compatibility:</span>
+                      {uploadStatus.compatibility.compatible ? (
+                        <span className="inline-flex items-center gap-1 text-emerald-400">
+                          <CheckCircle2 className="w-3.5 h-3.5" /> Fully Compatible
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-amber-400">
+                          <AlertTriangle className="w-3.5 h-3.5" /> Breaking Changes Detected
+                        </span>
+                      )}
+                    </p>
                     {uploadStatus.compatibility.breakingChanges?.length > 0 && (
                       <ul className="list-disc pl-4 text-rose-300">
                         {uploadStatus.compatibility.breakingChanges.map((b: string, i: number) => (
@@ -803,6 +998,27 @@ export default function AdminTemplatesPage() {
             </p>
 
             <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+              {/* Category Setting */}
+              <div className="p-3 bg-zinc-950/80 rounded-lg border border-zinc-800 space-y-1.5">
+                <label className="block text-xs font-semibold text-white">
+                  Service Category
+                </label>
+                <select
+                  value={editTemplateCategory}
+                  onChange={(e) => setEditTemplateCategory(e.target.value)}
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-white capitalize focus:outline-none focus:border-amber-500"
+                >
+                  {categoriesList.map((cat) => (
+                    <option key={cat.slug} value={cat.slug} className="bg-zinc-900 text-white">
+                      {cat.name} ({cat.slug})
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-zinc-500">
+                  Defines on which public service page this template is displayed (e.g. /{editTemplateCategory}).
+                </p>
+              </div>
+
               {activeSettingsTemplate.manifest?.designSettings?.length === 0 ? (
                 <p className="text-xs text-zinc-500 italic py-6 text-center">
                   No visual design settings declared in this template&apos;s manifest.json.

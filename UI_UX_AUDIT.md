@@ -123,13 +123,13 @@ The application leverages five distinct font families declared via `next/font/go
 
 ## 5. UI/UX Issues & Usability Deficiencies Discovered
 
-### Issue 1: Inconsistent Brand Name Strings ("ShaadiConnect" vs "VivahVaani")
-- **Finding:** The platform was originally conceived as `ShaadiConnect` and rebranded to `VivahVaani`. While the public pages and super admin use *VivahVaani*, several authenticated pages still display the legacy *ShaadiConnect* name:
+### Issue 1: Inconsistent Brand Name Strings ("VivahVaani" vs "VivahVaani")
+- **Finding:** The platform was originally conceived as `VivahVaani` and rebranded to `VivahVaani`. While the public pages and super admin use *VivahVaani*, several authenticated pages still display the legacy *VivahVaani* name:
   - `app/login/page.tsx` (Line 58: `Shaadi<span className="text-rose-700">Connect</span>`)
   - `app/register/page.tsx` (Line 64: `Shaadi<span className="text-rose-700">Connect</span>`)
   - `app/dashboard/layout.tsx` (Line 158: `Shaadi<span className="text-rose-600">Connect</span>`)
-  - `models/SiteSettings.ts` (Default fallback: `ShaadiConnect`)
-- **UX Impact:** Confuses users who see *VivahVaani* on the landing page, click "Login", and see *ShaadiConnect* on the auth and dashboard screen.
+  - `models/SiteSettings.ts` (Default fallback: `VivahVaani`)
+- **UX Impact:** Confuses users who see *VivahVaani* on the landing page, click "Login", and see *VivahVaani* on the auth and dashboard screen.
 
 ### Issue 2: Client Management Page Missing from Client Sidebar Navigation
 - **Finding:** A fully implemented, feature-rich Client Management page exists at `app/dashboard/clients/page.tsx` (enabling wedding planners to manage multiple customer families). However, in `app/dashboard/layout.tsx` (Lines 27–30):

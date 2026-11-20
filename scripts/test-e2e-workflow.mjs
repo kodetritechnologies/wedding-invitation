@@ -10,7 +10,7 @@ const uri = `mongodb://${encodeURIComponent(DB_USERNAME || "")}:${encodeURICompo
 
 async function runE2ETest() {
   console.log("=================================================");
-  console.log("🚀 STARTING SHAADICONNECT CORE WORKFLOW E2E TEST");
+  console.log("🚀 STARTING VIVAHVAANI CORE WORKFLOW E2E TEST");
   console.log("=================================================");
 
   try {

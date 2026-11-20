@@ -12,11 +12,11 @@ async function seed() {
   const Admins = mongoose.connection.collection("admins");
   const hash = await bcrypt.hash("Client@2026", 10);
 
-  const existing = await Admins.findOne({ email: "client@shaadiconnect.com" });
+  const existing = await Admins.findOne({ email: "client@vivahvaani.kodetri.com" });
   if (!existing) {
     await Admins.insertOne({
       name: "Aarav Sharma",
-      email: "client@shaadiconnect.com",
+      email: "client@vivahvaani.kodetri.com",
       password: hash,
       phone: "+91 98260 12345",
       role: "admin",
@@ -27,7 +27,7 @@ async function seed() {
     });
     console.log("✅ Demo Client created successfully!");
   } else {
-    await Admins.updateOne({ email: "client@shaadiconnect.com" }, { $set: { password: hash } });
+    await Admins.updateOne({ email: "client@vivahvaani.kodetri.com" }, { $set: { password: hash } });
     console.log("✅ Demo Client password updated successfully!");
   }
 

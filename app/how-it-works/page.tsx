@@ -60,7 +60,7 @@ export default function HowItWorksPage() {
       stepNum: "कदम 04",
       number: "04",
       title: "WhatsApp Par 1-Click Bhejiye & RSVP Dekhiye",
-      desc: "Apna branded link (`vivahvaani.com/w/aarav-diya`) sabhi groups aur doston ko bhejiye aur live plate headcount track karein.",
+      desc: "Apna branded link (`vivahvaani.kodetri.com/w/aarav-diya`) sabhi groups aur doston ko bhejiye aur live plate headcount track karein.",
       badge: "Instant WhatsApp Sharing",
       icon: Share2,
       color: "bg-purple-50 text-purple-800 border-purple-200",

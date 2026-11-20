@@ -48,6 +48,7 @@ export interface DesignSettingDefinition {
 export interface TemplateManifest {
   name: string;
   description?: string;
+  category?: string;
   entry: string; // usually "index.html"
   version?: string;
   customerFields: CustomerFieldDefinition[];

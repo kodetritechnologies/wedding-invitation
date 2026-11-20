@@ -102,17 +102,17 @@ export default function DashboardLayout({
         });
 
         if (!res.ok) {
-          window.location.href = "/login";
+          window.location.href = "/?login=true";
           return;
         }
         const data = await res.json();
         if (data.success && data.user) {
           setUser(data.user);
         } else {
-          window.location.href = "/login";
+          window.location.href = "/?login=true";
         }
       } catch {
-        window.location.href = "/login";
+        window.location.href = "/?login=true";
       } finally {
         setLoading(false);
       }
@@ -126,7 +126,7 @@ export default function DashboardLayout({
       await fetch("/api/auth/logout", { method: "POST" });
       localStorage.removeItem("shaadi_auth_token");
       localStorage.removeItem("token");
-      router.push("/login");
+      router.push("/?login=true");
       router.refresh();
     } catch (err) {
       console.error("Logout error", err);
@@ -155,8 +155,8 @@ export default function DashboardLayout({
               <Heart className="w-4 h-4 fill-white" />
             </div>
             <div>
-              <span className="font-bold text-gray-900 tracking-tight text-lg">
-                Shaadi<span className="text-rose-600">Connect</span>
+              <span className="font-bold text-gray-900 tracking-tight text-lg font-serif">
+                Vivah<span className="text-rose-700">Vaani</span>
               </span>
               <span className="block text-[10px] text-gray-400 font-medium uppercase tracking-wider">
                 Client Portal

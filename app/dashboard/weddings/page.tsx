@@ -52,7 +52,7 @@ export default function WeddingsPage() {
   const [clientId, setClientId] = useState("");
   const [packageTier, setPackageTier] = useState("basic");
   const [templateId, setTemplateId] = useState("");
-  const [templatesList, setTemplatesList] = useState<{ _id: string; name: string; slug: string }[]>([]);
+  const [templatesList, setTemplatesList] = useState<{ _id: string; name: string; slug: string; category?: string }[]>([]);
 
   const loadData = async () => {
     try {
@@ -377,7 +377,7 @@ export default function WeddingsPage() {
                   <option value="">Standard Royal Patrika (Default)</option>
                   {templatesList.map((t) => (
                     <option key={t._id} value={t._id}>
-                      {t.name} (/{t.slug})
+                      {t.name} (/{t.slug} • {t.category || "wedding"})
                     </option>
                   ))}
                 </select>
