@@ -130,7 +130,7 @@ export default function AboutPage() {
                   <span className="text-sm font-bold text-stone-900">₹499 Se Shuruat</span>
                 </div>
                 <Link
-                  href="/wedding"
+                  href="/templates"
                   className="px-4 py-2 rounded-xl bg-rose-700 text-white text-xs font-semibold hover:bg-rose-800 transition shadow-sm"
                 >
                   Designs Dekhein
@@ -187,7 +187,7 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/wedding"
+                href="/templates"
                 className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-sm transition shadow-md inline-flex items-center justify-center gap-2"
               >
                 Catalog Explore Karein <ArrowRight className="w-4 h-4" />

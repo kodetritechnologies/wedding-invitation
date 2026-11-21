@@ -5,22 +5,12 @@ import Link from "next/link";
 import {
   CalendarHeart,
   Share2,
-  Users,
   MapPin,
-  ShieldCheck,
   Check,
-  X,
-  Sparkles,
-  ArrowRight,
-  Clock,
   Eye,
   Utensils,
   Smartphone,
-  PhoneCall,
   BellRing,
-  HelpCircle,
-  Heart,
-  IndianRupee,
 } from "lucide-react";
 import { MdSavings } from "react-icons/md";
 import PublicHeader from "@/components/public/Header";

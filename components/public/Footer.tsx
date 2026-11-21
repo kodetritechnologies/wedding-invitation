@@ -44,7 +44,7 @@ export default function PublicFooter() {
       workingHours: BRAND.workingHours,
     },
     footer: {
-      copyrightText: `© 2026 ${BRAND.name}. A Product by Kodetri Technologies.`,
+      copyrightText: `© 2026 ${BRAND.name}. Partner by Kodetri Technologies.`,
       tagline: BRAND.tagline,
     },
   });
@@ -73,8 +73,10 @@ export default function PublicFooter() {
               socialLinks: data.settings.socialLinks || {},
               footer: {
                 copyrightText:
-                  data.settings.footer?.copyrightText?.replace(/ShaadiConnect|VivahVaani/g, data.settings.siteName || BRAND.name) ||
-                  `© ${currentYear} ${data.settings.siteName || BRAND.name}. A Product by Kodetri Technologies.`,
+                  data.settings.footer?.copyrightText
+                    ?.replace(/ShaadiConnect|VivahVaani/g, data.settings.siteName || BRAND.name)
+                    ?.replace(/A Product by/gi, "Partner by") ||
+                  `© ${currentYear} ${data.settings.siteName || BRAND.name}. Partner by Kodetri Technologies.`,
                 tagline: data.settings.footer?.tagline || BRAND.tagline,
               },
             });
@@ -98,7 +100,10 @@ export default function PublicFooter() {
             setFooterCategories(
               data.categories.map((c: { name: string; href?: string; slug?: string }) => ({
                 name: c.name,
-                href: c.href || `/${c.slug}`,
+                href:
+                  c.href && c.href.startsWith("/templates")
+                    ? c.href
+                    : `/templates?category=${c.slug || ""}`,
               }))
             );
           } else {
@@ -239,17 +244,26 @@ export default function PublicFooter() {
             </h3>
             <ul className="space-y-3 text-sm text-[#FDFBF7]/85">
               <li>
-                <Link href="/wedding/video" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
-                  Video Invitation
-                </Link>
-              </li>
-              <li>
-                <Link href="/wedding/invitation-website" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
+                <Link
+                  href="/templates?format=website"
+                  className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150"
+                >
                   Website Invitation (with RSVP)
                 </Link>
               </li>
               <li>
-                <Link href="/wedding/pdf" className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150">
+                <Link
+                  href="/templates?format=video"
+                  className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150"
+                >
+                  Video Invitation
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/templates?format=pdf"
+                  className="hover:text-[#D6A64B] hover:translate-x-1.5 inline-block transition-transform duration-150"
+                >
                   PDF Invitation
                 </Link>
               </li>
@@ -317,7 +331,7 @@ export default function PublicFooter() {
       <div className="relative border-t border-[#D6A64B]/30 bg-[#50080E]/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-[#FDFBF7]/80">
           <p className="text-center md:text-left">
-            © 2026 {settings.siteName}. A Product by{" "}
+            © 2026 {settings.siteName}. Partner by{" "}
             <a
               href="https://www.kodetri.com/"
               target="_blank"
@@ -329,7 +343,7 @@ export default function PublicFooter() {
             .
           </p>
           <p className="text-center md:text-right text-[#FDFBF7]/90">
-            <span className="text-[#D6A64B] font-medium">&ldquo;Kalyaanam, Mangalyam, Shubham.&rdquo;</span> Reimagining Indian wedding invitations into timeless, interactive digital patrika experiences.
+            <span className="text-[#D6A64B] font-medium">&ldquo;कल्याणम्, मंगल्यम्, शुभम्।&rdquo;</span> Reimagining Indian wedding invitations into timeless, interactive digital patrika experiences.
           </p>
         </div>
       </div>

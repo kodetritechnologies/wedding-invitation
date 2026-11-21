@@ -15,16 +15,6 @@ import {
   EyeOff,
   ExternalLink,
   Sparkles,
-  Heart,
-  Home,
-  Cake,
-  Gift,
-  Music,
-  Star,
-  PartyPopper,
-  Flame,
-  Baby,
-  Wine,
 } from "lucide-react";
 import { GiRing, GiDiamondRing, GiFireBowl } from "react-icons/gi";
 import { MdCake, MdHome, MdCelebration, MdCardGiftcard, MdMusicNote, MdAutoAwesome } from "react-icons/md";
@@ -134,7 +124,7 @@ export default function SuperAdminCategoriesPage() {
     setName(item.name);
     setSlug(item.slug);
     setSubtitle(item.subtitle || "");
-    setHref(item.href || `/${item.slug}`);
+    setHref(item.href || `/templates?category=${item.slug}`);
     setIcon(item.icon || "sparkles");
     setImageUrl(item.imageUrl || "");
     setStatus(item.status);
@@ -153,7 +143,7 @@ export default function SuperAdminCategoriesPage() {
         .replace(/[\s_-]+/g, "-")
         .replace(/^-+|-+$/g, "");
       setSlug(autoSlug);
-      setHref(`/${autoSlug}`);
+      setHref(`/templates?category=${autoSlug}`);
     }
   };
 
@@ -177,7 +167,7 @@ export default function SuperAdminCategoriesPage() {
         name: name.trim(),
         slug: slug.trim(),
         subtitle: subtitle.trim(),
-        href: href.trim() || `/${slug.trim()}`,
+        href: href.trim() || `/templates?category=${slug.trim()}`,
         icon: icon.trim(),
         imageUrl: imageUrl.trim(),
         status,
@@ -582,7 +572,7 @@ export default function SuperAdminCategoriesPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. /wedding or /baby-shower"
+                  placeholder="e.g. /templates?category=wedding or /templates?category=baby-shower"
                   value={href}
                   onChange={(e) => setHref(e.target.value)}
                   className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 font-mono"

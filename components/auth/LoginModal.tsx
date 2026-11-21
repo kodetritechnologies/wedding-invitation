@@ -11,7 +11,6 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
-  Sparkles,
 } from "lucide-react";
 
 interface LoginModalProps {

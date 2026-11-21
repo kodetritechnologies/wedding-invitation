@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
-  Shield,
   Lock,
   Mail,
   ArrowRight,
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 export default function SuperAdminLoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +51,7 @@ export default function SuperAdminLoginPage() {
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.superAdmin) {
-            window.location.href = "/admin/dashboard";
+            router.replace("/admin/dashboard");
             return;
           }
         }
@@ -121,7 +122,7 @@ export default function SuperAdminLoginPage() {
 
       setSuccess(true);
       setTimeout(() => {
-        window.location.href = "/admin/dashboard";
+        router.push("/admin/dashboard");
       }, 500);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Authentication failed";
@@ -288,7 +289,7 @@ export default function SuperAdminLoginPage() {
             &larr; Switch to Business Admin Login
           </Link>
           <p className="text-[11px] text-zinc-500">
-            A Product by{" "}
+            Partner by{" "}
             <a
               href="https://www.kodetri.com/"
               target="_blank"

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, use, Suspense } from "react";
-import Link from "next/link";
 import {
   CalendarHeart,
   Calendar,
@@ -12,8 +11,6 @@ import {
   Check,
   Plus,
   Users,
-  UserCheck,
-  UserX,
   Share2,
   Trash2,
   Loader2,
@@ -21,7 +18,6 @@ import {
   Sparkles,
   LayoutTemplate,
   Eye,
-  Palette,
 } from "lucide-react";
 
 interface EventItem {

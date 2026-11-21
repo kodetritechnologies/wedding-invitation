@@ -3,33 +3,31 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  MessageCircle,
-  Eye,
   ArrowRight,
   Sparkles,
-  Clock,
-  MapPin,
   ChevronRight,
   ChevronLeft,
   ChevronDown,
   Star,
   Quote,
-  HeartHandshake,
-  Cake,
   Flame,
-  Wine,
   PartyPopper,
   CheckCircle2,
+  Check,
+  X,
+  ShoppingBag,
+  Zap,
   Gift,
   Music,
   Baby,
 } from "lucide-react";
-import { GiRing, GiCastle, GiLotus, GiFireBowl } from "react-icons/gi";
-import { MdBolt, MdDescription, MdLink, MdLanguage } from "react-icons/md";
+import { GiRing, GiLotus } from "react-icons/gi";
+import { MdBolt, MdDescription, MdLink } from "react-icons/md";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
+import WishlistButton from "@/components/templates/WishlistButton";
 import { BRAND } from "@/lib/brand";
-import { CATALOG, PRICES } from "@/lib/catalog";
+import { PRICES } from "@/lib/catalog";
 import { FEATURES } from "@/lib/features";
 
 interface TestimonialItem {
@@ -39,6 +37,19 @@ interface TestimonialItem {
   city: string;
   rating: number;
   content: string;
+}
+
+interface DynamicTemplateItem {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  thumbnail?: string;
+  category?: string;
+  format?: "website" | "video" | "pdf";
+  price?: number;
+  likesCount?: number;
+  isDefault?: boolean;
 }
 
 interface CategoryItem {
@@ -140,7 +151,56 @@ export default function HomePage() {
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [sliderIndex, setSliderIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [phoneActiveTab, setPhoneActiveTab] = useState<"haldi" | "sangeet" | "vivah" | "reception">("vivah");
+
+  const [dynamicTemplates, setDynamicTemplates] = useState<DynamicTemplateItem[]>([]);
+  const [defaultTemplate, setDefaultTemplate] = useState<DynamicTemplateItem | null>(null);
+  const [templatesLoading, setTemplatesLoading] = useState(true);
+  const [buyModalTemplate, setBuyModalTemplate] = useState<{ name: string; slug: string; price: number; format?: string } | null>(null);
+  const [buySuccess, setBuySuccess] = useState(false);
+
+  // Fetch templates dynamically from public API (strictly MongoDB, no mock fallback)
+  useEffect(() => {
+    async function loadTemplates() {
+      try {
+        setTemplatesLoading(true);
+        const res = await fetch("/api/templates");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.templates)) {
+            setDynamicTemplates(data.templates);
+            if (data.defaultTemplate) {
+              setDefaultTemplate(data.defaultTemplate);
+            } else {
+              const def =
+                data.templates.find((t: DynamicTemplateItem) => t.isDefault) ||
+                data.templates[0] ||
+                null;
+              setDefaultTemplate(def);
+            }
+          } else {
+            setDynamicTemplates([]);
+            setDefaultTemplate(null);
+          }
+        } else {
+          setDynamicTemplates([]);
+          setDefaultTemplate(null);
+        }
+      } catch (err) {
+        console.error("Failed to load templates:", err);
+        setDynamicTemplates([]);
+        setDefaultTemplate(null);
+      } finally {
+        setTemplatesLoading(false);
+      }
+    }
+    loadTemplates();
+  }, []);
+
+  const filteredTemplates = dynamicTemplates.filter((t) => {
+    if (themeFormat === "all") return true;
+    const fmt = (t.format || "website").toLowerCase();
+    return fmt === themeFormat;
+  });
 
   // Fetch categories dynamically from public API
   useEffect(() => {
@@ -222,48 +282,6 @@ export default function HomePage() {
 
   const handleNextSlide = () => {
     setSliderIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  // Filter Wedding Catalog by Format (ALL, VIDEO, INVITATION WEBSITE, PDF)
-  const filteredWeddingCatalog = CATALOG.filter((item) => {
-    if (item.occasion !== "wedding") return false;
-    if (themeFormat === "all") return true;
-    return item.format === themeFormat;
-  });
-
-  const phonePreviewEvents = {
-    haldi: {
-      title: "हल्दी एवं मेहंदी उत्सव",
-      time: "10:30 AM onwards",
-      date: "14 Dec 2026",
-      venue: "Poolside Lawn, Hotel Sayaji, Indore",
-      badge: "हल्दी • Haldi",
-      color: "bg-amber-100 text-amber-900 border-amber-300",
-    },
-    sangeet: {
-      title: "संगीत संध्या एवं डीजे नाइट",
-      time: "07:00 PM onwards",
-      date: "14 Dec 2026",
-      venue: "Grand Ballroom, Hotel Sayaji, Indore",
-      badge: "संगीत • Sangeet",
-      color: "bg-purple-100 text-purple-900 border-purple-300",
-    },
-    vivah: {
-      title: "शुभ विवाह एवं पाणिग्रहण संस्कार",
-      time: "06:30 PM (शुभ लग्न 08:15 PM)",
-      date: "15 Dec 2026",
-      venue: "Brilliant Convention Centre, Vijay Nagar, Indore",
-      badge: "शुभ लग्न • Main Vivah",
-      color: "bg-rose-100 text-rose-950 border-rose-300",
-    },
-    reception: {
-      title: "मंगल प्रीतिभोज एवं आशीर्वाद",
-      time: "07:30 PM onwards",
-      date: "16 Dec 2026",
-      venue: "The Grand Banquet, Bypass Road, Indore",
-      badge: "प्रीतिभोज • Reception",
-      color: "bg-emerald-100 text-emerald-900 border-emerald-300",
-    },
   };
 
   // Structured Data (JSON-LD) for SEO
@@ -358,7 +376,7 @@ export default function HomePage() {
               {/* Main CTAs */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
                 <Link
-                  href="/wedding"
+                  href="/templates"
                   className="px-7 py-3.5 bg-gradient-to-r from-[#DFB76C] via-[#EDD08D] to-[#D5A958] hover:from-[#EDD08D] hover:to-[#DFB76C] text-[#42050D] font-bold rounded-full shadow-lg transition flex items-center justify-center gap-2 text-sm sm:text-base border border-amber-300 min-h-[46px] group"
                 >
                   <span className="font-semibold flex items-center gap-1.5">
@@ -369,7 +387,11 @@ export default function HomePage() {
                 </Link>
 
                 <Link
-                  href="/w/aarav-diya"
+                  href={
+                    defaultTemplate
+                      ? `/api/public/templates/${defaultTemplate.slug}/preview`
+                      : "/w/aarav-diya"
+                  }
                   target="_blank"
                   className="px-6 py-3.5 bg-black/35 hover:bg-black/50 text-amber-100 font-semibold rounded-full border border-amber-400/40 backdrop-blur-xs transition text-sm sm:text-base flex items-center justify-center gap-2.5 min-h-[46px]"
                 >
@@ -471,7 +493,11 @@ export default function HomePage() {
                 {categories.map((cat, idx) => (
                   <Link
                     key={cat._id || idx}
-                    href={cat.href || `/${cat.slug || ""}`}
+                    href={
+                      cat.href && cat.href.startsWith("/templates")
+                        ? cat.href
+                        : `/templates?category=${cat.slug || ""}`
+                    }
                     className="group relative bg-[#720E16] text-center flex flex-col items-center justify-between p-5 pt-8 pb-6 transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1.5 border-2 border-[#D6A64B] hover:border-[#F2C76E]"
                     style={{
                       borderRadius: "48px 48px 20px 20px",
@@ -844,197 +870,183 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* 4 Cards in Row (Exact Layout from Reference Image) */}
+            {/* Dynamic Cards Grid from MongoDB */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
-              {[
-                {
-                  id: "card-1",
-                  title: "Royal Palace Wedding",
-                  badge: "BEST SELLER",
-                  format: "VIDEO",
-                  formatIcon: "video",
-                  language: "Hindi • English",
-                  price: 449,
-                  btnText: "Edit This Video >",
-                  btnHref: "/wedding/video",
-                  previewHref: "/w/aarav-diya",
-                  visualType: "palace",
-                  gradient: "from-[#8B1A24] via-[#52090F] to-[#2B0407]",
-                },
-                {
-                  id: "card-2",
-                  title: "Divine Ganesh Invitation",
-                  badge: "POPULAR",
-                  format: "VIDEO",
-                  formatIcon: "video",
-                  language: "Hindi • English",
-                  price: 499,
-                  btnText: "Edit This Video >",
-                  btnHref: "/wedding/video",
-                  previewHref: "/w/aarav-diya",
-                  visualType: "ganesh",
-                  gradient: "from-[#9E202B] via-[#660C14] to-[#360408]",
-                },
-                {
-                  id: "card-3",
-                  title: "Traditional Wedding",
-                  badge: null,
-                  format: "VIDEO",
-                  formatIcon: "video",
-                  language: "Hindi • English",
-                  price: 449,
-                  btnText: "Edit This Video >",
-                  btnHref: "/wedding/video",
-                  previewHref: "/w/aarav-diya",
-                  visualType: "mandap",
-                  gradient: "from-[#7A151D] via-[#4F090E] to-[#2B0407]",
-                },
-                {
-                  id: "card-4",
-                  title: "Royal Wedding Website",
-                  badge: null,
-                  format: "WEBSITE",
-                  formatIcon: "globe",
-                  language: "Hindi • English",
-                  price: 999,
-                  btnText: "Edit This Template >",
-                  btnHref: "/wedding/invitation-website",
-                  previewHref: "/w/aarav-diya",
-                  visualType: "phone",
-                  gradient: "from-[#6E0C14] via-[#48080C] to-[#240306]",
-                },
-              ].map((card) => (
-                <div
-                  key={card.id}
-                  className="group relative bg-[#FFFDF9] rounded-[24px] border-2 border-[#D6A64B]/80 hover:border-[#D6A64B] p-3.5 transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1.5 flex flex-col justify-between"
-                >
-                  {/* Visual Preview Box */}
-                  <div className="relative w-full h-[230px] rounded-[18px] overflow-hidden border border-[#D6A64B]/50 flex items-center justify-center">
-                    {/* Background Visual Art */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient}`} />
-
-                    {/* Rich Architectural & Floral Overlay */}
-                    <div
-                      className="absolute inset-0 opacity-20"
-                      style={{
-                        backgroundImage: `radial-gradient(#D6A64B 0.75px, transparent 1px)`,
-                        backgroundSize: "16px 16px",
-                      }}
-                    />
-
-                    {/* Specific Imagery simulation */}
-                    {card.visualType === "ganesh" && (
-                      <div className="relative z-10 flex flex-col items-center justify-center text-center p-3">
-                        <span className="text-3xl text-amber-300 drop-shadow-md">ॐ</span>
-                        <span className="text-[11px] font-bold text-amber-200 mt-1">॥ श्री गणेशाय नमः ॥</span>
-                        <div className="w-16 h-16 rounded-full bg-amber-400/20 border border-amber-300/40 flex items-center justify-center mt-2 text-2xl text-amber-200">
-                          <GiFireBowl className="w-8 h-8 text-amber-300" />
-                        </div>
-                      </div>
-                    )}
-
-                    {card.visualType === "palace" && (
-                      <div className="relative z-10 flex flex-col items-center justify-center text-center p-3">
-                        <GiCastle className="w-9 h-9 text-amber-300 drop-shadow-md mb-0.5" />
-                        <span className="text-xs font-bold text-amber-200 mt-1 uppercase tracking-wider">Royal Palace</span>
-                        <span className="text-[10px] text-amber-100/80">Grand Heritage Decor</span>
-                      </div>
-                    )}
-
-                    {card.visualType === "mandap" && (
-                      <div className="relative z-10 flex flex-col items-center justify-center text-center p-3">
-                        <GiLotus className="w-9 h-9 text-amber-300 drop-shadow-md mb-0.5" />
-                        <span className="text-xs font-bold text-amber-200 mt-1 uppercase tracking-wider">Traditional Mandap</span>
-                        <span className="text-[10px] text-amber-100/80">Marigold &amp; Rose Theme</span>
-                      </div>
-                    )}
-
-                    {card.visualType === "phone" && (
-                      <div className="relative z-10 w-[110px] h-[190px] rounded-[22px] bg-black p-1.5 border-2 border-amber-400/80 shadow-2xl flex flex-col justify-between text-center overflow-hidden">
-                        <div className="h-full rounded-[16px] bg-[#600810] p-2 flex flex-col justify-between items-center text-amber-100 border border-amber-300/30">
-                          <span className="text-[9px] text-amber-300 font-bold">ॐ</span>
-                          <div>
-                            <span className="text-[8px] italic block text-amber-200/90">Our Wedding</span>
-                            <span className="text-[9px] font-bold block text-white leading-tight">Invitation</span>
-                          </div>
-                          <span className="text-[7px] text-amber-200 bg-black/40 px-2 py-0.5 rounded-full">Interactive Link</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Top Left Format Tag */}
-                    <div className="absolute top-2.5 left-2.5 z-20">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#6E0C14]/90 text-amber-100 border border-[#D6A64B]/60 text-[10px] font-bold shadow-xs">
-                        {card.formatIcon === "video" ? (
-                          "▶ VIDEO"
-                        ) : (
-                          <span className="inline-flex items-center gap-1">
-                            <MdLanguage className="w-3 h-3 text-amber-200" />
-                            <span>WEBSITE</span>
-                          </span>
-                        )}
-                      </span>
-                    </div>
-
-                    {/* Top Right Badge (BEST SELLER / POPULAR) */}
-                    {card.badge && (
-                      <div className="absolute top-2.5 right-2.5 z-20">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#E8B653] text-[#52090F] font-bold text-[10px] shadow-xs">
-                          ★ {card.badge}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Center Preview Button Pill */}
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20">
-                      <Link
-                        href={card.previewHref}
-                        target="_blank"
-                        className="px-3.5 py-1 rounded-full bg-black/60 hover:bg-black/80 text-white font-medium text-[11px] backdrop-blur-xs border border-white/25 flex items-center gap-1.5 transition-all shadow-sm group-hover:scale-105"
-                      >
-                        <span className="text-[10px]">▶</span>
-                        <span>Preview</span>
-                      </Link>
+              {templatesLoading ? (
+                Array.from({ length: 4 }).map((_, n) => (
+                  <div
+                    key={n}
+                    className="bg-[#FFFDF9] rounded-[24px] border-2 border-[#D6A64B]/30 p-3.5 animate-pulse space-y-4"
+                  >
+                    <div className="w-full h-[230px] rounded-[18px] bg-stone-200/70" />
+                    <div className="space-y-2 pt-2">
+                      <div className="h-4 bg-stone-200/80 rounded-md w-3/4 mx-auto" />
+                      <div className="h-3 bg-stone-200/60 rounded-md w-1/2 mx-auto" />
+                      <div className="h-6 bg-stone-200/80 rounded-md w-1/3 mx-auto mt-2" />
+                      <div className="h-9 bg-stone-200/80 rounded-xl w-full mt-3" />
                     </div>
                   </div>
-
-                  {/* Card Bottom Meta */}
-                  <div className="pt-3.5 pb-2 text-center space-y-2">
-                    {/* Title */}
-                    <h3 className="font-bold text-base sm:text-[17px] text-[#52090F] tracking-tight group-hover:text-[#6E0C14] transition-colors">
-                      {card.title}
-                    </h3>
-
-                    {/* Language & Thin Divider */}
-                    <div className="space-y-1.5">
-                      <p className="text-[11px] text-stone-600 font-medium">
-                        {card.language}
-                      </p>
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="h-px w-10 bg-[#D6A64B]/60" />
-                        <span className="h-px w-10 bg-[#D6A64B]/60" />
-                      </div>
-                    </div>
-
-                    {/* Price with Flourish */}
-                    <div className="flex items-center justify-center gap-2 text-[#C49234] pt-0.5">
-                      <span className="text-xs">☙</span>
-                      <span className="font-bold text-2xl text-[#C49234]">₹{card.price}</span>
-                      <span className="text-xs">❧</span>
-                    </div>
-
-                    {/* Main Action Button */}
-                    <div className="pt-1.5">
-                      <Link
-                        href={card.btnHref}
-                        className="w-full py-2.5 px-4 rounded-xl bg-[#6E0C14] hover:bg-[#52090F] text-[#FFF3DA] font-semibold text-xs sm:text-[13px] transition-all duration-200 flex items-center justify-center gap-1 shadow-sm group-hover:shadow-md cursor-pointer"
-                      >
-                        <span>{card.btnText}</span>
-                      </Link>
-                    </div>
+                ))
+              ) : filteredTemplates.length === 0 ? (
+                <div className="col-span-full py-14 px-6 text-center bg-[#FFFDF9] rounded-[24px] border border-[#D6A64B]/40 max-w-xl mx-auto space-y-3">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-[#6E0C14]/10 text-[#6E0C14] flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-[#C98F32]" />
                   </div>
+                  <h3 className="font-serif text-lg font-bold text-[#6E0C14]">No Designs Found</h3>
+                  <p className="text-xs sm:text-sm text-stone-600">
+                    {themeFormat === "all"
+                      ? "Currently no designs are published in the database."
+                      : `No published designs found in ${themeFormat.toUpperCase()} format.`}
+                  </p>
+                  {themeFormat !== "all" && (
+                    <button
+                      onClick={() => setThemeFormat("all")}
+                      className="mt-2 inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-xs font-semibold bg-[#6E0C14] text-[#FFF3DA] hover:bg-[#52090F] transition cursor-pointer"
+                    >
+                      <span>View All Designs</span>
+                    </button>
+                  )}
                 </div>
-              ))}
+              ) : (
+                filteredTemplates.map((template, idx) => {
+                  const format = (template.format || "website").toLowerCase();
+                  const formatLabel = format === "video" ? "VIDEO" : format === "pdf" ? "PDF" : "WEBSITE";
+                  const actionHref = `/customize/${encodeURIComponent(template.slug)}`;
+                  const price = template.price || (format === "website" ? 999 : 449);
+                  const gradients = [
+                    "from-[#8B1A24] via-[#52090F] to-[#2B0407]",
+                    "from-[#9E202B] via-[#660C14] to-[#360408]",
+                    "from-[#7A151D] via-[#4F090E] to-[#2B0407]",
+                    "from-[#6E0C14] via-[#48080C] to-[#240306]",
+                  ];
+                  const cardGradient = gradients[idx % gradients.length];
+
+                  return (
+                    <div
+                      key={template._id || template.slug}
+                      className="group relative bg-[#FFFDF9] rounded-[24px] border-2 border-[#D6A64B]/80 hover:border-[#D6A64B] p-3.5 transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-1.5 flex flex-col justify-between"
+                    >
+                      {/* Visual Preview Box (Click leads to template detail page) */}
+                      <div className="relative">
+                        <Link
+                          href={`/templates/${encodeURIComponent(template.slug)}`}
+                          className="relative w-full h-[230px] rounded-[18px] overflow-hidden border border-[#D6A64B]/50 flex items-center justify-center bg-stone-900 block"
+                        >
+                          {template.thumbnail ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={template.thumbnail}
+                              alt={template.name}
+                              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <>
+                              {/* Background Visual Art */}
+                              <div className={`absolute inset-0 bg-gradient-to-br ${cardGradient}`} />
+
+                              {/* Rich Architectural & Floral Overlay */}
+                              <div
+                                className="absolute inset-0 opacity-20"
+                                style={{
+                                  backgroundImage: `radial-gradient(#D6A64B 0.75px, transparent 1px)`,
+                                  backgroundSize: "16px 16px",
+                                }}
+                              />
+
+                              {/* Simulated Heritage Motif */}
+                              <div className="relative z-10 flex flex-col items-center justify-center text-center p-3">
+                                <span className="text-3xl text-amber-300 drop-shadow-md">ॐ</span>
+                                <span className="text-[11px] font-bold text-amber-200 mt-1">॥ श्री गणेशाय नमः ॥</span>
+                                <div className="w-14 h-14 rounded-full bg-amber-400/20 border border-amber-300/40 flex items-center justify-center mt-2 text-2xl text-amber-200">
+                                  <GiLotus className="w-8 h-8 text-amber-300" />
+                                </div>
+                                <span className="text-xs font-serif font-bold text-[#FFF3DA] mt-2 line-clamp-1 px-2 drop-shadow-xs">
+                                  {template.name}
+                                </span>
+                              </div>
+                            </>
+                          )}
+                        </Link>
+
+                        {/* Wishlist Like Button in Thumbnail Corner */}
+                        <div
+                          className="absolute top-2.5 right-2.5 z-20"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
+                        >
+                          <WishlistButton
+                            slug={template.slug}
+                            initialCount={template.likesCount || 0}
+                            size="sm"
+                            className="bg-black/50 hover:bg-black/70 text-white backdrop-blur-md px-2.5 py-1 border border-white/20 shadow-xs"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Card Bottom Meta */}
+                      <div className="pt-3.5 pb-2 text-center space-y-2">
+                        {/* Title (Links to template detail page) */}
+                        <Link href={`/templates/${encodeURIComponent(template.slug)}`}>
+                          <h3 className="font-bold text-base sm:text-[17px] text-[#52090F] tracking-tight group-hover:text-[#6E0C14] transition-colors line-clamp-1">
+                            {template.name}
+                          </h3>
+                        </Link>
+
+                        {/* Description / Language & Thin Divider */}
+                        <div className="space-y-1.5">
+                          <p className="text-[11px] text-stone-600 font-medium truncate px-1">
+                            {template.description || "Hindi • English • Traditional"}
+                          </p>
+                          <div className="flex items-center justify-center gap-2">
+                            <span className="h-px w-10 bg-[#D6A64B]/60" />
+                            <span className="h-px w-10 bg-[#D6A64B]/60" />
+                          </div>
+                        </div>
+
+                        {/* Single Price with Flourish */}
+                        <div className="flex items-center justify-center gap-2 text-[#C49234] pt-0.5">
+                          <span className="text-xs">☙</span>
+                          <span className="font-bold text-2xl text-[#C49234]">₹{price}</span>
+                          <span className="text-xs">❧</span>
+                        </div>
+
+                        {/* Action Buttons: Buy Now & Customize */}
+                        <div className="pt-2 space-y-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBuyModalTemplate({ name: template.name, slug: template.slug, price, format: formatLabel });
+                              setBuySuccess(false);
+                            }}
+                            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-amber-50 font-bold text-xs sm:text-[13px] transition shadow-xs hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+                          >
+                            <ShoppingBag className="w-3.5 h-3.5 text-amber-200" />
+                            <span>Buy Now</span>
+                          </button>
+
+                          <div className="flex items-center gap-1.5">
+                            <Link
+                              href={`/templates/${encodeURIComponent(template.slug)}`}
+                              className="flex-1 py-2 px-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold text-xs transition flex items-center justify-center gap-1 border border-stone-200 cursor-pointer"
+                            >
+                              <span>View Details</span>
+                            </Link>
+
+                            <Link
+                              href={actionHref}
+                              className="flex-1 py-2 px-2 rounded-xl bg-[#720E16] hover:bg-[#5A0910] text-[#FFF3DA] font-semibold text-xs transition flex items-center justify-center gap-1 shadow-2xs cursor-pointer"
+                            >
+                              <span>Customize</span>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
 
             {/* Bottom Subtle Ornamental Ending */}
@@ -1323,7 +1335,7 @@ export default function HomePage() {
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
-                href="/wedding"
+                href="/templates"
                 className="w-full sm:w-auto px-7 py-3.5 bg-amber-400 hover:bg-amber-300 text-rose-950 font-bold text-xs rounded-xl shadow-lg transition min-h-[44px] flex items-center justify-center"
               >
                 Browse All Designs
@@ -1345,6 +1357,119 @@ export default function HomePage() {
             </p>
           </div>
         </section>*/}
+        {/* DUMMY BUY NOW CHECKOUT MODAL */}
+        {buyModalTemplate && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200 font-sans">
+            <div className="bg-[#FFFDF9] rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-5 shadow-2xl border border-stone-200 relative text-left">
+              {/* Close button */}
+              <button
+                onClick={() => {
+                  setBuyModalTemplate(null);
+                  setBuySuccess(false);
+                }}
+                className="absolute right-4 top-4 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-500 hover:text-stone-800 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {buySuccess ? (
+                <div className="text-center py-4 space-y-4">
+                  <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner">
+                    <Check className="w-8 h-8 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-serif font-bold text-stone-900">
+                      Demo Purchase Successful! 🎉
+                    </h3>
+                    <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+                      Aapka <strong>{buyModalTemplate.name}</strong> template order confirm ho gaya hai (Test Mode). Ab aap ise customize karke live card link generate kar sakte hain.
+                    </p>
+                  </div>
+                  <div className="pt-2 flex flex-col gap-2">
+                    <Link
+                      href={`/customize/${encodeURIComponent(buyModalTemplate.slug)}`}
+                      className="w-full py-3 rounded-xl bg-[#720E16] hover:bg-[#5A0910] text-[#FFF3DA] font-bold text-xs sm:text-sm text-center shadow-md transition"
+                    >
+                      Abhi Customize Karein &gt;
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setBuyModalTemplate(null);
+                        setBuySuccess(false);
+                      }}
+                      className="w-full py-2.5 rounded-xl border border-stone-200 text-stone-700 text-xs font-semibold hover:bg-stone-50 transition cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center font-bold">
+                      <ShoppingBag className="w-5 h-5 text-amber-800" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-amber-900 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                        Direct Purchase
+                      </span>
+                      <h3 className="text-lg font-serif font-bold text-stone-900 mt-0.5">
+                        {buyModalTemplate.name}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Pricing Box */}
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-[#FAF4EB] border border-amber-200 flex items-center justify-between">
+                    <div>
+                      <p className="text-xs font-semibold text-stone-600">Total Payable Amount</p>
+                      <p className="text-[11px] text-stone-400">Zero subscription • 1 Year Live Validity</p>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-2xl font-serif font-bold text-[#720E16]">
+                        ₹{buyModalTemplate.price}
+                      </span>
+                      <span className="text-[10px] text-emerald-700 font-semibold block">Fixed Price</span>
+                    </div>
+                  </div>
+
+                  {/* What you get */}
+                  <div className="space-y-1.5 text-xs text-stone-700">
+                    <p className="font-bold text-[11px] text-stone-500 uppercase tracking-wider">Includes:</p>
+                    <p className="flex items-center gap-2">
+                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Full Access to this Invitation Website Design</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>1-Click WhatsApp Sharing &amp; Google Maps GPS</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Unlimited Live Edits (Muhurat, Dates &amp; Venues)</span>
+                    </p>
+                  </div>
+
+                  {/* Dummy Payment Button */}
+                  <div className="space-y-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setBuySuccess(true)}
+                      className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 hover:from-emerald-700 hover:to-emerald-900 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Zap className="w-4 h-4 text-emerald-200" />
+                      <span>Proceed to Buy &bull; ₹{buyModalTemplate.price} (Demo Mode)</span>
+                    </button>
+
+                    <p className="text-[10px] text-center text-stone-400">
+                      ⚡ Safe UPI, PhonePe, Google Pay, QR Code &amp; Cards (Demo Simulation)
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </main>
 
       <PublicFooter />

@@ -2,9 +2,8 @@
 
 import { useEffect, useState, ReactNode, Suspense } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
-  Shield,
   Users,
   CalendarHeart,
   LogOut,
@@ -36,6 +35,7 @@ function SuperAdminLayoutInner({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [adminUser, setAdminUser] = useState<SuperAdminUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -58,34 +58,34 @@ function SuperAdminLayoutInner({
         });
 
         if (!res.ok) {
-          window.location.href = "/admin";
+          router.replace("/admin");
           return;
         }
 
         const data = await res.json();
         if (!data.success || !data.superAdmin) {
-          window.location.href = "/admin";
+          router.replace("/admin");
           return;
         }
 
         setAdminUser(data.superAdmin);
       } catch {
-        window.location.href = "/admin";
+        router.replace("/admin");
       } finally {
         setLoading(false);
       }
     }
 
     checkAuth();
-  }, []);
+  }, [router]);
 
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/super-admin/logout", { method: "POST" });
       localStorage.removeItem("shaadi_super_admin_token");
-      window.location.href = "/admin";
+      router.replace("/admin");
     } catch {
-      window.location.href = "/admin";
+      router.replace("/admin");
     }
   };
 
@@ -102,6 +102,12 @@ function SuperAdminLayoutInner({
         <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
       </div>
     );
+  }
+
+  // If on the template code/theme editor, render as a dedicated full-page screen (no dashboard sidebar, header, or padding)
+  const isEditorPage = pathname.includes("/templates/") && pathname.includes("/editor");
+  if (isEditorPage) {
+    return <div className="h-screen w-screen overflow-hidden bg-zinc-950">{children}</div>;
   }
 
   const isDashboardActive = pathname === "/admin/dashboard";

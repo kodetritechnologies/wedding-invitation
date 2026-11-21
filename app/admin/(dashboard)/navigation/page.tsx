@@ -13,11 +13,7 @@ import {
   Search,
   Eye,
   EyeOff,
-  ExternalLink,
   RefreshCw,
-  ChevronDown,
-  ListPlus,
-  Layers,
 } from "lucide-react";
 
 interface SubNavItem {

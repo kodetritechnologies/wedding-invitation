@@ -58,6 +58,10 @@ export async function POST(
       }
 
       // Update database record
+      const format = formData.get("format") as string | null;
+      if (format && ["website", "video", "pdf"].includes(format.toLowerCase().trim())) {
+        template.format = format.toLowerCase().trim() as any;
+      }
       template.manifest = deployResult.manifest;
       template.packagePath = `templates/${template.slug}`;
       if (deployResult.backupZipPath) {
@@ -73,6 +77,12 @@ export async function POST(
           }
         }
         template.designSettings = defaults;
+      }
+
+      const isDefaultVal = formData.get("isDefault");
+      if (isDefaultVal === "true" || isDefaultVal === "1") {
+        await InvitationTemplate.updateMany({ _id: { $ne: template._id } }, { isDefault: false });
+        template.isDefault = true;
       }
 
       await template.save();

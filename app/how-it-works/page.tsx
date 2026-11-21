@@ -5,17 +5,10 @@ import {
   Palette,
   CalendarHeart,
   Share2,
-  CheckCircle,
   ArrowRight,
   Smartphone,
-  Sparkles,
-  MapPin,
-  Users,
   Check,
-  MessageCircle,
   Heart,
-  Clock,
-  ShieldCheck,
   Eye,
 } from "lucide-react";
 import PublicHeader from "@/components/public/Header";

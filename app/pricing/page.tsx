@@ -2,116 +2,152 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Check,
-  Sparkles,
-  ArrowRight,
-  Heart,
-  Crown,
-  PhoneCall,
-  MessageCircle,
-} from "lucide-react";
+import { Check, Sparkles, ShieldCheck, Zap, Globe, Music, FileText, CheckCircle2 } from "lucide-react";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
 
 export default function PricingPage() {
-  const plans = [
+  const templateTiers = [
     {
-      id: "basic",
-      name: "Shubh Aarambh",
-      tier: "Essential",
+      id: "classic",
+      name: "Classic Patrika",
+      tier: "Minimal & Clean",
       price: "₹299",
-      period: "One-Time Payment &bull; Single Wedding",
-      desc: "Chhoti shaadi ya intimate ceremonies ke liye simple, clean digital card.",
-      badge: "Best for Intimate Weddings",
+      period: "Single Event • Zero Subscription",
+      desc: "Chhoti shaadi, Sagai ya Griha Pravesh ke liye simple, fast-loading digital card.",
+      badge: "Best for Intimate Events",
       badgeColor: "bg-stone-100 text-stone-700 border-stone-200",
       features: [
-        "Up to 3 Ceremonies (e.g. Sangeet, Vivah, Reception)",
+        "Single Page Clean Responsive Design",
+        "Up to 3 Ceremonies (Sangeet, Vivah, Reception)",
         "1-Click Direct Google Maps GPS Navigation",
-        "WhatsApp Direct 1-Click Sharing",
-        "Mobile-Responsive Royal Layout",
-        "Family Phone Contacts on Card",
-        "3 Months Live Hosting Validity",
+        "WhatsApp Direct 1-Click Sharing Link",
+        "Family Contacts & Shlok Display",
+        "6 Months Active Hosting Validity",
       ],
-      notIncluded: [
-        "Live RSVP Catering Headcount Tracker",
-        "Personalized Guest Name Links",
-        "Custom URL Slug",
-      ],
-      cta: "Shubh Aarambh Chunein",
+      cta: "Classic Templates Dekhein",
+      ctaHref: "/templates?category=wedding",
       ctaClass: "bg-stone-900 hover:bg-stone-800 text-white",
       highlight: false,
     },
     {
       id: "royal",
-      name: "Rajwada Royal",
+      name: "Rajwada Royal Slider",
       tier: "Most Popular",
       price: "₹599",
-      period: "One-Time Payment &bull; Complete Wedding",
-      desc: "Sabse pasandeeda package — Live RSVP, unlimited ceremonies aur personalized guest samman.",
-      badge: "⭐ 92% Families Choose This",
+      period: "Complete Event • 1 Year Hosting",
+      desc: "Sabse lokpriya royal card slider — multi-screen ceremonies, background music aur live RSVP tracker.",
+      badge: "⭐ 92% Parivar Isko Chunte Hain",
       badgeColor: "bg-amber-100 text-amber-900 border-amber-300",
       features: [
-        "Unlimited Ceremonies (Haldi, Mehendi, Sangeet, Vivah, Reception...)",
-        "Live RSVP Catering Headcount Dashboard (Track exact plates)",
-        "VIP Personalized Guest Names ('Honoured: Sharma Ji & Parivar')",
-        "Custom Branded URL Slug (/w/couple-names)",
-        "1-Click Google Maps Venue GPS Navigation",
-        "Instant Muhurat & Venue Update Control",
-        "1 Full Year Active Hosting (Post-wedding memories ke liye)",
+        "Royal Card Slider (Multi-screen interactive swipes)",
+        "Unlimited Ceremonies (Haldi, Mehendi, Sangeet, Vivah, Reception)",
+        "Live RSVP Guest Headcount Tracker (Plate count bachegi)",
+        "Background Shehnai / Traditional Music Player",
+        "Couple Pre-Wedding Photo Gallery",
+        "VIP Personalized Guest Names ('Honoured: Sharma Ji')",
+        "1 Full Year Active Hosting Validity",
       ],
-      notIncluded: ["Dedicated Designer VIP Concierge"],
-      cta: "Rajwada Royal Chunein",
+      cta: "Royal Slider Templates Dekhein",
+      ctaHref: "/templates?category=wedding",
       ctaClass: "bg-gradient-to-r from-rose-700 via-rose-800 to-amber-900 hover:from-rose-800 hover:to-amber-950 text-amber-100 shadow-md border border-amber-400/40",
       highlight: true,
     },
     {
       id: "bespoke",
-      name: "Maharaja Bespoke",
-      tier: "Luxury VIP",
+      name: "Maharaja Bespoke VIP",
+      tier: "Luxury Experience",
       price: "₹999",
-      period: "One-Time Payment &bull; VIP Concierge",
-      desc: "Aapke printed physical card ka exact digital replica + dedicated designer support.",
+      period: "VIP Concierge • 2 Years Hosting",
+      desc: "Aapke physical printed card ka exact digital replica + hamare designer ka dedicated support.",
       badge: "Includes Dedicated Designer",
       badgeColor: "bg-purple-100 text-purple-900 border-purple-300",
       features: [
         "Sabhi Rajwada Royal features included",
-        "Dedicated Designer Assistance from our Indore Studio",
-        "Printed Physical Card Ka Exact Digital Replica Conversion",
-        "Background Shehnai / Music Track Integration",
-        "Couple Pre-Wedding Photo Gallery & Video Embed",
-        "Priority VIP WhatsApp Support (Same-day setup)",
+        "Dedicated Designer Assistance (Same-day setup)",
+        "Physical Printed Card ka Exact Digital Clone",
+        "Custom Audio/Video Integration & Story Timeline",
+        "Turn-by-turn Navigation & Custom WhatsApp Invite Messages",
         "2 Full Years Active Hosting Validity",
       ],
-      notIncluded: [],
-      cta: "Maharaja Bespoke Chunein",
+      cta: "Bespoke Templates Dekhein",
+      ctaHref: "/templates?category=wedding",
       ctaClass: "bg-stone-900 hover:bg-stone-800 text-white",
       highlight: false,
     },
   ];
 
+  const addOns = [
+    {
+      icon: Globe,
+      name: "Custom Couple Domain",
+      price: "₹499",
+      desc: "Aapka apna personal link jaise rahulwedsneha.in seedha browser me khulega.",
+    },
+    {
+      icon: Music,
+      name: "Custom Song / Audio Track",
+      price: "₹99",
+      desc: "Aapka manpasand Bollywood ya Vedic Shehnai song background me bajega.",
+    },
+    {
+      icon: Sparkles,
+      name: "Remove VivahVaani Branding",
+      price: "₹199",
+      desc: "Footer se 'Powered by VivahVaani' watermark completely gayab ho jayega.",
+    },
+    {
+      icon: FileText,
+      name: "Printable High-Res PDF Patrika",
+      price: "₹149",
+      desc: "Usi website design ka printable PDF format WhatsApp forward aur print ke liye.",
+    },
+  ];
+
+  const b2bPacks = [
+    {
+      name: "Planner Starter Pack",
+      cards: "5 Templates Pack",
+      price: "₹1,499",
+      perCard: "₹299 / card",
+      desc: "Freelance designers aur wedding planners ke liye. Koi monthly subscription nahi.",
+      features: ["5 Live Wedding Websites", "Credits Kabhi Expire Nahi Hote", "White-Label Client Delivery"],
+    },
+    {
+      name: "Agency Pro Pack",
+      cards: "15 Templates Pack",
+      price: "₹3,999",
+      perCard: "₹266 / card",
+      desc: "High volume photo studios aur event management teams ke liye sabse kifayati pack.",
+      features: ["15 Live Wedding Websites", "Priority WhatsApp Support", "Custom Branding Enabled"],
+    },
+  ];
+
   const initialFaqs = [
     {
-      q: "Bade buzurg aur gaon ke rishtedaar isko aasani se dekh payenge?",
-      a: "Bilkul! Koi app download karne ki zaroorat nahi hai. WhatsApp par aane wale link par tap karte hi card bina kisi rukawat ke seedha browser me khul jaata hai.",
+      q: "Kya isme koi monthly ya yearly subscription charge hai?",
+      a: "Bilkul NAHI! VivahVaani har template ka ek direct fixed price leta hai. Aapko sirf card customize karke pay karna hai. Na koi recurring auto-debit hai, na koi hidden charges.",
+    },
+    {
+      q: "Card ka link kitne samay tak live rahega?",
+      a: "Aapka card kam se kam 1 saal tak live rehta hai taaki shaadi ke baad bhi rishtedaar photos aur yaadein dekh sakein. Iske baad bhi renew karne ka koi force nahi hota.",
     },
     {
       q: "Payment kaise karna hota hai?",
-      a: "Aap UPI, Google Pay, PhonePe, Paytm ya debit/credit card ke zariye surakshit one-time payment kar sakte hain. Koi hidden subscription charge nahi hai.",
+      a: "Aap UPI, Google Pay, PhonePe, Paytm, QR Code ya Net Banking ke zariye payment kar sakte hain. Payment hote hi card turant active ho jaata hai.",
     },
     {
-      q: "Agar shaadi ka muhurat ya venue aage peeche hua to kya naya card khareedna padega?",
-      a: "Nahi, bilkul nahi! Aap apne admin panel se kabhi bhi dates, muhurat ya venue location live update kar sakte hain, jo sabhi mehmaano ko turant dikhega.",
+      q: "Agar shaadi ka muhurat ya venue aage peeche hua to kya dobara khareedna padega?",
+      a: "Nahi! Aap apne dashboard me login karke kabhi bhi date, muhurat, ya venue ka Google Map link bina kisi extra shulk ke live edit kar sakte hain.",
     },
     {
-      q: "Kya hamara guest list aur phone numbers private rahenge?",
-      a: "Haan, aapka pura data 100% surakshit aur encrypted hai. Hum kisi bhi teesre paksh ke sath aapki ya aapke mehmaano ki jaankari share nahi karte.",
+      q: "Kya hamara guest list aur phone numbers surakshit rahenge?",
+      a: "Haan, aapka pura data 100% surakshit aur encrypted hai. Hum kisi bhi third-party ad network ko data share ya sell nahi karte.",
     },
   ];
 
   const [faqs, setFaqs] = useState<{ q: string; a: string }[]>(initialFaqs);
 
-  // Fetch Pricing FAQs dynamically from API
   useEffect(() => {
     async function loadFaqs() {
       try {
@@ -128,7 +164,7 @@ export default function PricingPage() {
           }
         }
       } catch {
-        // Fallback to initialFaqs
+        // Keep initialFaqs
       }
     }
     loadFaqs();
@@ -139,34 +175,56 @@ export default function PricingPage() {
       <PublicHeader />
 
       <main className="flex-1">
-        {/* HERO */}
+        {/* HERO SECTION */}
         <section className="relative overflow-hidden pt-14 pb-16 px-6 sm:px-8 border-b border-amber-900/10 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFEB]">
           <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
 
           <div className="max-w-4xl mx-auto text-center space-y-4 relative">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs">
-              <span>✦</span>
-              <span><span className="font-serif font-bold text-rose-950">शुभ विवाह</span> &bull; 100% Transparent Pricing &bull; Zero Hidden Costs</span>
-              <span>✦</span>
+              <Sparkles className="w-3.5 h-3.5 text-rose-600" />
+              <span>Fixed Pricing &bull; Zero Subscription &bull; Lifetime Event Hosting</span>
+              <Sparkles className="w-3.5 h-3.5 text-rose-600" />
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.18]">
-              Na Courier Ki Deri, Na Print Ka Kharcha,{" "}
+              Har Template Ka Ek Fix Price,{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-2">
-                Apno Ko Bhejein <span className="font-sans font-bold">शुभ विवाह</span> Ka Royal <span className="font-sans font-bold">निमंत्रण</span>
+                Na Subscription Ka Jhanjhat, Na Hidden Charges
               </span>
             </h1>
 
             <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-sans">
-              Door ho ya paas, WhatsApp par 1 click me har rishtedaar tak pahuche <span className="font-semibold text-stone-900">शुभ मुहूर्त</span>, live venue GPS aur parivar ka <span className="font-semibold text-stone-900">सादर आमंत्रण</span> — affordable one-time packages ke saath.
+              Apni pasand ka template chunein, customize karein aur sirf ek baar pay karke apne saare rishtedaaron ko WhatsApp par royal nimantran bhejein.
             </p>
+
+            {/* TRUST PILLS */}
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-4 text-xs font-medium text-stone-600">
+              <span className="inline-flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-stone-200 shadow-2xs">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Instant Live Activation
+              </span>
+              <span className="inline-flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-stone-200 shadow-2xs">
+                <Zap className="w-4 h-4 text-amber-600" /> 1-Click WhatsApp Ready
+              </span>
+              <span className="inline-flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-stone-200 shadow-2xs">
+                <ShieldCheck className="w-4 h-4 text-rose-600" /> Safe UPI & Cards Payment
+              </span>
+            </div>
           </div>
         </section>
 
-        {/* PACKAGES GRID */}
+        {/* TEMPLATE TIERS GRID */}
         <section className="max-w-7xl mx-auto px-6 py-14">
+          <div className="text-center space-y-2 mb-10">
+            <span className="text-xs uppercase font-cinzel tracking-widest text-amber-800 font-bold">
+              ✦ Parivar Ke Budget Me Shreshth Nirmaan ✦
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+              Pick Your Template Category
+            </h2>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {plans.map((plan) => (
+            {templateTiers.map((plan) => (
               <div
                 key={plan.id}
                 className={`bg-white rounded-3xl p-7 sm:p-8 border transition-all duration-300 flex flex-col justify-between ${
@@ -176,7 +234,6 @@ export default function PricingPage() {
                 }`}
               >
                 <div className="space-y-5">
-                  {/* Badge */}
                   <div className="flex items-center justify-between">
                     <span
                       className={`text-[11px] font-bold px-3 py-1 rounded-full border ${plan.badgeColor}`}
@@ -205,7 +262,7 @@ export default function PricingPage() {
                         {plan.price}
                       </span>
                     </div>
-                    <span className="text-[11px] text-stone-500 block mt-1">
+                    <span className="text-[11px] text-emerald-700 font-semibold block mt-1">
                       {plan.period}
                     </span>
                   </div>
@@ -226,7 +283,7 @@ export default function PricingPage() {
 
                 <div className="pt-6">
                   <Link
-                    href="/register"
+                    href={plan.ctaHref}
                     className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm text-center block transition ${plan.ctaClass}`}
                   >
                     {plan.cta}
@@ -234,6 +291,103 @@ export default function PricingPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* OPTIONAL ADD-ONS SECTION */}
+        <section className="max-w-5xl mx-auto px-6 py-10">
+          <div className="bg-[#FAF7F2] rounded-3xl p-8 sm:p-10 border border-stone-200">
+            <div className="text-center space-y-2 mb-8">
+              <span className="text-xs uppercase font-cinzel tracking-widest text-rose-800 font-bold">
+                ✦ Optional Power-Ups ✦
+              </span>
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900">
+                Aapke Card Ko Aur Khaas Banane Ke Liye Add-Ons
+              </h3>
+              <p className="text-xs text-stone-600 max-w-md mx-auto">
+                Inhe aap template customize karte waqt apni marzi se add kar sakte hain:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {addOns.map((addon, idx) => {
+                const Icon = addon.icon;
+                return (
+                  <div
+                    key={idx}
+                    className="bg-white p-5 rounded-2xl border border-stone-200 shadow-2xs flex items-start gap-4"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center shrink-0 border border-amber-200">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <h4 className="text-sm font-bold text-stone-900">{addon.name}</h4>
+                        <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                          +{addon.price}
+                        </span>
+                      </div>
+                      <p className="text-xs text-stone-600 leading-relaxed">{addon.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* B2B / WEDDING PLANNERS BULK PACKS */}
+        <section className="max-w-5xl mx-auto px-6 py-10">
+          <div className="bg-gradient-to-r from-stone-900 via-stone-850 to-stone-900 text-stone-100 rounded-3xl p-8 sm:p-10 border border-amber-500/20 shadow-lg">
+            <div className="max-w-2xl mx-auto text-center space-y-2 mb-8">
+              <span className="text-[11px] font-cinzel uppercase tracking-widest text-amber-400 font-bold">
+                ✦ For Wedding Planners & Photographers ✦
+              </span>
+              <h3 className="text-2xl font-serif font-bold text-amber-100">
+                Prepaid Bulk Packs (No Monthly Fee)
+              </h3>
+              <p className="text-xs text-stone-300">
+                Agar aap event agency ya photographer hain, to prepaid bundle packs lein. Credits kabhi expire nahi hote!
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {b2bPacks.map((pack, idx) => (
+                <div
+                  key={idx}
+                  className="bg-stone-800/80 rounded-2xl p-6 border border-amber-400/20 flex flex-col justify-between space-y-4"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-lg font-bold text-white">{pack.name}</h4>
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300">
+                        {pack.cards}
+                      </span>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-bold text-amber-200">{pack.price}</span>
+                      <span className="text-xs text-stone-400">({pack.perCard})</span>
+                    </div>
+                    <p className="text-xs text-stone-300">{pack.desc}</p>
+                    <ul className="space-y-1.5 text-xs text-stone-300 pt-2 border-t border-stone-700">
+                      {pack.features.map((f, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <Link
+                    href="/contact?type=b2b"
+                    className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs text-center transition block"
+                  >
+                    B2B Pack Inquiry Karein
+                  </Link>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

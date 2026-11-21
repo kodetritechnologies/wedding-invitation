@@ -1,33 +1,29 @@
 "use client";
 
-import { useEffect, useState, useRef, use } from "react";
+import { useEffect, useState, useRef, use, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Editor from "@monaco-editor/react";
 import {
-  Palette,
   ArrowLeft,
   Smartphone,
   Tablet,
   Monitor,
-  RotateCcw,
   Save,
   Check,
   Loader2,
-  Sparkles,
-  Layers,
-  Type,
   Maximize2,
-  Eye,
-  Sliders,
+  Columns,
   AlertCircle,
   Code2,
   FileCode,
   FileText,
   FileJson,
   FolderOpen,
+  FolderClosed,
   RefreshCw,
   Trash2,
+  ExternalLink,
 } from "lucide-react";
 
 interface DesignSettingDef {
@@ -84,20 +80,18 @@ function getMonacoLanguage(filePath: string): string {
   }
 }
 
-export default function TemplateEditorPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+function TemplateEditorContent({ id }: { id: string }) {
   const router = useRouter();
-  const { id } = use(params);
 
   const [template, setTemplate] = useState<TemplateData | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Editor Mode: "code" (Full Code Editor) or "visual" (Design Sliders)
-  const [editorMode, setEditorMode] = useState<"code" | "visual">("code");
+  // Code View Layout: "full" (Full Page Code Editor) or "split" (Code + Live Preview)
+  const [codeLayout, setCodeLayout] = useState<"full" | "split">("full");
+
+  // File Explorer Sidebar toggle
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Device Viewport: mobile (380px), tablet (768px), desktop (100%)
   const [deviceMode, setDeviceMode] = useState<"mobile" | "tablet" | "desktop">("mobile");
@@ -115,19 +109,8 @@ export default function TemplateEditorPage({
 
   // Line numbers calculation
   const lineCount = fileCode.split("\n").length;
-  const lineNumbers = Array.from({ length: lineCount }, (_, i) => i + 1);
-
-  // ==========================================
-  // VISUAL SETTINGS STATE
-  // ==========================================
-  const [settings, setSettings] = useState<Record<string, any>>({});
-  const [savingSettings, setSavingSettings] = useState(false);
-  const [visualSavedSuccess, setVisualSavedSuccess] = useState(false);
-  const [activeVisualTab, setActiveVisualTab] = useState<"colors" | "typography" | "layout">("colors");
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const lineNumbersRef = useRef<HTMLDivElement>(null);
 
   // Load Template Metadata & Initial Files
   useEffect(() => {
@@ -151,16 +134,6 @@ export default function TemplateEditorPage({
 
         const tmpl: TemplateData = dataT.template;
         setTemplate(tmpl);
-
-        // Build active visual settings map
-        const initialSettings: Record<string, any> = {};
-        for (const def of tmpl.manifest?.designSettings || []) {
-          initialSettings[def.key] =
-            tmpl.designSettings?.[def.key] !== undefined
-              ? tmpl.designSettings[def.key]
-              : def.default || "";
-        }
-        setSettings(initialSettings);
 
         // 2. Fetch file list for Code Editor
         const resC = await fetch(`/api/admin/templates/${id}/code`, {
@@ -251,81 +224,10 @@ export default function TemplateEditorPage({
     }
   };
 
-  // Keyboard shortcut: Ctrl+S / Cmd+S to save
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-      e.preventDefault();
-      handleSaveCodeFile();
-      return;
-    }
-
-    // Support Tab key indentation (inserts 2 spaces)
-    if (e.key === "Tab") {
-      e.preventDefault();
-      const textarea = textareaRef.current;
-      if (!textarea) return;
-
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-
-      const newValue = fileCode.substring(0, start) + "  " + fileCode.substring(end);
-      setFileCode(newValue);
-
-      setTimeout(() => {
-        textarea.selectionStart = textarea.selectionEnd = start + 2;
-      }, 0);
-    }
-  };
-
-  // Sync line numbers scroll with textarea
-  const handleTextareaScroll = () => {
-    if (textareaRef.current && lineNumbersRef.current) {
-      lineNumbersRef.current.scrollTop = textareaRef.current.scrollTop;
-    }
-  };
-
   // Refresh preview iframe
   const refreshIframe = () => {
     if (iframeRef.current && template) {
       iframeRef.current.src = `/api/public/templates/${template.slug}/preview?t=${Date.now()}`;
-    }
-  };
-
-  // Visual setting live change
-  const applyVisualSettingChange = (key: string, value: any) => {
-    setSettings((prev) => ({ ...prev, [key]: value }));
-    if (iframeRef.current && iframeRef.current.contentDocument) {
-      const doc = iframeRef.current.contentDocument;
-      const varName = `--${key.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()}`;
-      doc.documentElement.style.setProperty(varName, value);
-    }
-  };
-
-  // Save visual settings
-  const handleSaveVisualSettings = async () => {
-    setSavingSettings(true);
-    setVisualSavedSuccess(false);
-    try {
-      const token = localStorage.getItem("shaadi_super_admin_token");
-      const res = await fetch(`/api/admin/templates/${id}/settings`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-        body: JSON.stringify({ designSettings: settings }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setVisualSavedSuccess(true);
-        setTimeout(() => setVisualSavedSuccess(false), 3000);
-      } else {
-        alert(data.error || "Failed to save settings");
-      }
-    } catch (err: any) {
-      alert(err.message || "Error saving settings");
-    } finally {
-      setSavingSettings(false);
     }
   };
 
@@ -385,7 +287,7 @@ export default function TemplateEditorPage({
   const isCodeModified = fileCode !== originalFileCode;
 
   return (
-    <div className="h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans overflow-hidden">
+    <div className="fixed inset-0 z-50 w-screen h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans overflow-hidden">
       {/* =========================================================================
           TOP NAVBAR: Template Info, Editor Mode Switcher, Device Modes & Save
          ========================================================================= */}
@@ -415,100 +317,115 @@ export default function TemplateEditorPage({
           </div>
         </div>
 
-        {/* Center: Mode Switcher (Code Editor vs Visual Customizer) */}
-        <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-lg p-0.5">
-          <button
-            onClick={() => setEditorMode("code")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition cursor-pointer ${
-              editorMode === "code"
-                ? "bg-amber-500 text-black font-semibold shadow-xs"
-                : "text-zinc-400 hover:text-white"
-            }`}
-          >
-            <Code2 className="w-3.5 h-3.5" />
-            <span>Code Editor</span>
-          </button>
-
-          <button
-            onClick={() => setEditorMode("visual")}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition cursor-pointer ${
-              editorMode === "visual"
-                ? "bg-amber-500 text-black font-semibold shadow-xs"
-                : "text-zinc-400 hover:text-white"
-            }`}
-          >
-            <Sliders className="w-3.5 h-3.5" />
-            <span>Visual Styling</span>
-          </button>
+        {/* Center: File Status */}
+        <div className="hidden md:flex items-center gap-2 text-xs text-zinc-400 font-mono bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
+          <Code2 className="w-3.5 h-3.5 text-amber-500" />
+          <span className="font-semibold text-zinc-200">Monaco IDE</span>
+          <span className="text-zinc-600">•</span>
+          <span className="text-zinc-400 truncate max-w-[200px]">{activeFilePath}</span>
         </div>
 
-        {/* Right: Device Viewport & Action Buttons */}
+        {/* Right: View Modes, Device Viewport & Action Buttons */}
         <div className="flex items-center gap-2">
-          {/* Device Viewport Switcher */}
-          <div className="hidden md:flex items-center bg-zinc-950 border border-zinc-800 rounded-lg p-0.5">
+          {/* Code Layout Switcher (Full Page vs Split View) */}
+          <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-lg p-0.5">
             <button
-              onClick={() => setDeviceMode("mobile")}
-              className={`p-1.5 rounded text-xs transition cursor-pointer ${
-                deviceMode === "mobile" ? "bg-zinc-800 text-amber-400" : "text-zinc-500 hover:text-white"
+              onClick={() => setCodeLayout("full")}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition cursor-pointer ${
+                codeLayout === "full"
+                  ? "bg-amber-500 text-black font-semibold shadow-xs"
+                  : "text-zinc-400 hover:text-white"
               }`}
-              title="Mobile (380px)"
+              title="Full Page Editor (100% Space for Coding)"
             >
-              <Smartphone className="w-3.5 h-3.5" />
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>Full Page</span>
             </button>
             <button
-              onClick={() => setDeviceMode("tablet")}
-              className={`p-1.5 rounded text-xs transition cursor-pointer ${
-                deviceMode === "tablet" ? "bg-zinc-800 text-amber-400" : "text-zinc-500 hover:text-white"
+              onClick={() => setCodeLayout("split")}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition cursor-pointer ${
+                codeLayout === "split"
+                  ? "bg-amber-500 text-black font-semibold shadow-xs"
+                  : "text-zinc-400 hover:text-white"
               }`}
-              title="Tablet (768px)"
+              title="Split Screen (Code + Live Preview side-by-side)"
             >
-              <Tablet className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setDeviceMode("desktop")}
-              className={`p-1.5 rounded text-xs transition cursor-pointer ${
-                deviceMode === "desktop" ? "bg-zinc-800 text-amber-400" : "text-zinc-500 hover:text-white"
-              }`}
-              title="Desktop (Full)"
-            >
-              <Monitor className="w-3.5 h-3.5" />
+              <Columns className="w-3.5 h-3.5" />
+              <span>Split Preview</span>
             </button>
           </div>
 
-          <button
-            onClick={refreshIframe}
-            className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg transition"
-            title="Refresh Live Preview"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-          </button>
+          {/* Device Viewport Switcher - Shown when preview is active */}
+          {codeLayout === "split" && (
+            <div className="hidden md:flex items-center bg-zinc-950 border border-zinc-800 rounded-lg p-0.5">
+              <button
+                onClick={() => setDeviceMode("mobile")}
+                className={`p-1.5 rounded text-xs transition cursor-pointer ${
+                  deviceMode === "mobile" ? "bg-zinc-800 text-amber-400" : "text-zinc-500 hover:text-white"
+                }`}
+                title="Mobile (380px)"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setDeviceMode("tablet")}
+                className={`p-1.5 rounded text-xs transition cursor-pointer ${
+                  deviceMode === "tablet" ? "bg-zinc-800 text-amber-400" : "text-zinc-500 hover:text-white"
+                }`}
+                title="Tablet (768px)"
+              >
+                <Tablet className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setDeviceMode("desktop")}
+                className={`p-1.5 rounded text-xs transition cursor-pointer ${
+                  deviceMode === "desktop" ? "bg-zinc-800 text-amber-400" : "text-zinc-500 hover:text-white"
+                }`}
+                title="Desktop (Full)"
+              >
+                <Monitor className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
 
-          {/* Primary Action Button */}
-          {editorMode === "code" ? (
+          {codeLayout === "split" && (
             <button
-              onClick={handleSaveCodeFile}
-              disabled={savingFile || !isCodeModified}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-black text-xs font-bold rounded-lg shadow-md transition cursor-pointer"
+              onClick={refreshIframe}
+              className="p-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg transition"
+              title="Refresh Live Preview"
             >
-              {savingFile ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : codeSavedSuccess ? (
-                <Check className="w-3.5 h-3.5" />
-              ) : (
-                <Save className="w-3.5 h-3.5" />
-              )}
-              <span>{codeSavedSuccess ? "Saved!" : isCodeModified ? "Save (Ctrl+S)" : "Saved"}</span>
-            </button>
-          ) : (
-            <button
-              onClick={handleSaveVisualSettings}
-              disabled={savingSettings}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-black text-xs font-bold rounded-lg shadow-md transition cursor-pointer"
-            >
-              {savingSettings ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-              <span>{visualSavedSuccess ? "Saved!" : "Save Styling"}</span>
+              <RefreshCw className="w-3.5 h-3.5" />
             </button>
           )}
+
+          {codeLayout === "full" && (
+            <a
+              href={`/api/public/templates/${template.slug}/preview`}
+              target="_blank"
+              rel="noreferrer"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs rounded-lg transition"
+              title="Open Live Preview in New Tab"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+              <span>Preview Tab</span>
+            </a>
+          )}
+
+          {/* Primary Action Button: Save Code */}
+          <button
+            onClick={handleSaveCodeFile}
+            disabled={savingFile || !isCodeModified}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-black text-xs font-bold rounded-lg shadow-md transition cursor-pointer"
+          >
+            {savingFile ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : codeSavedSuccess ? (
+              <Check className="w-3.5 h-3.5" />
+            ) : (
+              <Save className="w-3.5 h-3.5" />
+            )}
+            <span>{codeSavedSuccess ? "Saved!" : isCodeModified ? "Save (Ctrl+S)" : "Saved"}</span>
+          </button>
 
           {/* Delete Template Button */}
           <button
@@ -522,72 +439,111 @@ export default function TemplateEditorPage({
       </header>
 
       {/* =========================================================================
-          MAIN WORKSPACE (Split Screen: Editor Left / Live Preview Right)
+          MAIN WORKSPACE (Full Screen IDE: Files + Monaco Editor + Optional Split Preview)
          ========================================================================= */}
       <div className="flex-1 flex overflow-hidden">
-        {/* =====================================================================
-            LEFT WORKSPACE: CODE EDITOR OR VISUAL STYLING
-           ===================================================================== */}
-        {editorMode === "code" ? (
-          <div className="flex-1 flex overflow-hidden border-r border-zinc-800">
+        {/* Left Workspace: Code Editor Pane */}
+        <div className={`flex-1 flex overflow-hidden ${codeLayout === "split" ? "border-r border-zinc-800" : ""}`}>
             {/* File Explorer Sidebar */}
-            <div className="w-56 bg-zinc-900 border-r border-zinc-800 flex flex-col shrink-0 select-none">
-              <div className="p-3 border-b border-zinc-800 flex items-center justify-between text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-                <span className="flex items-center gap-1.5">
-                  <FolderOpen className="w-3.5 h-3.5 text-amber-500" />
-                  Files
-                </span>
-                <span className="text-[10px] text-zinc-500">{fileList.length} files</span>
-              </div>
-
-              <div className="flex-1 overflow-y-auto p-2 space-y-0.5 text-xs">
-                {fileList.map((file) => {
-                  const isActive = activeFilePath === file.path;
-                  const Icon =
-                    file.ext === ".html"
-                      ? FileCode
-                      : file.ext === ".css"
-                      ? FileText
-                      : file.ext === ".json"
-                      ? FileJson
-                      : FileCode;
-
-                  return (
+            {isSidebarOpen ? (
+              <div className="w-56 bg-zinc-900 border-r border-zinc-800 flex flex-col shrink-0 select-none transition-all">
+                <div className="p-3 border-b border-zinc-800 flex items-center justify-between text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                  <span className="flex items-center gap-1.5">
+                    <FolderOpen className="w-3.5 h-3.5 text-amber-500" />
+                    Files
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-zinc-500">{fileList.length} files</span>
                     <button
-                      key={file.path}
-                      onClick={() => loadFileContent(file.path)}
-                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-left transition font-mono text-[11px] cursor-pointer ${
-                        isActive
-                          ? "bg-amber-500/15 text-amber-300 font-semibold border-l-2 border-amber-500"
-                          : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
-                      }`}
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="p-1 rounded text-zinc-500 hover:text-white hover:bg-zinc-800 transition cursor-pointer"
+                      title="Collapse Files Sidebar"
                     >
-                      <div className="flex items-center gap-2 truncate">
-                        <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-amber-400" : "text-zinc-500"}`} />
-                        <span className="truncate">{file.path}</span>
-                      </div>
-                      <span className="text-[9px] text-zinc-600 font-sans shrink-0 ml-1">
-                        {(file.size / 1024).toFixed(1)}k
-                      </span>
+                      <FolderClosed className="w-3.5 h-3.5" />
                     </button>
-                  );
-                })}
+                  </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-2 space-y-0.5 text-xs">
+                  {fileList.map((file) => {
+                    const isActive = activeFilePath === file.path;
+                    const Icon =
+                      file.ext === ".html"
+                        ? FileCode
+                        : file.ext === ".css"
+                        ? FileText
+                        : file.ext === ".json"
+                        ? FileJson
+                        : FileCode;
+
+                    return (
+                      <button
+                        key={file.path}
+                        onClick={() => loadFileContent(file.path)}
+                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-left transition font-mono text-[11px] cursor-pointer ${
+                          isActive
+                            ? "bg-amber-500/15 text-amber-300 font-semibold border-l-2 border-amber-500"
+                            : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 truncate">
+                          <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "text-amber-400" : "text-zinc-500"}`} />
+                          <span className="truncate">{file.path}</span>
+                        </div>
+                        <span className="text-[9px] text-zinc-600 font-sans shrink-0 ml-1">
+                          {(file.size / 1024).toFixed(1)}k
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            ) : null}
 
             {/* Code Editor Pane (IDE Styling) */}
             <div className="flex-1 flex flex-col bg-[#1e1e1e] overflow-hidden">
               {/* Tab Bar */}
               <div className="h-9 bg-[#252526] border-b border-[#333333] px-3 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2 font-mono text-zinc-300">
+                  {!isSidebarOpen && (
+                    <button
+                      onClick={() => setIsSidebarOpen(true)}
+                      className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] bg-zinc-800 hover:bg-zinc-700 text-amber-400 transition cursor-pointer mr-1"
+                      title="Show File Explorer"
+                    >
+                      <FolderOpen className="w-3.5 h-3.5" />
+                      <span className="text-[10px] text-zinc-300">Files</span>
+                    </button>
+                  )}
                   <FileCode className="w-3.5 h-3.5 text-amber-400" />
                   <span>{activeFilePath}</span>
                   {isCodeModified && <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />}
                 </div>
 
-                <span className="text-[10px] text-zinc-500 font-mono">
-                  {lineCount} lines • UTF-8
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] text-zinc-500 font-mono hidden sm:inline">
+                    {lineCount} lines • UTF-8
+                  </span>
+
+                  {/* Toggle Split / Full Page button inside Editor Tab Bar */}
+                  <button
+                    onClick={() => setCodeLayout(codeLayout === "full" ? "split" : "full")}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition cursor-pointer border border-zinc-700/60"
+                    title={codeLayout === "full" ? "Switch to Split Screen (with live preview)" : "Maximize Code Editor to Full Page"}
+                  >
+                    {codeLayout === "full" ? (
+                      <>
+                        <Columns className="w-3 h-3 text-amber-400" />
+                        <span>Split Preview</span>
+                      </>
+                    ) : (
+                      <>
+                        <Maximize2 className="w-3 h-3 text-amber-400" />
+                        <span>Full Page Code</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* Monaco VS Code Editor Area */}
@@ -634,129 +590,70 @@ export default function TemplateEditorPage({
               </div>
             </div>
           </div>
-        ) : (
-          /* =====================================================================
-              VISUAL STYLING CONTROLS PANE
-             ===================================================================== */
-          <div className="w-80 sm:w-96 bg-zinc-900 border-r border-zinc-800 flex flex-col shrink-0">
-            {/* Visual Tabs */}
-            <div className="p-3 border-b border-zinc-800">
-              <div className="flex items-center gap-1 bg-zinc-950 p-1 rounded-lg border border-zinc-800 text-xs">
-                <button
-                  onClick={() => setActiveVisualTab("colors")}
-                  className={`flex-1 py-1.5 px-2 rounded-md font-medium text-center transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                    activeVisualTab === "colors" ? "bg-zinc-800 text-amber-400 font-semibold" : "text-zinc-400 hover:text-white"
-                  }`}
-                >
-                  <Palette className="w-3.5 h-3.5" />
-                  <span>Colors</span>
-                </button>
-                <button
-                  onClick={() => setActiveVisualTab("typography")}
-                  className={`flex-1 py-1.5 px-2 rounded-md font-medium text-center transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                    activeVisualTab === "typography" ? "bg-zinc-800 text-amber-400 font-semibold" : "text-zinc-400 hover:text-white"
-                  }`}
-                >
-                  <Type className="w-3.5 h-3.5" />
-                  <span>Fonts</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Controls List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {activeVisualTab === "colors" &&
-                template.manifest?.designSettings
-                  ?.filter((s) => s.type === "color")
-                  .map((def) => {
-                    const val = settings[def.key] || "#000000";
-                    return (
-                      <div key={def.key} className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/80 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <label className="text-xs font-semibold text-zinc-200">{def.label}</label>
-                          <span className="text-[10px] font-mono text-zinc-500">
-                            --{def.key.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                          <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-zinc-700 shrink-0 cursor-pointer">
-                            <input
-                              type="color"
-                              value={val}
-                              onChange={(e) => applyVisualSettingChange(def.key, e.target.value)}
-                              className="absolute -top-2 -left-2 w-14 h-14 cursor-pointer border-0 p-0"
-                            />
-                          </div>
-                          <input
-                            type="text"
-                            value={val}
-                            onChange={(e) => applyVisualSettingChange(def.key, e.target.value)}
-                            className="flex-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs font-mono text-white focus:outline-none uppercase"
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
-
-              {activeVisualTab === "typography" &&
-                template.manifest?.designSettings
-                  ?.filter((s) => s.type === "font")
-                  .map((def) => {
-                    const val = settings[def.key] || "";
-                    return (
-                      <div key={def.key} className="bg-zinc-950/60 p-3 rounded-xl border border-zinc-800/80 space-y-2">
-                        <label className="text-xs font-semibold text-zinc-200">{def.label}</label>
-                        <input
-                          type="text"
-                          value={val}
-                          onChange={(e) => applyVisualSettingChange(def.key, e.target.value)}
-                          placeholder="e.g. Playfair Display, Cinzel"
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none"
-                        />
-                      </div>
-                    );
-                  })}
-            </div>
-          </div>
-        )}
 
         {/* =====================================================================
             RIGHT WORKSPACE: INTERACTIVE LIVE PREVIEW CANVAS
+            Rendered ONLY when "split" layout is selected
            ===================================================================== */}
-        <main className="flex-1 bg-zinc-950 flex flex-col items-center justify-center p-4 overflow-hidden relative">
-          <div
-            className={`transition-all duration-300 h-full flex flex-col bg-black rounded-2xl shadow-2xl overflow-hidden border border-zinc-800 ${
-              deviceMode === "mobile"
-                ? "w-[380px] max-w-full my-auto"
-                : deviceMode === "tablet"
-                ? "w-[768px] max-w-full my-auto"
-                : "w-full h-full"
-            }`}
-          >
-            {/* Viewport Frame Header */}
-            <div className="h-7 bg-zinc-900 border-b border-zinc-800 px-3 flex items-center justify-between text-[11px] text-zinc-500 shrink-0 select-none">
-              <span className="font-mono text-[10px]">
-                {deviceMode === "mobile" ? "iPhone 15 • 380px" : deviceMode === "tablet" ? "iPad • 768px" : "Desktop View"}
-              </span>
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-emerald-400 text-[10px]">Live Preview</span>
+        {codeLayout === "split" && (
+          <main className="flex-1 bg-zinc-950 flex flex-col items-center justify-center p-4 overflow-hidden relative">
+            <div
+              className={`transition-all duration-300 h-full flex flex-col bg-black rounded-2xl shadow-2xl overflow-hidden border border-zinc-800 ${
+                deviceMode === "mobile"
+                  ? "w-[380px] max-w-full my-auto"
+                  : deviceMode === "tablet"
+                  ? "w-[768px] max-w-full my-auto"
+                  : "w-full h-full"
+              }`}
+            >
+              {/* Viewport Frame Header */}
+              <div className="h-7 bg-zinc-900 border-b border-zinc-800 px-3 flex items-center justify-between text-[11px] text-zinc-500 shrink-0 select-none">
+                <span className="font-mono text-[10px]">
+                  {deviceMode === "mobile" ? "iPhone 15 • 380px" : deviceMode === "tablet" ? "iPad • 768px" : "Desktop View"}
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-emerald-400 text-[10px]">Live Preview</span>
+                </div>
+              </div>
+
+              {/* Sandboxed Live Preview Iframe */}
+              <div className="flex-1 relative bg-black">
+                <iframe
+                  ref={iframeRef}
+                  src={`/api/public/templates/${template.slug}/preview`}
+                  className="w-full h-full border-0"
+                  title="Template Live Preview"
+                  sandbox="allow-scripts allow-same-origin"
+                />
               </div>
             </div>
-
-            {/* Sandboxed Live Preview Iframe */}
-            <div className="flex-1 relative bg-black">
-              <iframe
-                ref={iframeRef}
-                src={`/api/public/templates/${template.slug}/preview`}
-                className="w-full h-full border-0"
-                title="Template Live Preview"
-                sandbox="allow-scripts allow-same-origin"
-              />
-            </div>
-          </div>
-        </main>
+          </main>
+        )}
       </div>
     </div>
+  );
+}
+
+function TemplateEditorWrapper({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  return <TemplateEditorContent id={id} />;
+}
+
+export default function TemplateEditorPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-stone-950 text-stone-200">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-400" />
+        </div>
+      }
+    >
+      <TemplateEditorWrapper params={params} />
+    </Suspense>
   );
 }

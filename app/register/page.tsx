@@ -15,6 +15,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Sparkles,
+  MapPin,
+  Star,
 } from "lucide-react";
 import { MdShare, MdGroup, MdAutoAwesome } from "react-icons/md";
 import LoginModal from "@/components/auth/LoginModal";
@@ -23,17 +25,22 @@ const HIGHLIGHTS = [
   {
     icon: MdAutoAwesome,
     title: "Free Digital Wedding Card",
-    desc: "Shandar digital patrika bilkul free banayein",
+    desc: "Shandar royal digital patrika bilkul free banayein",
   },
   {
     icon: MdShare,
     title: "1-Click WhatsApp Share",
-    desc: "Sabhi rishtedaron ko ek click me invite karein",
+    desc: "Sabhi rishtedaron aur doston ko ek click me invite karein",
   },
   {
     icon: MdGroup,
-    title: "Live RSVP & Guest Headcount",
-    desc: "Real-time aane wale mehmano ki list dekhein",
+    title: "Live RSVP & Headcount",
+    desc: "Aane wale mehmano ki sankhya real-time track karein",
+  },
+  {
+    icon: MapPin,
+    title: "Google Maps GPS Navigation",
+    desc: "Mehman bina kisi pareshani ke direct venue pahunchein",
   },
 ];
 
@@ -61,17 +68,29 @@ export default function RegisterPage() {
     const emailTrimmed = email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!nameTrimmed) errs.name = "Kripya apna shubh naam enter karein.";
-    else if (nameTrimmed.length < 2) errs.name = "Naam kam se kam 2 aksharon ka hona chahiye.";
+    if (!nameTrimmed) {
+      errs.name = "Kripya apna shubh naam enter karein.";
+    } else if (nameTrimmed.length < 2) {
+      errs.name = "Naam kam se kam 2 aksharon ka hona chahiye.";
+    }
 
-    if (!phone.trim()) errs.phone = "Kripya WhatsApp number enter karein.";
-    else if (phoneDigits.length < 10) errs.phone = "10 ankon ka valid mobile number enter karein.";
+    if (!phone.trim()) {
+      errs.phone = "Kripya WhatsApp number enter karein.";
+    } else if (phoneDigits.length < 10) {
+      errs.phone = "10 ankon ka valid mobile number enter karein.";
+    }
 
-    if (!emailTrimmed) errs.email = "Kripya email address enter karein.";
-    else if (!emailRegex.test(emailTrimmed)) errs.email = "Valid email enter karein (jaise name@gmail.com).";
+    if (!emailTrimmed) {
+      errs.email = "Kripya email address enter karein.";
+    } else if (!emailRegex.test(emailTrimmed)) {
+      errs.email = "Valid email enter karein (jaise name@gmail.com).";
+    }
 
-    if (!password) errs.password = "Kripya password enter karein.";
-    else if (password.length < 6) errs.password = "Password kam se kam 6 characters ka hona chahiye.";
+    if (!password) {
+      errs.password = "Kripya password enter karein.";
+    } else if (password.length < 6) {
+      errs.password = "Password kam se kam 6 characters ka hona chahiye.";
+    }
 
     setFieldErrors(errs);
     return Object.keys(errs).length === 0;
@@ -90,7 +109,9 @@ export default function RegisterPage() {
         body: JSON.stringify({ name, email, password, phone }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error || "Registration failed");
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Registration failed");
+      }
       if (data.token) {
         localStorage.setItem("shaadi_auth_token", data.token);
         localStorage.setItem("token", data.token);
@@ -107,188 +128,198 @@ export default function RegisterPage() {
   };
 
   const inputClass = (hasError?: string) =>
-    `w-full pl-8 pr-3 py-1.5 sm:py-2 rounded-xl border text-stone-800 text-xs sm:text-sm transition-all duration-200 ${
+    `w-full pl-8 sm:pl-9 pr-3 py-1.5 sm:py-2 rounded-xl border text-stone-800 text-xs sm:text-sm transition-all duration-200 ${
       hasError
         ? "border-red-400 bg-red-50/20 focus:ring-2 focus:ring-red-300/40 focus:border-red-500 focus:outline-none"
         : "border-stone-200 bg-stone-50/60 hover:border-amber-400/50 focus:bg-white focus:ring-2 focus:ring-amber-500/20 focus:border-[#7A0E1A] focus:outline-none"
     }`;
 
   return (
-    <div className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-[#FAF7F2] flex flex-col justify-between relative p-2 sm:p-3 lg:p-4 selection:bg-rose-100 selection:text-rose-900">
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden w-full bg-[#FAF7F2] flex flex-col lg:flex-row selection:bg-rose-100 selection:text-rose-900 overflow-x-hidden no-scrollbar">
 
-      {/* ── AMBIENT LUXURY BACKGROUND ORBS & TEXTURE ── */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      {/* ═════════════════════════════════════════════════════════
+          LEFT COLUMN — Royal Wedding Showcase (Full Height)
+      ═════════════════════════════════════════════════════════ */}
+      <div className="relative w-full lg:w-[48%] xl:w-[45%] h-full shrink-0 flex flex-col justify-between p-5 sm:p-7 lg:p-8 xl:p-10 text-white overflow-hidden bg-[#2D0308]">
+        {/* Background Wedding Image */}
         <div
-          className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full opacity-40 blur-3xl"
-          style={{ background: "radial-gradient(circle, #FDE68A 0%, rgba(254,243,199,0) 70%)" }}
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
+          style={{
+            backgroundImage: "url('/assets/steps/d6ac1b076954f2df18dbcdc119c7f878.jpg')",
+          }}
+          aria-hidden="true"
         />
+
+        {/* Rich Royal Maroon-Amber Gradient Overlay */}
         <div
-          className="absolute -bottom-32 -right-32 w-[520px] h-[520px] rounded-full opacity-25 blur-3xl"
-          style={{ background: "radial-gradient(circle, #FDA4AF 0%, rgba(255,228,230,0) 70%)" }}
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(160deg, rgba(35,2,6,0.94) 0%, rgba(92,6,18,0.88) 45%, rgba(122,14,26,0.91) 100%)",
+          }}
+          aria-hidden="true"
         />
+
+        {/* Subtle Damask Pattern */}
         <div
           className="absolute inset-0 opacity-[0.035] pointer-events-none"
           style={{
             backgroundImage: "url('/assets/steps/maroon-damask-bg.png')",
             backgroundSize: "320px 320px",
           }}
+          aria-hidden="true"
         />
-      </div>
 
-      {/* ── TOP NAV BAR ── */}
-      <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between py-1 px-1 shrink-0">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-stone-600 hover:text-stone-900 text-xs font-medium transition-colors group"
-        >
-          <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-          <span>Home Page</span>
-        </Link>
+        {/* Ornate Golden Mandala Flourish */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/steps/Ornate_Golden_Lotus_Mandala-removebg-preview.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute -bottom-24 -left-24 w-72 opacity-20 pointer-events-none select-none"
+        />
 
-        <div className="flex items-center gap-2">
-          <span className="hidden sm:inline text-xs text-stone-500">Pehle se account hai?</span>
-          <button
-            type="button"
-            onClick={() => setLoginModalOpen(true)}
-            className="text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/30 bg-white/80 hover:bg-white text-[#7A0E1A] shadow-sm transition-all cursor-pointer"
-          >
-            Sign In Karein
-          </button>
-        </div>
-      </header>
-
-      {/* ── CENTERED LUXURY FOLIO CARD ── */}
-      <main className="relative z-10 w-full max-w-4xl lg:max-w-[920px] mx-auto my-auto flex-1 flex items-center justify-center py-1 sm:py-2">
-        <div className="w-full bg-white rounded-2xl sm:rounded-3xl shadow-[0_20px_60px_-15px_rgba(92,6,18,0.18),0_1px_3px_rgba(0,0,0,0.04)] border border-amber-300/40 ring-1 ring-amber-400/20 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
-
-          {/* ═══════════════════════════════════════
-              LEFT PANEL — Editorial Wedding Story
-          ═══════════════════════════════════════ */}
-          <div className="lg:col-span-5 relative overflow-hidden p-5 sm:p-6 flex flex-col justify-between">
-
-            {/* Background Wedding Image */}
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
-              style={{
-                backgroundImage: "url('/assets/steps/d6ac1b076954f2df18dbcdc119c7f878.jpg')",
-              }}
-              aria-hidden="true"
-            />
-
-            {/* Rich Royal Maroon-Amber Duotone Gradient Overlay */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(160deg, rgba(45,3,8,0.92) 0%, rgba(92,6,18,0.86) 45%, rgba(122,14,26,0.88) 100%)",
-              }}
-              aria-hidden="true"
-            />
-
-            {/* Ornate Golden Mandala Corner Flourish */}
+        {/* Top Brand & Badge */}
+        <div className="relative z-10 flex items-center justify-between shrink-0">
+          <Link href="/" className="inline-block transition-transform hover:scale-105">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/assets/steps/Ornate_Golden_Lotus_Mandala-removebg-preview.png"
-              alt=""
-              aria-hidden="true"
-              className="absolute -bottom-16 -left-16 w-56 opacity-20 pointer-events-none select-none"
+              src="/logo-dark.png"
+              alt="VivahVaani"
+              className="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_2px_12px_rgba(212,163,69,0.5)]"
             />
+          </Link>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/15 border border-amber-300/30 text-amber-200 text-[11px] font-semibold tracking-wider uppercase backdrop-blur-md">
+            ✦ Royal Edition
+          </span>
+        </div>
 
-            {/* Top Brand & Badge */}
-            <div className="relative z-10 flex items-center justify-between">
-              <Link href="/" className="inline-block">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/logo-dark.png"
-                  alt="VivahVaani"
-                  className="h-8 sm:h-9 w-auto object-contain drop-shadow-[0_2px_10px_rgba(212,163,69,0.5)]"
-                />
-              </Link>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400/15 border border-amber-300/30 text-amber-200 text-[10px] font-semibold tracking-wider uppercase backdrop-blur-sm">
-                ✦ Royal Edition
-              </span>
-            </div>
-
-            {/* Middle Quote & Feature Pills */}
-            <div className="relative z-10 my-auto py-2 sm:py-3 space-y-3">
-              <div className="space-y-1">
-                <p className="text-amber-300/90 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-amber-300" />
-                  Shubh Vivaah Nimantran
-                </p>
-                <h2 className="text-white text-lg sm:text-xl font-bold leading-snug">
-                  हर शादी की शुरुआत,
-                  <br />
-                  <span className="text-amber-300 font-extrabold">एक खूबसूरत</span>
-                  <br />
-                  निमंत्रण से होती है।
-                </h2>
-                <p className="text-white/70 text-[11px] leading-relaxed max-w-xs">
-                  VivahVaani ke sath banayein apni shaadi ka digital aagaz aur mehmano ko bhejein shandar patrika.
-                </p>
-              </div>
-
-              {/* 3 Highlights */}
-              <div className="space-y-1.5 pt-0.5">
-                {HIGHLIGHTS.map((item) => (
-                  <div
-                    key={item.title}
-                    className="flex items-center gap-2.5 bg-white/[0.08] hover:bg-white/[0.12] backdrop-blur-md border border-white/15 rounded-xl px-2.5 py-1.5 transition-colors"
-                  >
-                    <div className="w-6 h-6 rounded-lg bg-amber-400/20 border border-amber-300/30 flex items-center justify-center text-amber-300 shrink-0">
-                      <item.icon className="w-3.5 h-3.5" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-amber-100 text-[11px] font-semibold leading-tight">{item.title}</p>
-                      <p className="text-white/60 text-[9.5px] truncate leading-tight mt-0.5">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bottom Badges */}
-            <div className="relative z-10 pt-1 flex items-center gap-1.5 flex-wrap">
-              {["100% Free", "Safe & Private", "Instant Setup"].map((badge) => (
-                <span
-                  key={badge}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/25 border border-white/10 text-white/75 text-[9.5px] font-medium"
-                >
-                  <CheckCircle2 className="w-2.5 h-2.5 text-amber-400" />
-                  {badge}
-                </span>
-              ))}
-            </div>
+        {/* Middle Headline, Slogan & Highlights */}
+        <div className="relative z-10 my-auto py-3 sm:py-4 space-y-3.5">
+          <div className="space-y-1.5">
+            <p className="text-amber-300/95 text-[11px] font-bold uppercase tracking-[0.2em] flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-amber-300" />
+              Shubh Vivaah Nimantran
+            </p>
+            <h2 className="text-white text-xl sm:text-2xl xl:text-3xl font-bold leading-tight">
+              हर शादी की शुरुआत,
+              <br />
+              <span className="text-amber-300 font-extrabold">एक खूबसूरत</span>
+              <br />
+              निमंत्रण से होती है।
+            </h2>
+            <p className="text-white/80 text-[11.5px] leading-relaxed max-w-sm">
+              VivahVaani ke sath banayein apni shaadi ka shandar interactive digital nimantran patrika aur mehmano ko aadar-poorvak bhejein.
+            </p>
           </div>
 
-          {/* ═══════════════════════════════════════
-              RIGHT PANEL — Cohesive Warm Luxury Form
-          ═══════════════════════════════════════ */}
-          <div className="lg:col-span-7 bg-[#FFFDFB] p-5 sm:p-6 lg:p-7 flex flex-col justify-center relative">
+          {/* 4 Feature Highlights */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
+            {HIGHLIGHTS.map((item) => (
+              <div
+                key={item.title}
+                className="flex items-start gap-2 bg-white/[0.08] hover:bg-white/[0.13] backdrop-blur-md border border-white/15 rounded-xl p-2 transition-colors"
+              >
+                <div className="w-6 h-6 rounded-lg bg-amber-400/20 border border-amber-300/30 flex items-center justify-center text-amber-300 shrink-0 mt-0.5">
+                  <item.icon className="w-3.5 h-3.5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-amber-100 text-[11px] font-semibold leading-tight">{item.title}</p>
+                  <p className="text-white/65 text-[10px] leading-snug mt-0.5 line-clamp-1">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
 
-            {/* Subtle Top-Right Accent */}
-            <div
-              className="absolute -top-12 -right-12 w-48 h-48 rounded-full opacity-20 pointer-events-none"
-              style={{ background: "radial-gradient(circle, #FCDDB0 0%, transparent 70%)" }}
-              aria-hidden="true"
-            />
+          {/* Testimonial Snippet */}
+          <div className="bg-black/25 backdrop-blur-md border border-amber-400/20 rounded-xl px-3 py-2 flex items-center gap-2.5">
+            <div className="flex text-amber-300 shrink-0">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-2.5 h-2.5 fill-amber-300" />
+              ))}
+            </div>
+            <p className="text-white/85 text-[10.5px] italic leading-tight">
+              &ldquo;Hamare sabhi rishtedaron ko patrika behad pasand aayi!&rdquo;
+              <span className="block not-italic font-semibold text-amber-200 text-[9.5px] mt-0.5">
+                — Priya &amp; Rohit (Jaipur)
+              </span>
+            </p>
+          </div>
+        </div>
 
-            {/* Header */}
-            <div className="mb-2.5">
-              <div className="flex items-center justify-between mb-1">
+        {/* Bottom Trust Badges */}
+        <div className="relative z-10 pt-1 flex items-center gap-1.5 flex-wrap shrink-0">
+          {["100% Free Setup", "No Card Required", "Private & Encrypted"].map((badge) => (
+            <span
+              key={badge}
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/30 border border-white/10 text-white/80 text-[10px] font-medium"
+            >
+              <CheckCircle2 className="w-2.5 h-2.5 text-amber-400" />
+              {badge}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ═════════════════════════════════════════════════════════
+          RIGHT COLUMN — Centered Register Form Canvas (Zero Scroll)
+      ═════════════════════════════════════════════════════════ */}
+      <div className="relative w-full lg:w-[52%] xl:w-[55%] h-full flex flex-col justify-between items-center bg-[#FFFDFB] no-scrollbar overflow-hidden">
+
+        {/* Subtle Ambient Radial Glows */}
+        <div
+          className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-25 pointer-events-none"
+          style={{ background: "radial-gradient(circle, #FCDDB0 0%, transparent 70%)" }}
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full opacity-15 pointer-events-none"
+          style={{ background: "radial-gradient(circle, #FDA4AF 0%, transparent 70%)" }}
+          aria-hidden="true"
+        />
+
+        {/* ── TOP COMPACT NAV BAR ── */}
+        <header className="relative z-10 w-full px-5 sm:px-8 lg:px-10 py-2 sm:py-3 flex items-center justify-between shrink-0">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-stone-600 hover:text-stone-900 text-xs font-medium transition-colors group"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+            <span>Home Page</span>
+          </Link>
+
+          <div className="flex items-center gap-2">
+            <span className="hidden sm:inline text-xs text-stone-500">Pehle se account hai?</span>
+            <button
+              type="button"
+              onClick={() => setLoginModalOpen(true)}
+              className="text-xs font-semibold px-3 py-1 rounded-full border border-amber-500/40 bg-white hover:bg-amber-50/50 text-[#7A0E1A] shadow-xs transition-all cursor-pointer"
+            >
+              Sign In Karein
+            </button>
+          </div>
+        </header>
+
+        {/* ── CENTER REGISTRATION FORM AREA (Centered Horizontally & Vertically) ── */}
+        <main className="relative z-10 flex-1 flex flex-col justify-center items-center px-5 sm:px-8 lg:px-10 py-1 my-auto w-full">
+          <div className="w-full max-w-[430px] mx-auto">
+
+            {/* Form Header (Nicely Centered) */}
+            <div className="mb-2 sm:mb-2.5 text-center">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200/70 text-[#7A0E1A] text-[10px] font-bold uppercase tracking-wider">
                   <Sparkles className="w-3 h-3 text-amber-500" />
                   ✦ Shubh Aarambh ✦
                 </span>
                 <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                  Free Card
+                  100% Free Card
                 </span>
               </div>
-              <h1 className="text-lg sm:text-xl font-bold text-stone-900 tracking-tight">
-                Apna Account Banayein
+              <h1 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight leading-tight">
+                Apna Free Account Banayein
               </h1>
-              <p className="text-stone-500 text-[11px] mt-0.5">
-                Sirf 1 minute me digital card create karna shuru karein — koi card zaroori nahi.
+              <p className="text-stone-500 text-[11px] sm:text-xs mt-0.5">
+                Sirf 1 minute me digital card create karein — koi payment zaroori nahi.
               </p>
             </div>
 
@@ -308,17 +339,17 @@ export default function RegisterPage() {
               </div>
             )}
 
-            {/* Form with pure JavaScript validation */}
-            <form onSubmit={handleSubmit} noValidate className="space-y-2">
+            {/* Registration Form */}
+            <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-2.5">
 
               {/* Name Field */}
               <div>
-                <label className="block text-[10px] font-bold text-stone-700 uppercase tracking-wider mb-0.5">
-                  Aapka Shubh Naam
+                <label className="block text-[10.5px] font-bold text-stone-700 uppercase tracking-wider mb-0.5">
+                  Aapka Shubh Naam <span className="text-rose-600">*</span>
                 </label>
                 <div className="relative">
                   <User
-                    className={`w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 transition-colors ${
+                    className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
                       fieldErrors.name ? "text-red-400" : "text-stone-400"
                     }`}
                   />
@@ -344,12 +375,12 @@ export default function RegisterPage() {
 
               {/* WhatsApp Field */}
               <div>
-                <label className="block text-[10px] font-bold text-stone-700 uppercase tracking-wider mb-0.5">
-                  WhatsApp Number
+                <label className="block text-[10.5px] font-bold text-stone-700 uppercase tracking-wider mb-0.5">
+                  WhatsApp Mobile Number <span className="text-rose-600">*</span>
                 </label>
                 <div className="relative">
                   <Phone
-                    className={`w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 transition-colors ${
+                    className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
                       fieldErrors.phone ? "text-red-400" : "text-stone-400"
                     }`}
                   />
@@ -374,12 +405,12 @@ export default function RegisterPage() {
 
               {/* Email Field */}
               <div>
-                <label className="block text-[10px] font-bold text-stone-700 uppercase tracking-wider mb-0.5">
-                  Email Address
+                <label className="block text-[10.5px] font-bold text-stone-700 uppercase tracking-wider mb-0.5">
+                  Email Address <span className="text-rose-600">*</span>
                 </label>
                 <div className="relative">
                   <Mail
-                    className={`w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 transition-colors ${
+                    className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
                       fieldErrors.email ? "text-red-400" : "text-stone-400"
                     }`}
                   />
@@ -404,12 +435,12 @@ export default function RegisterPage() {
 
               {/* Password Field */}
               <div>
-                <label className="block text-[10px] font-bold text-stone-700 uppercase tracking-wider mb-0.5">
-                  Password
+                <label className="block text-[10.5px] font-bold text-stone-700 uppercase tracking-wider mb-0.5">
+                  Password (Min 6 Characters) <span className="text-rose-600">*</span>
                 </label>
                 <div className="relative">
                   <Lock
-                    className={`w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 transition-colors ${
+                    className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
                       fieldErrors.password ? "text-red-400" : "text-stone-400"
                     }`}
                   />
@@ -440,7 +471,7 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              {/* Submit CTA */}
+              {/* Submit CTA Button */}
               <button
                 type="submit"
                 disabled={loading || success}
@@ -458,7 +489,7 @@ export default function RegisterPage() {
                   </>
                 ) : (
                   <>
-                    <span>Create Free Account</span>
+                    <span>Create Free Account &amp; Start</span>
                     <ArrowRight className="w-3.5 h-3.5 text-amber-300" />
                   </>
                 )}
@@ -466,7 +497,7 @@ export default function RegisterPage() {
             </form>
 
             {/* Sign In Prompt */}
-            <p className="mt-2.5 text-center text-[11px] text-stone-500">
+            <p className="mt-2.5 text-center text-xs text-stone-600">
               Pehle se account hai?{" "}
               <button
                 type="button"
@@ -477,8 +508,8 @@ export default function RegisterPage() {
               </button>
             </p>
 
-            {/* Terms micro-text */}
-            <p className="mt-1 text-center text-[9.5px] text-stone-400 leading-tight">
+            {/* Terms & Privacy micro-text */}
+            <p className="mt-1 text-center text-[10px] text-stone-400 leading-tight">
               Register karke aap hamare{" "}
               <Link href="/terms" className="underline hover:text-stone-600">
                 Terms
@@ -490,15 +521,15 @@ export default function RegisterPage() {
               se agree karte hain.
             </p>
           </div>
-        </div>
-      </main>
+        </main>
 
-      {/* ── FOOTER COPYRIGHT ── */}
-      <footer className="relative z-10 w-full max-w-5xl mx-auto py-0.5 text-center shrink-0">
-        <p className="text-[9.5px] text-stone-400">
-          © 2026 VivahVaani. Sampoorna Digital Nimantran Patrika Portal.
-        </p>
-      </footer>
+        {/* ── FOOTER COPYRIGHT ── */}
+        <footer className="relative z-10 w-full px-5 py-1.5 text-center shrink-0">
+          <p className="text-[10px] text-stone-400">
+            © 2026 VivahVaani. Sampoorna Digital Nimantran Patrika Portal.
+          </p>
+        </footer>
+      </div>
 
       {/* Login Modal */}
       <LoginModal

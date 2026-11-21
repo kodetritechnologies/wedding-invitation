@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
       await dbConnect();
       const body = await req.json();
 
-      const { name, slug, description, thumbnail, category } = body;
+      const { name, slug, description, thumbnail, category, format, price, isDefault } = body;
 
       if (!name || !slug) {
         return NextResponse.json(
@@ -135,12 +135,21 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      // If marked as default, unset isDefault on all other templates
+      const shouldBeDefault = Boolean(isDefault);
+      if (shouldBeDefault) {
+        await InvitationTemplate.updateMany({}, { isDefault: false });
+      }
+
       const newTemplate = await InvitationTemplate.create({
         name: name.trim(),
         slug: cleanSlug,
         description: description?.trim() || "",
         thumbnail: thumbnail?.trim() || "",
         category: (category || "wedding").trim().toLowerCase(),
+        format: format ? format.toLowerCase().trim() : "website",
+        price: price !== undefined && price !== "" ? Number(price) : (format === "video" ? 499 : format === "pdf" ? 399 : 999),
+        isDefault: shouldBeDefault,
         packagePath: `templates/${cleanSlug}`,
         manifest: {
           name: name.trim(),

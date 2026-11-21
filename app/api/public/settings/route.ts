@@ -37,7 +37,7 @@ export async function GET() {
         },
         footer: {
           copyrightText:
-            "© 2026 VivahVaani. A Product by Kodetri Technologies.",
+            "© 2026 VivahVaani. Partner by Kodetri Technologies.",
           tagline:
             "“Kalyanam, Mangalyam, Shubham.” Reimagining Indian wedding invitations into timeless, interactive digital patrika experiences.",
         },

@@ -6,7 +6,6 @@ import {
   MapPin,
   Mail,
   Phone,
-  MessageCircle,
   Save,
   Check,
   AlertCircle,

@@ -357,10 +357,9 @@ export default function WeddingsPage() {
                     onChange={(e) => setPackageTier(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
                   >
-                    <option value="basic">Basic (₹299)</option>
-                    <option value="premium">Premium (₹799)</option>
-                    <option value="royal">Royal (₹1,999)</option>
-                    <option value="subscription">Business Subscription</option>
+                    <option value="basic">Classic Patrika (₹299)</option>
+                    <option value="premium">Rajwada Royal (₹599)</option>
+                    <option value="royal">Maharaja Bespoke (₹999)</option>
                   </select>
                 </div>
               </div>

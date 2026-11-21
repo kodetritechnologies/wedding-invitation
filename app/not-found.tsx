@@ -5,12 +5,12 @@ import PublicFooter from "@/components/public/Footer";
 
 export default function NotFound() {
   const quickCategories = [
-    { name: "Wedding (Vivah Patrika)", href: "/wedding" },
-    { name: "Sagai (Engagement)", href: "/engagement" },
-    { name: "Anniversary (Varshgaanth)", href: "/anniversary" },
-    { name: "Janamdin (Birthday)", href: "/birthday" },
-    { name: "Griha Pravesh (Housewarming)", href: "/housewarming" },
-    { name: "Reception (Pratibhoj)", href: "/reception" },
+    { name: "Wedding (Vivah Patrika)", href: "/templates?category=wedding" },
+    { name: "Sagai (Engagement)", href: "/templates?category=engagement" },
+    { name: "Anniversary (Varshgaanth)", href: "/templates?category=anniversary" },
+    { name: "Janamdin (Birthday)", href: "/templates?category=birthday" },
+    { name: "Griha Pravesh (Housewarming)", href: "/templates?category=housewarming" },
+    { name: "Reception (Pratibhoj)", href: "/templates?category=reception" },
   ];
 
   return (

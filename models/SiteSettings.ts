@@ -121,7 +121,7 @@ const SiteSettingsSchema = new Schema<ISiteSettings>(
     footer: {
       copyrightText: {
         type: String,
-        default: "© 2026 VivahVaani. A Product by Kodetri Technologies.",
+        default: "© 2026 VivahVaani. Partner by Kodetri Technologies.",
         trim: true,
       },
       tagline: {

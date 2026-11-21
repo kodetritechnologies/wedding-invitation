@@ -4,7 +4,7 @@ import InvitationTemplate from "@/models/InvitationTemplate";
 
 // GET /api/templates/[slug]
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
@@ -15,7 +15,7 @@ export async function GET(
       slug,
       status: { $in: ["published", "unpublished"] }, // Allow existing weddings to access manifest even if unpublished
     })
-      .select("name slug description thumbnail manifest designSettings")
+      .select("name slug description thumbnail manifest designSettings price format category likesCount isDefault")
       .lean();
 
     if (!template) {

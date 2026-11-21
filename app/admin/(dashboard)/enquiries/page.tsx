@@ -7,16 +7,12 @@ import {
   Check,
   X,
   Loader2,
-  AlertCircle,
   Search,
   Phone,
   MessageSquare,
   Calendar,
   Clock,
-  User,
-  CheckCircle2,
   Inbox,
-  Filter,
 } from "lucide-react";
 
 interface EnquiryItem {

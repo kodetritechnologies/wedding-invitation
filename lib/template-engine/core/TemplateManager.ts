@@ -145,12 +145,16 @@ export class TemplateManager {
   public static async generatePreviewHtml(
     template: {
       slug: string;
+      packagePath?: string;
       manifest: TemplateManifest;
       designSettings?: Record<string, any>;
     },
     sampleOverrides: Record<string, any> = {}
   ): Promise<string> {
-    const templateRootPath = path.join(PUBLIC_TEMPLATES_DIR, template.slug);
+    const pkgPath = (template as any).packagePath;
+    const templateRootPath = pkgPath
+      ? path.join(process.cwd(), "public", pkgPath)
+      : path.join(PUBLIC_TEMPLATES_DIR, template.slug);
 
     // Build sample dummy data matching manifest customerFields
     const sampleData: Record<string, any> = {

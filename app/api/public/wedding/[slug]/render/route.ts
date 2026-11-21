@@ -9,7 +9,7 @@ type RouteContext = {
 };
 
 // GET /api/public/wedding/[slug]/render - Return rendered HTML for the dynamic wedding template
-export async function GET(req: NextRequest, context: RouteContext) {
+export async function GET(_req: NextRequest, context: RouteContext) {
   try {
     const { slug } = await context.params;
     await dbConnect();

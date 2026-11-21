@@ -11,10 +11,8 @@ import {
   Loader2,
   AlertCircle,
   Search,
-  Filter,
   Eye,
   EyeOff,
-  Layers,
 } from "lucide-react";
 
 interface FaqItem {

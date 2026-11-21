@@ -1,519 +1,1027 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Sparkles,
   Eye,
   ArrowRight,
-  Palette,
-  Heart,
-  Crown,
-  Check,
   Search,
+  Globe,
+  Video,
+  FileText,
+  SlidersHorizontal,
+  X,
+  RotateCcw,
+  CreditCard,
+  Pencil,
+  Share2,
+  Check,
+  ShoppingBag,
+  Zap,
   MessageCircle,
-  PhoneCall,
-  Flame,
-  Calendar,
+  ChevronDown,
 } from "lucide-react";
-import { GiCrown, GiLotus } from "react-icons/gi";
-import { FaOm } from "react-icons/fa";
-import { MdAutoAwesome, MdStar, MdGridView, MdMusicNote, MdTempleHindu } from "react-icons/md";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
-
-interface TemplateItem {
-  id: string;
-  title: string;
-  regionalTheme: string;
-  category: string;
-  tier: "Royal" | "Premium" | "Essential";
-  popularBadge?: string;
-  popularIcon?: "star" | "lotus" | "om" | "sparkle";
-  couples: string;
-  subTitle: string;
-  location: string;
-  description: string;
-  features: string[];
-  colors: string[];
-  bgGradient: string;
-  accentColor: string;
-  demoSlug: string;
-  previewUrl?: string;
-}
-
-const TEMPLATES_CATALOG: TemplateItem[] = [
-  {
-    id: "royal-rajputana",
-    title: "Rajwada Darbar",
-    regionalTheme: "Jaipur & Udaipur Heritage",
-    category: "royal",
-    tier: "Royal",
-    popularBadge: "Most Loved in Indore & Rajasthan",
-    popularIcon: "star",
-    couples: "Aarav & Diya",
-    subTitle: "|| श्री गणेशाय नमः || शुभ विवाह",
-    location: "Indore & Udaipur",
-    description: "Deep regal crimson, rich gold leaf border arches, royal elephant motifs, and classical wedding shehnai aesthetics.",
-    features: ["Gold Arch Motifs", "Live RSVP Headcount", "Multi-Day Muhurat Timeline", "Google Maps Directions"],
-    colors: ["#7F1D1D", "#D97706", "#FFFBEB"],
-    bgGradient: "from-[#450a0a] via-[#781212] to-[#2b0505]",
-    accentColor: "border-amber-400/60 text-amber-300",
-    demoSlug: "aarav-diya",
-  },
-  {
-    id: "gulab-botanical",
-    title: "Gulab & Chandan Blush",
-    regionalTheme: "Romantic Pastel Lawn Soiree",
-    category: "floral",
-    tier: "Premium",
-    popularBadge: "Trending for Day Weddings",
-    popularIcon: "lotus",
-    couples: "Ananya & Kabir",
-    subTitle: "Two Hearts &bull; One Soul",
-    location: "Goa & Mumbai",
-    description: "Watercolored blush roses, eucalyptus foliage, warm champagne gold, and delicate romantic calligraphy for open-air lawn ceremonies.",
-    features: ["Pastel Watercolor Art", "Custom Dress Code Tags", "Interactive Photo Gallery", "1-Click WhatsApp Share"],
-    colors: ["#FCE7F3", "#047857", "#9D174D"],
-    bgGradient: "from-[#500724] via-[#701a75] to-[#3b0764]",
-    accentColor: "border-pink-300/60 text-pink-200",
-    demoSlug: "aarav-diya",
-  },
-  {
-    id: "kashi-vedic",
-    title: "Kashi Shubh Vivah",
-    regionalTheme: "Sacred Vedic & Temple Sanskriti",
-    category: "traditional",
-    tier: "Essential",
-    popularBadge: "Authentic Sanskrit Shlokas",
-    popularIcon: "om",
-    couples: "Meera & Rohan",
-    subTitle: "माङ्गल्यं तन्तुनानेन &bull; सप्तपदी",
-    location: "Varanasi & Bhopal",
-    description: "Sacred sindoor red, marigold orange trims, and Vedic shlokas celebrating seven sacred pheras with divine blessings.",
-    features: ["Sanskrit Phera Shlokas", "Family Lineage Honor", "Bilingual Hindi/English", "Direct Maps Navigation"],
-    colors: ["#B91C1C", "#EA580C", "#FEF08A"],
-    bgGradient: "from-[#7f1d1d] via-[#9a3412] to-[#450a0a]",
-    accentColor: "border-amber-300/60 text-amber-200",
-    demoSlug: "aarav-diya",
-  },
-  {
-    id: "coastal-minimal",
-    title: "Champagne Elegance",
-    regionalTheme: "Destination & Contemporary Luxury",
-    category: "modern",
-    tier: "Premium",
-    couples: "Riya & Siddharth",
-    subTitle: "Join Us Under The Stars",
-    location: "Jaipur & Dubai",
-    description: "Architectural luxury lines, warm beige tones, refined editorial typography, and minimalist European-Indian fusion.",
-    features: ["Minimalist Aesthetic", "Destination Itinerary", "Countdown Clock", "Smart RSVP Headcount"],
-    colors: ["#F5F5F4", "#78716C", "#1C1917"],
-    bgGradient: "from-[#1c1917] via-[#292524] to-[#0c0a09]",
-    accentColor: "border-stone-400/60 text-stone-200",
-    demoSlug: "aarav-diya",
-  },
-  {
-    id: "nawabi-emerald",
-    title: "Nawabi Emerald & Pearl",
-    regionalTheme: "Opulent Sangeet & Reception",
-    category: "modern",
-    tier: "Royal",
-    popularBadge: "Sangeet & Cocktail Favorite",
-    popularIcon: "sparkle",
-    couples: "Zoya & Farhan",
-    subTitle: "Dawat-e-Ishq & Celebration",
-    location: "Lucknow & Delhi",
-    description: "Rich peacock emerald velvet, shimmering foil borders, and candlelit ambiance tailored for evening musical sangeets.",
-    features: ["Deep Emerald & Gold Theme", "Song / Music Embed", "Family Video Message", "VIP Guest RSVP Codes"],
-    colors: ["#064E3B", "#D97706", "#ECFDF5"],
-    bgGradient: "from-[#022c22] via-[#064e3b] to-[#021d17]",
-    accentColor: "border-emerald-300/60 text-emerald-200",
-    demoSlug: "aarav-diya",
-  },
-  {
-    id: "chettinad-temple",
-    title: "Thirumangalyam Gopuram",
-    regionalTheme: "Traditional South Indian Kalyanam",
-    category: "south",
-    tier: "Royal",
-    couples: "Lakshmi & Ashwin",
-    subTitle: "शुभ लग्न &bull; Kalyanam",
-    location: "Chennai & Bangalore",
-    description: "Inspired by Chettinad brass lamps, banana leaf auspicious greens, temple gopuram silhouettes, and authentic nadaswaram spirit.",
-    features: ["Temple Gopuram Motifs", "Muhurtham Countdown", "Detailed Tiffin & Feast Menu", "Direct Family Contacts"],
-    colors: ["#78350F", "#F59E0B", "#FEF3C7"],
-    bgGradient: "from-[#451a03] via-[#78350f] to-[#270f03]",
-    accentColor: "border-amber-300/60 text-amber-200",
-    demoSlug: "aarav-diya",
-  },
-];
+import WishlistButton from "@/components/templates/WishlistButton";
 
 interface CategoryTab {
   id: string;
   label: string;
 }
 
-export default function TemplatesPage() {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [dbTemplates, setDbTemplates] = useState<TemplateItem[]>([]);
-  const [categoryTabs, setCategoryTabs] = useState<CategoryTab[]>([
-    { id: "all", label: "Sabhi Designs (All)" },
-  ]);
+interface TemplateCardItem {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  format: "website" | "video" | "pdf";
+  price: number;
+  likesCount?: number;
+  badge?: string;
+  thumbnail?: string;
+  description: string;
+  features: string[];
+  bgGradient: string;
+  accentColor: string;
+  demoSlug?: string;
+  previewUrl?: string;
+  createdAt?: string;
+}
 
-  // Load active service categories dynamically
+const DEFAULT_CATEGORIES: CategoryTab[] = [
+  { id: "all", label: "All Celebrations" },
+  { id: "wedding", label: "Wedding (विवाह)" },
+  { id: "engagement", label: "Engagement (सगाई)" },
+  { id: "birthday", label: "Birthday (जन्मदिन)" },
+  { id: "anniversary", label: "Anniversary (सालगिरह)" },
+  { id: "housewarming", label: "House Warming (गृह प्रवेश)" },
+  { id: "reception", label: "Reception (स्वागत समारोह)" },
+];
+
+// Rich SVG category icons matching Indian traditional ceremonies
+function getCategoryIcon(catId: string, isSelected: boolean) {
+  const strokeClass = isSelected ? "text-[#FFF3DA]" : "text-amber-700";
+
+  switch (catId) {
+    case "wedding":
+      return (
+        <svg className={`w-4 h-4 ${strokeClass}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="8" cy="14" r="5" />
+          <circle cx="16" cy="14" r="5" />
+          <path d="M12 6.5l2-2.5 2 2.5-2 2.5z" fill="currentColor" fillOpacity="0.4" />
+        </svg>
+      );
+    case "engagement":
+      return (
+        <svg className={`w-4 h-4 ${strokeClass}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 3h12l4 6-10 12L2 9z" />
+          <path d="M11 3v6l-4 3" />
+          <path d="M13 3v6l4 3" />
+        </svg>
+      );
+    case "birthday":
+      return (
+        <svg className={`w-4 h-4 ${strokeClass}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8" />
+          <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1" />
+          <path d="M2 21h20" />
+          <path d="M12 7v4" />
+          <path d="M12 3a1 1 0 0 0 0 2 1 1 0 0 0 0-2" fill="currentColor" />
+        </svg>
+      );
+    case "anniversary":
+      return (
+        <svg className={`w-4 h-4 ${strokeClass}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        </svg>
+      );
+    case "housewarming":
+      return (
+        <svg className={`w-4 h-4 ${strokeClass}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+      );
+    case "reception":
+      return (
+        <svg className={`w-4 h-4 ${strokeClass}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M8 22h8" />
+          <path d="M12 15v7" />
+          <path d="M12 15a5 5 0 0 0 5-5V2H7v8a5 5 0 0 0 5 5Z" />
+        </svg>
+      );
+    default:
+      return <Sparkles className={`w-4 h-4 ${strokeClass}`} />;
+  }
+}
+
+function TemplatesContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const initialCat = (searchParams?.get("category") || "all").toLowerCase();
+  const rawFmt = (searchParams?.get("format") || "all").toLowerCase();
+  const initialFormat =
+    rawFmt === "website" || rawFmt === "video" || rawFmt === "pdf" ? rawFmt : "all";
+
+  const [activeCategory, setActiveCategory] = useState<string>(initialCat);
+  const [selectedFormat, setSelectedFormat] = useState<"all" | "website" | "video" | "pdf">(
+    initialFormat as "all" | "website" | "video" | "pdf"
+  );
+  const [sortBy, setSortBy] = useState<"featured" | "newest" | "priceAsc" | "priceDesc">("featured");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryTabs, setCategoryTabs] = useState<CategoryTab[]>(DEFAULT_CATEGORIES);
+  const [dbTemplates, setDbTemplates] = useState<TemplateCardItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [buyModalTemplate, setBuyModalTemplate] = useState<TemplateCardItem | null>(null);
+  const [buySuccess, setBuySuccess] = useState(false);
+
+  // Sync category state when URL searchParams change
+  useEffect(() => {
+    const cat = (searchParams?.get("category") || "all").toLowerCase();
+    setActiveCategory(cat);
+
+    const raw = (searchParams?.get("format") || "all").toLowerCase();
+    const fmt = raw === "website" || raw === "video" || raw === "pdf" ? raw : "all";
+    setSelectedFormat(fmt as "all" | "website" | "video" | "pdf");
+  }, [searchParams]);
+
+  // Load dynamic categories from database
   useEffect(() => {
     async function loadCategories() {
       try {
         const res = await fetch("/api/public/categories");
         if (res.ok) {
           const data = await res.json();
-          if (data.success && Array.isArray(data.categories)) {
-            const dynamicTabs: CategoryTab[] = [
-              { id: "all", label: "Sabhi Designs (All)" },
-              ...data.categories.map((c: any) => ({
-                id: c.slug,
+          if (data.success && Array.isArray(data.categories) && data.categories.length > 0) {
+            const mappedTabs: CategoryTab[] = [
+              { id: "all", label: "All Celebrations" },
+              ...data.categories.map((c: { slug: string; name: string }) => ({
+                id: c.slug.toLowerCase(),
                 label: c.name,
               })),
             ];
-            setCategoryTabs(dynamicTabs);
+            setCategoryTabs(mappedTabs);
           }
         }
       } catch {
-        // Fallback
+        // Keep default tabs
       }
     }
     loadCategories();
   }, []);
 
+  // Load purely dynamic database master templates
   useEffect(() => {
     async function loadDb() {
       try {
+        setLoading(true);
         const res = await fetch("/api/templates");
         if (res.ok) {
           const data = await res.json();
-          if (data.success && Array.isArray(data.templates) && data.templates.length > 0) {
-            const mapped: TemplateItem[] = data.templates.map((t: any) => ({
-              id: `db-${t.slug}`,
+          if (data.success && Array.isArray(data.templates)) {
+            const gradients = [
+              "from-[#4a080e] via-[#6e131b] to-[#300509]",
+              "from-[#063327] via-[#094d3b] to-[#042019]",
+              "from-[#3b1236] via-[#5c1c54] to-[#240a21]",
+              "from-[#42210b] via-[#633314] to-[#291304]",
+            ];
+            const accents = ["#E8B966", "#99F6E4", "#FBCFE8", "#FED7AA"];
+
+            const mapped: TemplateCardItem[] = data.templates.map((t: any, idx: number) => ({
+              id: `db-${t._id || t.slug}`,
+              slug: t.slug,
               title: t.name,
-              regionalTheme: `${t.category ? t.category.toUpperCase() : "WEDDING"} Master Theme`,
               category: (t.category || "wedding").toLowerCase(),
-              tier: "Royal" as const,
-              popularBadge: "⭐ Live Master Theme",
-              couples: "Rahul & Priya",
-              subTitle: "|| श्री गणेशाय नमः || शुभ विवाह",
-              location: "Indore & Across India",
+              format: (t.format || "website") as "website" | "video" | "pdf",
+              price: t.price || 399,
+              badge: idx === 0 ? "POPULAR MASTER" : "LIVE THEME",
+              thumbnail: t.thumbnail,
               description:
                 t.description ||
-                "Master HTML/CSS/JS template with dynamic countdown, Vedic motifs, and Google Maps GPS navigation.",
+                "Interactive invitation website with live guest RSVP headcount, Google Maps turn-by-turn navigation, and Vedic motifs.",
               features: [
-                "Dynamic Manifest Form",
-                "Live Countdown Timer",
-                "Google Maps Navigation",
-                "CSS Variable Styling",
+                "Google Maps Live Navigation",
+                "Live RSVP Headcount Tracker",
+                "Countdown Timer Clock",
+                "WhatsApp 1-Click Share",
               ],
-              colors: ["#7F1D1D", "#D97706", "#FFFBEB"],
-              bgGradient: "from-[#450a0a] via-[#781212] to-[#2b0505]",
-              accentColor: "border-amber-400/60 text-amber-300",
+              bgGradient: gradients[idx % gradients.length],
+              accentColor: accents[idx % accents.length],
               demoSlug: t.slug,
               previewUrl: `/api/public/templates/${t.slug}/preview`,
+              likesCount: t.likesCount || 0,
+              createdAt: t.createdAt,
             }));
             setDbTemplates(mapped);
+          } else {
+            setDbTemplates([]);
           }
+        } else {
+          setDbTemplates([]);
         }
       } catch {
-        // Keep catalog
+        setDbTemplates([]);
+      } finally {
+        setLoading(false);
       }
     }
     loadDb();
   }, []);
 
-  // 100% Pure Dynamic: Only templates published by Super Admin
-  const allTemplates = dbTemplates;
+  // Strictly dynamic from MongoDB
+  const allTemplates: TemplateCardItem[] = dbTemplates;
 
-  const filteredTemplates = allTemplates.filter((t) => {
-    const matchesCategory = activeCategory === "all" || t.category === activeCategory;
-    const matchesSearch =
-      searchQuery.trim() === "" ||
-      t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.regionalTheme.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.couples.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  // Handle category switch and update URL
+  const handleSelectCategory = (catId: string) => {
+    setActiveCategory(catId);
+    const params = new URLSearchParams();
+    if (catId !== "all") params.set("category", catId);
+    if (selectedFormat !== "all") params.set("format", selectedFormat);
+    const qs = params.toString();
+    router.push(qs ? `/templates?${qs}` : "/templates", { scroll: false });
+  };
 
-  return (
-    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-body flex flex-col justify-between selection:bg-rose-200 selection:text-rose-950">
-      <PublicHeader />
+  const handleSelectFormat = (fmt: "all" | "website" | "video" | "pdf") => {
+    setSelectedFormat(fmt);
+    const params = new URLSearchParams();
+    if (activeCategory !== "all") params.set("category", activeCategory);
+    if (fmt !== "all") params.set("format", fmt);
+    const qs = params.toString();
+    router.push(qs ? `/templates?${qs}` : "/templates", { scroll: false });
+  };
 
-      <main className="flex-1">
-        {/* HERO SECTION: Royal Indian Gallery Header */}
-        <section className="relative overflow-hidden pt-14 pb-16 px-6 sm:px-8 border-b border-amber-900/10 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6EE] to-[#F5EFEB]">
-          {/* Subtle Royal Motif Background Pattern */}
-          <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
+  const handleResetFilters = () => {
+    setActiveCategory("all");
+    setSelectedFormat("all");
+    setSearchQuery("");
+    setSortBy("featured");
+    router.push("/templates", { scroll: false });
+  };
 
-          <div className="max-w-5xl mx-auto text-center space-y-4 relative">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-heading">
-              <span>✦</span>
-              <span>Exclusive Patrika Gallery &bull; 2026 Collections</span>
-              <span>✦</span>
-            </div>
+  // Filter and sort templates
+  const filteredTemplates = useMemo(() => {
+    let list = allTemplates.filter((t) => {
+      const matchesCategory =
+        activeCategory === "all" ||
+        t.category.toLowerCase() === activeCategory.toLowerCase();
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-heading font-bold text-stone-900 tracking-tight leading-[1.15]">
-              Har Shaadi Ki Apni Kahani,{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
-                Har Parivar Ka Apna Andaaz.
-              </span>
-            </h1>
+      const matchesFormat =
+        selectedFormat === "all" || t.format === selectedFormat;
 
-            <p className="text-base sm:text-lg text-stone-700 leading-relaxed max-w-2xl mx-auto font-body">
-              Jaipur ke Rajwada Darbar se leke Goa ke sunset lawn tak — hamare har digital card me Google Maps GPS, Haldi-Sangeet-Vivah schedule aur live RSVP headcount inbuilt hota hai.
-            </p>
+      const matchesSearch =
+        searchQuery.trim() === "" ||
+        t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.category.toLowerCase().includes(searchQuery.toLowerCase());
 
-            {/* Live Search & Filter Bar */}
-            <div className="pt-4 max-w-md mx-auto">
-              <div className="relative">
-                <Search className="w-4 h-4 text-stone-400 absolute left-4 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Search by theme, city, or style (e.g. Rajwada, Floral, Vedic)..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-white rounded-2xl border border-stone-200 shadow-xs text-xs sm:text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-600 transition"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
+      return matchesCategory && matchesFormat && matchesSearch;
+    });
 
-        {/* CATEGORY FILTER PILLS */}
-        <section className=" mx-auto px-6 pt-8 pb-4">
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            {categoryTabs.map((tab) => {
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveCategory(tab.id)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 capitalize ${
-                    activeCategory === tab.id
-                      ? "bg-rose-700 text-amber-50 shadow-sm border border-rose-800 scale-102"
-                      : "bg-white border border-stone-200/90 text-stone-700 hover:bg-stone-50 hover:border-stone-300"
+    if (sortBy === "priceAsc") {
+      list = [...list].sort((a, b) => a.price - b.price);
+    } else if (sortBy === "priceDesc") {
+      list = [...list].sort((a, b) => b.price - a.price);
+    } else if (sortBy === "newest") {
+      list = [...list].sort((a, b) => {
+        const d1 = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const d2 = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return d2 - d1;
+      });
+    }
+
+    return list;
+  }, [allTemplates, activeCategory, selectedFormat, searchQuery, sortBy]);
+
+  // Counts per category
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: allTemplates.length };
+    for (const t of allTemplates) {
+      const cat = t.category.toLowerCase();
+      counts[cat] = (counts[cat] || 0) + 1;
+    }
+    return counts;
+  }, [allTemplates]);
+
+  // Counts per format
+  const formatCounts = useMemo(() => {
+    const list =
+      activeCategory === "all"
+        ? allTemplates
+        : allTemplates.filter(
+            (t) => t.category.toLowerCase() === activeCategory.toLowerCase()
+          );
+    return {
+      all: list.length,
+      website: list.filter((t) => t.format === "website").length,
+      video: list.filter((t) => t.format === "video").length,
+      pdf: list.filter((t) => t.format === "pdf").length,
+    };
+  }, [allTemplates, activeCategory]);
+
+  const hasActiveFilters =
+    activeCategory !== "all" || selectedFormat !== "all" || searchQuery.trim() !== "";
+
+  // Luxury Studio Filter Sidebar
+  const FilterSidebar = () => (
+    <div className="space-y-6">
+      {/* Studio Filter Header */}
+      <div className="flex items-center justify-between border-b border-amber-900/10 pb-3">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[#720E16]" />
+          <span className="font-serif font-bold text-sm text-stone-900 tracking-wide uppercase">
+            Filter Collection
+          </span>
+        </div>
+        {hasActiveFilters && (
+          <button
+            onClick={handleResetFilters}
+            className="text-[11px] font-semibold text-[#720E16] hover:text-[#911620] flex items-center gap-1 transition cursor-pointer"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Reset</span>
+          </button>
+        )}
+      </div>
+
+      {/* Luxury Search Box */}
+      <div>
+        <label className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block mb-2">
+          Search Designs
+        </label>
+        <div className="relative">
+          <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search theme, city, or style..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-8 py-2.5 bg-stone-50/80 border border-stone-200 rounded-xl text-xs text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#720E16]/15 focus:border-[#720E16] transition"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 cursor-pointer p-0.5"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Celebration Occasions */}
+      <div>
+        <label className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block mb-2.5">
+          Occasion / Category
+        </label>
+        <div className="space-y-1">
+          {categoryTabs.map((cat) => {
+            const isSelected = activeCategory === cat.id;
+            const count = categoryCounts[cat.id] || 0;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  handleSelectCategory(cat.id);
+                  setMobileFilterOpen(false);
+                }}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-all duration-200 cursor-pointer text-left group ${
+                  isSelected
+                    ? "bg-[#720E16] text-[#FFF3DA] font-bold shadow-md scale-[1.01]"
+                    : "text-stone-700 hover:bg-amber-50/60 hover:text-stone-900 font-medium"
+                }`}
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className={`transition-transform duration-200 ${isSelected ? "scale-110" : "group-hover:scale-105"}`}>
+                    {getCategoryIcon(cat.id, isSelected)}
+                  </span>
+                  <span>{cat.label}</span>
+                </div>
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-mono transition-colors ${
+                    isSelected
+                      ? "bg-white/20 text-[#FFF3DA]"
+                      : "bg-stone-100 text-stone-500 group-hover:bg-amber-100/60 group-hover:text-amber-900"
                   }`}
                 >
-                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-        {/* TEMPLATES GRID */}
-        <section className=" mx-auto px-6 py-8">
-          {filteredTemplates.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-stone-200 p-8 space-y-3 font-body">
-              <Sparkles className="w-8 h-8 text-amber-500 mx-auto" />
-              <h3 className="text-lg font-heading font-bold text-stone-800">
-                Koi design match nahi hua
-              </h3>
-              <p className="text-xs text-stone-500 max-w-md mx-auto">
-                Aap custom template request kar sakte hain — hamari Indore design team aapke physical printed card ko digital me convert kar sakti hai.
-              </p>
+      {/* Format Selector (Website / Video / PDF) */}
+      <div className="pt-3 border-t border-amber-900/10">
+        <label className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block mb-2.5">
+          Invitation Format
+        </label>
+        <div className="grid grid-cols-1 gap-1.5">
+          {[
+            { id: "all", label: "All Formats", icon: SlidersHorizontal, desc: "Website, Video & PDF", count: formatCounts.all },
+            { id: "website", label: "Website Invite", icon: Globe, desc: "Interactive RSVP & GPS", count: formatCounts.website },
+            { id: "video", label: "Video Invite", icon: Video, desc: "HD WhatsApp Animated", count: formatCounts.video },
+            { id: "pdf", label: "Printable PDF", icon: FileText, desc: "High-Res Vector Card", count: formatCounts.pdf },
+          ].map((fmt) => {
+            const isSelected = selectedFormat === fmt.id;
+            const IconComp = fmt.icon;
+            return (
               <button
+                key={fmt.id}
                 onClick={() => {
-                  setActiveCategory("all");
-                  setSearchQuery("");
+                  handleSelectFormat(fmt.id as any);
+                  setMobileFilterOpen(false);
                 }}
-                className="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold transition"
+                className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition cursor-pointer ${
+                  isSelected
+                    ? "bg-[#FAF4EB] border-[#D6A64B] shadow-2xs"
+                    : "bg-white border-stone-200/80 hover:border-amber-300 hover:bg-stone-50/50"
+                }`}
               >
-                Show All Templates
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${isSelected ? "bg-[#720E16] text-[#FFF3DA]" : "bg-stone-100 text-stone-600"}`}>
+                    <IconComp className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-stone-900">{fmt.label}</div>
+                    <div className="text-[10px] text-stone-500">{fmt.desc}</div>
+                  </div>
+                </div>
+                <span className="text-[10px] font-mono font-semibold text-stone-500">
+                  ({fmt.count})
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Custom Card Concierge Card */}
+      <div className="p-4 rounded-2xl bg-gradient-to-br from-[#FAF4EB] to-[#F5ECE0] border border-[#EADBCE] space-y-2.5">
+        <div className="flex items-center gap-2 text-[#720E16]">
+          <MessageCircle className="w-4 h-4 shrink-0" />
+          <span className="font-serif font-bold text-xs tracking-tight">
+            Physical Card Replica
+          </span>
+        </div>
+        <p className="text-[11px] text-stone-600 leading-relaxed font-normal">
+          Already printed your card? WhatsApp its photo for an exact 1:1 digital replica within 24h.
+        </p>
+        <a
+          href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20apne%20printed%20card%20ka%20digital%20replica%20banvana%20hai"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#720E16] hover:underline pt-1"
+        >
+          <span>Chat on WhatsApp</span>
+          <ArrowRight className="w-3 h-3" />
+        </a>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans flex flex-col justify-between">
+      <PublicHeader />
+
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {/* Banner Section: Pick a design. Make it yours. */}
+        <div className="bg-[#FAF4EB] border border-[#EADBCE] rounded-2xl p-6 sm:p-8 mb-8 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-xs">
+          {/* Left Title */}
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-stone-900 tracking-tight">
+              Pick a design.{" "}
+              <span className="italic text-[#720E16] font-normal">
+                Make it yours.
+              </span>
+            </h1>
+            <p className="text-xs sm:text-sm text-stone-600 font-sans mt-1.5">
+              Open any invitation website before you buy &bull; Direct Fixed Pricing &bull; Zero Subscription
+            </p>
+          </div>
+
+          {/* Right Steps Indicator */}
+          <div className="flex items-center justify-center gap-1 sm:gap-2.5 shrink-0">
+            {/* Step 1: Choose */}
+            <div className="flex flex-col items-center">
+              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#FCECEE] flex items-center justify-center text-[#720E16] relative shadow-xs">
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="18" height="14" x="3" y="5" rx="2" />
+                  <path d="M7 12h8" />
+                  <path d="m11 8 4 4-4 4" />
+                </svg>
+                <span className="w-4 h-4 rounded-full bg-[#720E16] text-white text-[10px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 shadow-xs">
+                  1
+                </span>
+              </div>
+              <span className="text-[11px] sm:text-xs font-bold text-stone-800 mt-1.5">Choose</span>
+            </div>
+
+            {/* Connector */}
+            <div className="w-4 sm:w-8 md:w-10 border-t-2 border-dashed border-[#D6A64B]/60 mb-5 shrink-0" />
+
+            {/* Step 2: Edit */}
+            <div className="flex flex-col items-center">
+              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#FCECEE] flex items-center justify-center text-[#720E16] relative shadow-xs">
+                <Pencil className="w-5 h-5" />
+                <span className="w-4 h-4 rounded-full bg-[#720E16] text-white text-[10px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 shadow-xs">
+                  2
+                </span>
+              </div>
+              <span className="text-[11px] sm:text-xs font-bold text-stone-800 mt-1.5">Edit</span>
+            </div>
+
+            {/* Connector */}
+            <div className="w-4 sm:w-8 md:w-10 border-t-2 border-dashed border-[#D6A64B]/60 mb-5 shrink-0" />
+
+            {/* Step 3: Pay */}
+            <div className="flex flex-col items-center">
+              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#FCECEE] flex items-center justify-center text-[#720E16] relative shadow-xs">
+                <CreditCard className="w-5 h-5" />
+                <span className="w-4 h-4 rounded-full bg-[#720E16] text-white text-[10px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 shadow-xs">
+                  3
+                </span>
+              </div>
+              <span className="text-[11px] sm:text-xs font-bold text-stone-800 mt-1.5">Pay</span>
+            </div>
+
+            {/* Connector */}
+            <div className="w-4 sm:w-8 md:w-10 border-t-2 border-dashed border-[#D6A64B]/60 mb-5 shrink-0" />
+
+            {/* Step 4: Share */}
+            <div className="flex flex-col items-center">
+              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#FCECEE] flex items-center justify-center text-[#720E16] relative shadow-xs">
+                <Share2 className="w-5 h-5" />
+                <span className="w-4 h-4 rounded-full bg-[#720E16] text-white text-[10px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 shadow-xs">
+                  4
+                </span>
+              </div>
+              <span className="text-[11px] sm:text-xs font-bold text-stone-800 mt-1.5">Share</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 2-COLUMN LAYOUT: Left Filter Section + Right Templates Display */}
+        <div className="flex gap-8 items-start">
+          {/* LEFT SIDEBAR (Desktop) */}
+          <aside className="hidden lg:block w-72 shrink-0 sticky top-24">
+            <div className="bg-white border border-stone-200/90 rounded-2xl p-5 shadow-xs">
+              <FilterSidebar />
+            </div>
+          </aside>
+
+          {/* RIGHT SIDE MAIN TEMPLATES GRID */}
+          <div className="flex-1 min-w-0">
+            {/* Top Toolbar: Count, Active Filter Chips, and Sorting */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white border border-stone-200/80 rounded-2xl p-4 shadow-2xs">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setMobileFilterOpen(true)}
+                  className="lg:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 border border-stone-200 text-xs font-bold text-stone-800 cursor-pointer"
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#720E16]" />
+                  <span>Filters</span>
+                  {hasActiveFilters && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#720E16]" />
+                  )}
+                </button>
+
+                <div className="flex items-center gap-1.5 text-xs text-stone-600">
+                  <span className="font-serif font-bold text-sm text-stone-900">
+                    {filteredTemplates.length}
+                  </span>{" "}
+                  <span>
+                    {filteredTemplates.length === 1 ? "design available" : "designs available"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Sorting & Active Chips */}
+              <div className="flex items-center gap-3">
+                {/* Sort Dropdown */}
+                <div className="flex items-center gap-1.5 text-xs">
+                  <span className="text-stone-400 text-[11px]">Sort:</span>
+                  <div className="relative">
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as any)}
+                      aria-label="Sort designs by"
+                      className="bg-stone-50 border border-stone-200 rounded-lg px-2.5 py-1.5 text-xs text-stone-800 font-semibold focus:outline-none focus:border-[#720E16] cursor-pointer pr-7 appearance-none"
+                    >
+                      <option value="featured">Featured / Popular</option>
+                      <option value="newest">Newest Releases</option>
+                      <option value="priceAsc">Price: Low to High</option>
+                      <option value="priceDesc">Price: High to Low</option>
+                    </select>
+                    <ChevronDown className="w-3 h-3 text-stone-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Active Filter Chips Bar */}
+            {hasActiveFilters && (
+              <div className="flex flex-wrap items-center gap-2 mb-6">
+                <span className="text-[11px] font-semibold text-stone-400">Active Filters:</span>
+                {activeCategory !== "all" && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#720E16]/10 text-xs font-bold text-[#720E16] border border-[#720E16]/20 capitalize">
+                    {activeCategory}
+                    <button
+                      onClick={() => handleSelectCategory("all")}
+                      className="hover:text-red-700 cursor-pointer"
+                      title="Remove category filter"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {selectedFormat !== "all" && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-xs font-bold text-amber-900 border border-amber-300/80 uppercase">
+                    {selectedFormat}
+                    <button
+                      onClick={() => handleSelectFormat("all")}
+                      className="hover:text-red-700 cursor-pointer"
+                      title="Remove format filter"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {searchQuery.trim() !== "" && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 text-xs font-semibold text-stone-700 border border-stone-300">
+                    &ldquo;{searchQuery}&rdquo;
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="hover:text-red-700 cursor-pointer"
+                      title="Clear search"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                <button
+                  onClick={handleResetFilters}
+                  className="text-[11px] font-semibold text-stone-500 hover:text-[#720E16] underline cursor-pointer ml-1"
+                >
+                  Clear all
+                </button>
+              </div>
+            )}
+
+            {/* Content State: Loading / Empty / Luxury Cards Grid */}
+            {loading ? (
+              <div className="text-center py-28 bg-white rounded-3xl border border-stone-200/90 shadow-2xs">
+                <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto mb-3">
+                  <Sparkles className="w-6 h-6 animate-spin text-[#720E16]" />
+                </div>
+                <p className="text-sm font-serif font-bold text-stone-800">Loading Invitation Collection...</p>
+                <p className="text-xs text-stone-400 mt-1">Fetching live master templates from database</p>
+              </div>
+            ) : filteredTemplates.length === 0 ? (
+              <div className="text-center py-20 px-8 bg-white rounded-3xl border border-stone-200/90 shadow-2xs space-y-4">
+                <div className="w-16 h-16 rounded-full bg-[#FAF4EB] text-[#720E16] border border-[#EADBCE] flex items-center justify-center mx-auto shadow-inner">
+                  <Sparkles className="w-7 h-7" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-lg font-serif font-bold text-stone-900">
+                    {activeCategory !== "all"
+                      ? `No published designs for "${activeCategory.toUpperCase()}" yet`
+                      : "No invitation templates published yet"}
+                  </h3>
+                  <p className="text-xs text-stone-500 max-w-md mx-auto leading-relaxed">
+                    Super Admin can upload and publish real invitation themes from the dashboard. Alternatively, our Indore studio can convert any printed physical card into a digital master link.
+                  </p>
+                </div>
+                <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+                  {hasActiveFilters && (
+                    <button
+                      onClick={handleResetFilters}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition cursor-pointer"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>View All Available Designs</span>
+                    </button>
+                  )}
+                  <a
+                    href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20custom%20invitation%20design%20banvana%20hai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#720E16] hover:bg-[#5A0910] text-[#FFF3DA] text-xs font-bold transition shadow-xs"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>Request Custom Design (WhatsApp)</span>
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filteredTemplates.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-3xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-2xl hover:border-[#D6A64B]/60 transition-all duration-300 flex flex-col justify-between group relative"
+                  >
+                    {/* Visual Invitation Preview Card (Click leads to detail page) */}
+                    <div className="relative">
+                      <Link
+                        href={`/templates/${encodeURIComponent(item.slug)}`}
+                        className={`h-64 sm:h-72 bg-gradient-to-b ${item.bgGradient} p-5 flex flex-col justify-between text-white relative overflow-hidden select-none block`}
+                      >
+                        {/* Background photo thumbnail if present */}
+                        {item.thumbnail ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.thumbnail}
+                            alt={item.title}
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          />
+                        ) : null}
+
+                        {/* Delicate Golden Filigree Arch Border */}
+                        <div className="absolute inset-2.5 border border-[#D6A64B]/35 rounded-2xl pointer-events-none group-hover:border-[#D6A64B]/70 transition-colors" />
+                        <div className="absolute inset-3 border border-white/10 rounded-xl pointer-events-none" />
+
+                        {/* Ornate Indian Card Center Motif */}
+                        <div className="relative z-10 text-center py-3 space-y-1.5 my-auto">
+                          {/* Auspicious Shlok */}
+                          <div className="text-[11px] font-serif font-bold tracking-widest text-amber-300/90 drop-shadow-xs">
+                            || श्री गणेशाय नमः ||
+                          </div>
+
+                          {/* Grand Couple / Title */}
+                          <h3 className="font-serif text-2xl sm:text-[26px] font-bold tracking-tight text-[#FFF3DA] drop-shadow-md leading-tight line-clamp-2 px-2">
+                            {item.title}
+                          </h3>
+
+                          {/* Subtle Arch Ornament */}
+                          <div className="flex items-center justify-center gap-2 pt-1 text-amber-300/60">
+                            <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-amber-300/60" />
+                            <span className="text-[10px]">✦</span>
+                            <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-amber-300/60" />
+                          </div>
+                        </div>
+                      </Link>
+
+                      {/* Wishlist Like Button in Thumbnail Corner */}
+                      <div className="absolute top-3 right-3 z-20">
+                        <WishlistButton
+                          slug={item.slug}
+                          initialCount={item.likesCount || 0}
+                          className="bg-black/50 hover:bg-black/70 text-white backdrop-blur-md px-2.5 py-1 border border-white/20 shadow-xs"
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Card Content & Details */}
+                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                      <div className="space-y-1.5">
+                        <div className="flex items-start justify-between gap-2">
+                          <Link
+                            href={`/templates/${encodeURIComponent(item.slug)}`}
+                            className="font-serif font-bold text-base text-stone-900 group-hover:text-[#720E16] transition leading-snug line-clamp-1"
+                          >
+                            {item.title}
+                          </Link>
+                          <span className="font-serif font-bold text-base text-[#720E16] shrink-0">
+                            ₹{item.price}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed font-sans">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      {/* Card Action Row */}
+                      <div className="pt-3 border-t border-stone-100 space-y-2">
+                        <div className="flex items-center gap-2">
+                          {item.previewUrl ? (
+                            <Link
+                              href={item.previewUrl}
+                              target="_blank"
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-stone-700 hover:text-[#720E16] transition py-2 px-2.5 rounded-xl border border-stone-200 hover:bg-stone-50"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-[#720E16]" />
+                              <span>Preview</span>
+                            </Link>
+                          ) : null}
+
+                          <Link
+                            href={`/customize/${encodeURIComponent(item.slug)}`}
+                            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold rounded-xl border border-stone-200/80 transition cursor-pointer"
+                          >
+                            <Pencil className="w-3.5 h-3.5 text-stone-600" />
+                            <span>Customize</span>
+                          </Link>
+                        </div>
+
+                        {/* DIRECT BUY NOW BUTTON */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setBuyModalTemplate(item);
+                            setBuySuccess(false);
+                          }}
+                          className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-amber-50 font-bold text-xs sm:text-sm shadow-xs hover:shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <ShoppingBag className="w-4 h-4 text-amber-200" />
+                          <span>Buy Now</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+
+      {/* DUMMY BUY NOW CHECKOUT MODAL */}
+      {buyModalTemplate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200 font-sans">
+          <div className="bg-[#FFFDF9] rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-5 shadow-2xl border border-stone-200 relative text-left">
+            {/* Close button */}
+            <button
+              onClick={() => {
+                setBuyModalTemplate(null);
+                setBuySuccess(false);
+              }}
+              className="absolute right-4 top-4 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-500 hover:text-stone-800 transition cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {buySuccess ? (
+              <div className="text-center py-4 space-y-4">
+                <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner">
+                  <Check className="w-8 h-8 stroke-[2.5]" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-serif font-bold text-stone-900">
+                    Demo Purchase Successful! 🎉
+                  </h3>
+                  <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+                    Aapka <strong>{buyModalTemplate.title}</strong> template order confirm ho gaya hai (Test Mode). Ab aap ise customize karke live card link generate kar sakte hain.
+                  </p>
+                </div>
+                <div className="pt-2 flex flex-col gap-2">
+                  <Link
+                    href={`/customize/${encodeURIComponent(buyModalTemplate.slug)}`}
+                    className="w-full py-3 rounded-xl bg-[#720E16] hover:bg-[#5A0910] text-[#FFF3DA] font-bold text-xs sm:text-sm text-center shadow-md transition"
+                  >
+                    Abhi Customize Karein &gt;
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setBuyModalTemplate(null);
+                      setBuySuccess(false);
+                    }}
+                    className="w-full py-2.5 rounded-xl border border-stone-200 text-stone-700 text-xs font-semibold hover:bg-stone-50 transition cursor-pointer"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center font-bold">
+                    <ShoppingBag className="w-5 h-5 text-amber-800" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-amber-900 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                      Direct Purchase
+                    </span>
+                    <h3 className="text-lg font-serif font-bold text-stone-900 mt-0.5">
+                      {buyModalTemplate.title}
+                    </h3>
+                  </div>
+                </div>
+
+                {/* Pricing Box */}
+                <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-[#FAF4EB] border border-amber-200 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-semibold text-stone-600">Total Payable Amount</p>
+                    <p className="text-[11px] text-stone-400">Zero subscription • 1 Year Live Validity</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-2xl font-serif font-bold text-[#720E16]">
+                      ₹{buyModalTemplate.price}
+                    </span>
+                    <span className="text-[10px] text-emerald-700 font-semibold block">Fixed Price</span>
+                  </div>
+                </div>
+
+                {/* What you get */}
+                <div className="space-y-1.5 text-xs text-stone-700">
+                  <p className="font-bold text-[11px] text-stone-500 uppercase tracking-wider">Includes:</p>
+                  <p className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Full Access to this Invitation Website Design</span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>1-Click WhatsApp Sharing &amp; Google Maps GPS</span>
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Unlimited Live Edits (Muhurat, Dates &amp; Venues)</span>
+                  </p>
+                </div>
+
+                {/* Dummy Payment Button */}
+                <div className="space-y-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setBuySuccess(true)}
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 hover:from-emerald-700 hover:to-emerald-900 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Zap className="w-4 h-4 text-emerald-200" />
+                    <span>Proceed to Buy &bull; ₹{buyModalTemplate.price} (Demo Mode)</span>
+                  </button>
+
+                  <p className="text-[10px] text-center text-stone-400">
+                    ⚡ Safe UPI, PhonePe, Google Pay, QR Code &amp; Cards (Demo Simulation)
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* MOBILE FILTER DRAWER */}
+      {mobileFilterOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs"
+            onClick={() => setMobileFilterOpen(false)}
+          />
+
+          {/* Drawer Sheet */}
+          <div className="relative ml-auto w-full max-w-xs bg-white h-full shadow-2xl p-6 overflow-y-auto z-10 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between border-b border-stone-200 pb-4 mb-5">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-4 h-4 text-[#720E16]" />
+                  <h3 className="font-serif font-bold text-sm text-stone-900 uppercase tracking-wide">
+                    Filter Designs
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <FilterSidebar />
+            </div>
+
+            <div className="pt-6 border-t border-stone-200 mt-6">
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="w-full py-2.5 rounded-xl bg-[#720E16] text-[#FFF3DA] text-xs font-bold shadow-xs cursor-pointer"
+              >
+                Apply Filters ({filteredTemplates.length} results)
               </button>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredTemplates.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-3xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400/50 transition-all duration-300 flex flex-col justify-between group font-body"
-                >
-                  {/* Luxury Mockup Card Header Preview */}
-                  <div
-                    className={`h-64 bg-gradient-to-b ${item.bgGradient} p-6 flex flex-col justify-between text-white relative overflow-hidden`}
-                  >
-                    {/* Subtle Gold Foil Accent Frame */}
-                    <div className="absolute inset-2 border border-amber-400/20 rounded-2xl pointer-events-none" />
-
-                    {/* Top Badges */}
-                    <div className="flex items-center justify-between relative z-10">
-                      <span
-                        className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-                          item.tier === "Royal"
-                            ? "bg-amber-400/20 text-amber-300 border-amber-300/40"
-                            : item.tier === "Premium"
-                            ? "bg-rose-400/20 text-rose-200 border-rose-300/40"
-                            : "bg-white/10 text-stone-200 border-white/20"
-                        }`}
-                      >
-                        {item.tier === "Royal" && <Crown className="w-2.5 h-2.5 inline mr-1 text-amber-300" />}
-                        {item.tier} Edition
-                      </span>
-
-                      <span className="text-[10px] text-amber-200/80 font-body uppercase tracking-wider">
-                        {item.location}
-                      </span>
-                    </div>
-
-                    {/* Center Royal Couple Title */}
-                    <div className="text-center space-y-1.5 relative z-10 py-2">
-                      <span className="text-[10px] text-amber-300/90 shlok font-semibold block">
-                        {item.subTitle}
-                      </span>
-                      <h3 className="font-heading text-3xl font-bold tracking-wide text-amber-100">
-                        {item.couples}
-                      </h3>
-                      <div className="inline-flex items-center gap-1.5 text-[10px] text-amber-200/80 font-body">
-                        <Calendar className="w-3 h-3 text-amber-300" />
-                        <span>Shubh Muhurat &bull; 15 Dec 2026</span>
-                      </div>
-                    </div>
-
-                    {/* Bottom Swatches & Theme Pill */}
-                    <div className="flex items-center justify-between relative z-10 pt-2 border-t border-white/10">
-                      <span className="text-[10px] font-body text-stone-300 font-medium">
-                        {item.regionalTheme}
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        {item.colors.map((c, i) => (
-                          <span
-                            key={i}
-                            className="w-3 h-3 rounded-full border border-white/40 shadow-xs"
-                            style={{ backgroundColor: c }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Card Description & Inclusions */}
-                  <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                    <div className="space-y-3">
-                      {item.popularBadge && (
-                        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200 font-body">
-                          {item.popularIcon === "star" && <MdStar className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
-                          {item.popularIcon === "lotus" && <GiLotus className="w-3.5 h-3.5 text-pink-500 shrink-0" />}
-                          {item.popularIcon === "om" && <FaOm className="w-3.5 h-3.5 text-red-600 shrink-0" />}
-                          {item.popularIcon === "sparkle" && <MdAutoAwesome className="w-3.5 h-3.5 text-amber-500 shrink-0" />}
-                          <span>{item.popularBadge}</span>
-                        </div>
-                      )}
-
-                      <h4 className="text-xl font-heading font-bold text-stone-900 group-hover:text-rose-700 transition">
-                        {item.title}
-                      </h4>
-
-                      <p className="text-xs text-stone-600 leading-relaxed font-body">
-                        {item.description}
-                      </p>
-
-                      {/* Feature Bullet Points */}
-                      <div className="grid grid-cols-2 gap-1.5 pt-2 text-[11px] text-stone-700 font-body">
-                        {item.features.map((feat, idx) => (
-                          <div key={idx} className="flex items-center gap-1.5">
-                            <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                            <span className="truncate">{feat}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="pt-4 border-t border-stone-100 flex items-center justify-between gap-3 font-body">
-                      <Link
-                        href={item.previewUrl || `/w/${item.demoSlug}`}
-                        target="_blank"
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-700 hover:text-rose-700 transition py-2 px-3 rounded-xl hover:bg-stone-50 border border-stone-200"
-                      >
-                        <Eye className="w-3.5 h-3.5 text-rose-600" />
-                        <span>Live Demo Dekho</span>
-                      </Link>
-
-                      <Link
-                        href="/register"
-                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 text-amber-50 text-xs font-bold rounded-xl shadow-xs transition group-hover:shadow-md"
-                      >
-                        <span>Yeh Design Chunein</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* CUSTOM PHYSICAL CARD REPLICA CONCIERGE BANNER */}
-        <section className=" mx-auto px-6 py-12">
-          <div className="bg-gradient-to-br from-stone-900 via-rose-950 to-stone-900 text-amber-50 rounded-3xl p-8 sm:p-14 shadow-xl border border-amber-400/20 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative overflow-hidden">
-            {/* Subtle background motif */}
-            <div className="absolute right-0 top-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-heading font-semibold">
-                <span>✦</span>
-                <span>Tatkal Custom Digital Replica Service</span>
-                <span>✦</span>
-              </div>
-
-              <h2 className="text-2xl sm:text-4xl font-heading font-bold text-amber-100 leading-tight">
-                Physical Printed Card Hai? Uska Exact Digital Replica Chahiye?
-              </h2>
-
-              <p className="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-2xl font-body">
-                Agar aapne physical wedding card already print karva liya hai, to bas uski photo hamare Indore design desk ko WhatsApp karein. Hamari team aapke card ke exact fonts, motifs aur couple monograms ke sath <strong className="text-amber-200">24 ghante ke andar</strong> live interactive digital link deliver karegi.
-              </p>
-
-              <div className="pt-2 flex flex-wrap items-center gap-4 text-xs text-stone-300 font-body">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
-                    ✓
-                  </div>
-                  <span>100% Same Font & Motif Match</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
-                    ✓
-                  </div>
-                  <span>Google Maps & Live RSVP Inbuilt</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center font-body">
-              <a
-                href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20apne%20printed%20wedding%20card%20ka%20digital%20replica%20banvana%20hai"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 text-xs sm:text-sm"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/whatsapp.png" alt="WhatsApp" className="w-5 h-5 object-contain" />
-                <span>WhatsApp Par Card Photo Bhejo</span>
-              </a>
-
-              <Link
-                href="/contact"
-                className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-amber-100 font-bold rounded-xl border border-amber-300/30 transition flex items-center justify-center gap-2 text-xs sm:text-sm text-center"
-              >
-                <PhoneCall className="w-4 h-4 text-amber-300" />
-                <span>Talk to Indore Concierge</span>
-              </Link>
-            </div>
           </div>
-        </section>
-      </main>
+        </div>
+      )}
 
       <PublicFooter />
     </div>
+  );
+}
+
+export default function TemplatesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
+          <Sparkles className="w-6 h-6 animate-spin text-[#720E16]" />
+        </div>
+      }
+    >
+      <TemplatesContent />
+    </Suspense>
   );
 }

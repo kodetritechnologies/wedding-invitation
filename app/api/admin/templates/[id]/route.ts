@@ -66,6 +66,20 @@ export async function PATCH(
       if (body.description !== undefined) template.description = body.description.trim();
       if (body.thumbnail !== undefined) template.thumbnail = body.thumbnail.trim();
       if (body.category !== undefined) template.category = body.category.toLowerCase().trim();
+      if (body.format !== undefined && ["website", "video", "pdf"].includes(body.format.toLowerCase().trim())) {
+        template.format = body.format.toLowerCase().trim() as any;
+      }
+      if (body.price !== undefined && body.price !== "") {
+        template.price = Number(body.price);
+      }
+      if (body.isDefault !== undefined) {
+        if (body.isDefault) {
+          await InvitationTemplate.updateMany({ _id: { $ne: id } }, { isDefault: false });
+          template.isDefault = true;
+        } else {
+          template.isDefault = false;
+        }
+      }
 
       await template.save();
 

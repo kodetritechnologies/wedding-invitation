@@ -35,6 +35,49 @@ interface NavItem {
   openInNewTab?: boolean;
 }
 
+const DEFAULT_NAV_ITEMS: NavItem[] = [
+  {
+    label: "Wedding",
+    href: "/templates?category=wedding",
+    type: "link",
+  },
+  {
+    label: "Engagement",
+    href: "/templates?category=engagement",
+    type: "link",
+  },
+  {
+    label: "Birthday",
+    href: "/templates?category=birthday",
+    type: "link",
+  },
+  {
+    label: "Anniversary",
+    href: "/templates?category=anniversary",
+    type: "link",
+  },
+  {
+    label: "House Warming",
+    href: "/templates?category=housewarming",
+    type: "link",
+  },
+  {
+    label: "Reception",
+    href: "/templates?category=reception",
+    type: "link",
+  },
+  {
+    label: "Pricing",
+    href: "/pricing",
+    type: "link",
+  },
+  {
+    label: "Contact",
+    href: "/contact",
+    type: "link",
+  },
+];
+
 export default function PublicHeader() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -124,14 +167,16 @@ export default function PublicHeader() {
         const res = await fetch("/api/public/navigation");
         if (res.ok) {
           const data = await res.json();
-          if (data.success && Array.isArray(data.navItems)) {
+          if (data.success && Array.isArray(data.navItems) && data.navItems.length > 0) {
             setNavItems(data.navItems);
           } else {
-            setNavItems([]);
+            setNavItems(DEFAULT_NAV_ITEMS);
           }
+        } else {
+          setNavItems(DEFAULT_NAV_ITEMS);
         }
       } catch {
-        setNavItems([]);
+        setNavItems(DEFAULT_NAV_ITEMS);
       }
     }
     fetchNav();
@@ -183,6 +228,20 @@ export default function PublicHeader() {
     setUser(null);
     setAccountDropdownOpen(false);
     window.location.href = "/?login=true";
+  };
+
+  const isLinkActive = (targetHref: string) => {
+    if (targetHref === "/") return pathname === "/";
+    if (targetHref.startsWith("/templates?category=")) {
+      if (pathname !== "/templates") return false;
+      if (typeof window !== "undefined") {
+        const currentCat = new URLSearchParams(window.location.search).get("category");
+        const targetCat = new URL(targetHref, "http://localhost").searchParams.get("category");
+        return currentCat?.toLowerCase() === targetCat?.toLowerCase();
+      }
+      return false;
+    }
+    return pathname === targetHref;
   };
 
   return (
@@ -294,7 +353,7 @@ export default function PublicHeader() {
               }
 
               // Simple Link
-              const isActive = pathname === item.href;
+              const isActive = isLinkActive(item.href);
               return (
                 <Link
                   key={item._id || idx}
@@ -521,7 +580,7 @@ export default function PublicHeader() {
                     }
 
                     // Simple Link
-                    const isActive = pathname === item.href;
+                    const isActive = isLinkActive(item.href);
                     return (
                       <Link
                         key={item._id || idx}

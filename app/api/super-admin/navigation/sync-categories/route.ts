@@ -22,7 +22,10 @@ export async function POST(req: NextRequest) {
       let createdCount = 0;
 
       for (const cat of activeCategories) {
-        const targetHref = cat.href || `/${cat.slug}`;
+        const targetHref =
+          cat.href && cat.href.startsWith("/templates")
+            ? cat.href
+            : `/templates?category=${cat.slug}`;
         // Check if matching nav item exists by href or categorySlug
         const exists = existingNavItems.some(
           (n) =>

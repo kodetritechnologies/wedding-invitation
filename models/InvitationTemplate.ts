@@ -54,6 +54,10 @@ export interface IInvitationTemplate extends Document {
   manifest: ITemplateManifest;
   designSettings: Record<string, any>; // active visual settings overrides
   category: string; // e.g. "wedding", "engagement", "birthday", etc.
+  format?: "website" | "video" | "pdf";
+  price?: number;
+  likesCount?: number;
+  isDefault?: boolean; // When true, shown as live demo in Hero section
   status: "draft" | "published" | "unpublished" | "archived";
   createdBy?: Types.ObjectId;
   createdAt: Date;
@@ -170,6 +174,25 @@ const InvitationTemplateSchema = new Schema<IInvitationTemplate>(
       default: "wedding",
       trim: true,
       lowercase: true,
+      index: true,
+    },
+    format: {
+      type: String,
+      enum: ["website", "video", "pdf"],
+      default: "website",
+    },
+    price: {
+      type: Number,
+      default: 499,
+    },
+    likesCount: {
+      type: Number,
+      default: 0,
+      index: true,
+    },
+    isDefault: {
+      type: Boolean,
+      default: false,
       index: true,
     },
     status: {

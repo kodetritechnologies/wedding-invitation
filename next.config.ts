@@ -15,6 +15,20 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  async redirects() {
+    return [
+      {
+        source: "/wedding",
+        destination: "/templates",
+        permanent: true,
+      },
+      {
+        source: "/wedding/:path*",
+        destination: "/templates",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

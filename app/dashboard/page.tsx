@@ -26,25 +26,15 @@ interface WeddingItem {
 
 export default function DashboardOverviewPage() {
   const [weddings, setWeddings] = useState<WeddingItem[]>([]);
-  const [clientsCount, setClientsCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       try {
-        const [resWeddings, resClients] = await Promise.all([
-          fetch("/api/admin/weddings"),
-          fetch("/api/admin/clients"),
-        ]);
-
+        const resWeddings = await fetch("/api/admin/weddings");
         if (resWeddings.ok) {
           const dataW = await resWeddings.json();
           setWeddings(dataW.weddings || []);
-        }
-
-        if (resClients.ok) {
-          const dataC = await resClients.json();
-          setClientsCount(dataC.count || 0);
         }
       } catch (err) {
         console.error("Failed to load dashboard metrics", err);
