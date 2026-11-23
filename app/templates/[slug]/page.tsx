@@ -5,6 +5,7 @@ import Link from "next/link";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
 import WishlistButton from "@/components/templates/WishlistButton";
+import RazorpayCheckoutModal from "@/components/payment/RazorpayCheckoutModal";
 import {
   Sparkles,
   ArrowLeft,
@@ -60,10 +61,6 @@ function TemplateDetailContent({
 
   // Buy Now modal state
   const [buyModalOpen, setBuyModalOpen] = useState(false);
-  const [buySuccess, setBuySuccess] = useState(false);
-  const [buying, setBuying] = useState(false);
-  const [buyerName, setBuyerName] = useState("");
-  const [buyerPhone, setBuyerPhone] = useState("");
 
   useEffect(() => {
     async function loadData() {
@@ -109,14 +106,6 @@ function TemplateDetailContent({
 
     loadData();
   }, [slug]);
-
-  const handleDummyBuy = () => {
-    setBuying(true);
-    setTimeout(() => {
-      setBuying(false);
-      setBuySuccess(true);
-    }, 1200);
-  };
 
   const previewUrl = `/api/public/templates/${encodeURIComponent(slug)}/preview`;
   const customizeUrl = `/customize/${encodeURIComponent(slug)}`;
@@ -375,7 +364,6 @@ function TemplateDetailContent({
                   type="button"
                   onClick={() => {
                     setBuyModalOpen(true);
-                    setBuySuccess(false);
                   }}
                   className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-amber-50 font-bold text-sm sm:text-base shadow-md hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer"
                 >
@@ -679,145 +667,22 @@ function TemplateDetailContent({
         )}
       </main>
 
-      {/* DUMMY BUY NOW CHECKOUT MODAL */}
-      {buyModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200 font-sans">
-          <div className="bg-[#FFFDF9] rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-5 shadow-2xl border border-stone-200 relative text-left">
-            {/* Close button */}
-            <button
-              onClick={() => {
-                setBuyModalOpen(false);
-                setBuySuccess(false);
-              }}
-              className="absolute right-4 top-4 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-500 hover:text-stone-800 transition cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            {buySuccess ? (
-              <div className="text-center py-4 space-y-3">
-                <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto shadow-inner">
-                  <Check className="w-7 h-7 stroke-[2.5]" />
-                </div>
-                <h4 className="font-serif font-bold text-xl text-stone-900">
-                  Order Initiated Successfully!
-                </h4>
-                <p className="text-xs text-stone-600 leading-relaxed">
-                  Aapka <strong>{template.name}</strong> template direct activate ho chuka hai. Ab aap bride &amp; groom ke shubh naam aur details customize kar sakte hain.
-                </p>
-                <div className="pt-3 flex flex-col gap-2">
-                  <Link
-                    href={customizeUrl}
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#720E16] hover:bg-[#5A0910] text-[#FFF3DA] font-bold text-xs sm:text-sm text-center transition shadow-md"
-                  >
-                    Go to Live Customizer &gt;
-                  </Link>
-                  <button
-                    onClick={() => {
-                      setBuyModalOpen(false);
-                      setBuySuccess(false);
-                    }}
-                    className="w-full py-2 text-xs font-semibold text-stone-500 hover:text-stone-800"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700">
-                    Instant Purchase Checkout
-                  </span>
-                  <h4 className="font-serif font-bold text-xl text-stone-900 mt-0.5">
-                    Order {template.name}
-                  </h4>
-                  <p className="text-xs text-stone-500 mt-1">
-                    Direct purchase &bull; 100% Lifetime Event Hosting &bull; Zero Subscription
-                  </p>
-                </div>
-
-                {/* Order Summary Box */}
-                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 space-y-2 text-xs">
-                  <div className="flex justify-between items-center text-stone-700">
-                    <span>Design:</span>
-                    <strong className="text-stone-900">{template.name}</strong>
-                  </div>
-                  <div className="flex justify-between items-center text-stone-700">
-                    <span>Format:</span>
-                    <span className="text-stone-900 font-medium capitalize">
-                      {template.format || "Interactive Website"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-stone-700">
-                    <span>Duration:</span>
-                    <span className="text-stone-900 font-medium">Lifetime Active (No Expiry)</span>
-                  </div>
-                  <div className="pt-2 border-t border-stone-200 flex justify-between items-center">
-                    <span className="font-bold text-stone-900">Total Fixed Amount:</span>
-                    <span className="font-serif font-bold text-lg text-[#720E16]">
-                      ₹{price}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Dummy Input Details */}
-                <div className="space-y-2.5">
-                  <div>
-                    <label className="text-[11px] font-bold text-stone-700 block mb-1">
-                      Your Name / Groom / Bride
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Rahul Sharma"
-                      value={buyerName}
-                      onChange={(e) => setBuyerName(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-200 bg-white focus:outline-none focus:border-[#720E16]"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[11px] font-bold text-stone-700 block mb-1">
-                      WhatsApp Mobile Number (for delivery)
-                    </label>
-                    <input
-                      type="tel"
-                      placeholder="e.g. +91 98260 12345"
-                      value={buyerPhone}
-                      onChange={(e) => setBuyerPhone(e.target.value)}
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-200 bg-white focus:outline-none focus:border-[#720E16]"
-                    />
-                  </div>
-                </div>
-
-                {/* Dummy Payment Action */}
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    disabled={buying}
-                    onClick={handleDummyBuy}
-                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-amber-50 font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
-                  >
-                    {buying ? (
-                      <>
-                        <Sparkles className="w-4 h-4 animate-spin" />
-                        <span>Processing Instant Activation...</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="w-4 h-4 text-amber-200" />
-                        <span>Proceed to Buy &bull; ₹{price} (Demo Payment)</span>
-                      </>
-                    )}
-                  </button>
-                  <p className="text-[10px] text-stone-400 text-center mt-2">
-                    🔒 Demo Gateway: Instant activation without charging any real card.
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {/* RAZORPAY BUY NOW CHECKOUT MODAL */}
+      <RazorpayCheckoutModal
+        isOpen={buyModalOpen}
+        onClose={() => setBuyModalOpen(false)}
+        template={
+          template
+            ? {
+                title: template.name,
+                slug: template.slug,
+                price: template.price || 499,
+                format: template.format,
+                thumbnail: template.thumbnail,
+              }
+            : null
+        }
+      />
 
       <PublicFooter />
     </div>

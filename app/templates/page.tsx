@@ -26,6 +26,7 @@ import {
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
 import WishlistButton from "@/components/templates/WishlistButton";
+import RazorpayCheckoutModal from "@/components/payment/RazorpayCheckoutModal";
 
 interface CategoryTab {
   id: string;
@@ -138,7 +139,6 @@ function TemplatesContent() {
   const [loading, setLoading] = useState(true);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [buyModalTemplate, setBuyModalTemplate] = useState<TemplateCardItem | null>(null);
-  const [buySuccess, setBuySuccess] = useState(false);
 
   // Sync category state when URL searchParams change
   useEffect(() => {
@@ -834,7 +834,6 @@ function TemplatesContent() {
                           type="button"
                           onClick={() => {
                             setBuyModalTemplate(item);
-                            setBuySuccess(false);
                           }}
                           className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-amber-50 font-bold text-xs sm:text-sm shadow-xs hover:shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
                         >
@@ -851,119 +850,12 @@ function TemplatesContent() {
         </div>
       </main>
 
-      {/* DUMMY BUY NOW CHECKOUT MODAL */}
-      {buyModalTemplate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200 font-sans">
-          <div className="bg-[#FFFDF9] rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-5 shadow-2xl border border-stone-200 relative text-left">
-            {/* Close button */}
-            <button
-              onClick={() => {
-                setBuyModalTemplate(null);
-                setBuySuccess(false);
-              }}
-              className="absolute right-4 top-4 w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 flex items-center justify-center text-stone-500 hover:text-stone-800 transition cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-
-            {buySuccess ? (
-              <div className="text-center py-4 space-y-4">
-                <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-inner">
-                  <Check className="w-8 h-8 stroke-[2.5]" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-serif font-bold text-stone-900">
-                    Demo Purchase Successful! 🎉
-                  </h3>
-                  <p className="text-xs text-stone-600 mt-1 leading-relaxed">
-                    Aapka <strong>{buyModalTemplate.title}</strong> template order confirm ho gaya hai (Test Mode). Ab aap ise customize karke live card link generate kar sakte hain.
-                  </p>
-                </div>
-                <div className="pt-2 flex flex-col gap-2">
-                  <Link
-                    href={`/customize/${encodeURIComponent(buyModalTemplate.slug)}`}
-                    className="w-full py-3 rounded-xl bg-[#720E16] hover:bg-[#5A0910] text-[#FFF3DA] font-bold text-xs sm:text-sm text-center shadow-md transition"
-                  >
-                    Abhi Customize Karein &gt;
-                  </Link>
-                  <button
-                    onClick={() => {
-                      setBuyModalTemplate(null);
-                      setBuySuccess(false);
-                    }}
-                    className="w-full py-2.5 rounded-xl border border-stone-200 text-stone-700 text-xs font-semibold hover:bg-stone-50 transition cursor-pointer"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center font-bold">
-                    <ShoppingBag className="w-5 h-5 text-amber-800" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-amber-900 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                      Direct Purchase
-                    </span>
-                    <h3 className="text-lg font-serif font-bold text-stone-900 mt-0.5">
-                      {buyModalTemplate.title}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* Pricing Box */}
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-[#FAF4EB] border border-amber-200 flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-semibold text-stone-600">Total Payable Amount</p>
-                    <p className="text-[11px] text-stone-400">Zero subscription • 1 Year Live Validity</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-2xl font-serif font-bold text-[#720E16]">
-                      ₹{buyModalTemplate.price}
-                    </span>
-                    <span className="text-[10px] text-emerald-700 font-semibold block">Fixed Price</span>
-                  </div>
-                </div>
-
-                {/* What you get */}
-                <div className="space-y-1.5 text-xs text-stone-700">
-                  <p className="font-bold text-[11px] text-stone-500 uppercase tracking-wider">Includes:</p>
-                  <p className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Full Access to this Invitation Website Design</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>1-Click WhatsApp Sharing &amp; Google Maps GPS</span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Unlimited Live Edits (Muhurat, Dates &amp; Venues)</span>
-                  </p>
-                </div>
-
-                {/* Dummy Payment Button */}
-                <div className="space-y-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setBuySuccess(true)}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-800 hover:from-emerald-700 hover:to-emerald-900 text-white font-bold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Zap className="w-4 h-4 text-emerald-200" />
-                    <span>Proceed to Buy &bull; ₹{buyModalTemplate.price} (Demo Mode)</span>
-                  </button>
-
-                  <p className="text-[10px] text-center text-stone-400">
-                    ⚡ Safe UPI, PhonePe, Google Pay, QR Code &amp; Cards (Demo Simulation)
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {/* RAZORPAY BUY NOW CHECKOUT MODAL */}
+      <RazorpayCheckoutModal
+        isOpen={Boolean(buyModalTemplate)}
+        onClose={() => setBuyModalTemplate(null)}
+        template={buyModalTemplate}
+      />
 
       {/* MOBILE FILTER DRAWER */}
       {mobileFilterOpen && (

@@ -383,16 +383,17 @@ export default function PublicHeader() {
                 <button
                   type="button"
                   onClick={() => setAccountDropdownOpen((prev) => !prev)}
-                  className="px-3.5 py-2 rounded-xl bg-[#5C0612] hover:bg-[#48050e] text-white text-xs font-semibold transition flex items-center gap-2 shadow-sm min-h-[42px] cursor-pointer"
+                  className="w-10 h-10 rounded-full bg-[#5C0612] hover:bg-[#48050e] text-white border-2 border-amber-400/40 shadow-sm transition-all hover:scale-105 flex items-center justify-center cursor-pointer select-none"
                   aria-expanded={accountDropdownOpen}
+                  title={user.name}
                 >
-                  <User className="w-4 h-4 text-amber-200" />
-                  <span className="max-w-[120px] truncate">{user.name.split(" ")[0] || "My Account"}</span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                      accountDropdownOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  {user.name ? (
+                    <span className="font-serif font-bold text-sm tracking-wide text-amber-100 uppercase">
+                      {user.name.trim().charAt(0)}
+                    </span>
+                  ) : (
+                    <User className="w-4 h-4 text-amber-200" />
+                  )}
                 </button>
 
                 {accountDropdownOpen && (
