@@ -21,6 +21,8 @@ import {
   FolderTree,
   Compass,
   Mail,
+  CreditCard,
+  ShoppingBag,
 } from "lucide-react";
 
 interface SuperAdminUser {
@@ -113,12 +115,14 @@ function SuperAdminLayoutInner({
   const isDashboardActive = pathname === "/admin/dashboard";
   const isClientsActive = pathname.startsWith("/admin/clients");
   const isWeddingsActive = pathname.startsWith("/admin/weddings");
+  const isOrdersActive = pathname.startsWith("/admin/orders");
   const isTemplatesActive = pathname.startsWith("/admin/templates");
   const isCategoriesActive = pathname.startsWith("/admin/categories");
   const isNavigationActive = pathname.startsWith("/admin/navigation");
   const isTestimonialsActive = pathname.startsWith("/admin/testimonials");
   const isFaqsActive = pathname.startsWith("/admin/faqs");
   const isEnquiriesActive = pathname.startsWith("/admin/enquiries");
+  const isPaymentSettingsActive = pathname.startsWith("/admin/settings/payment") || pathname.startsWith("/admin/payments");
   const isWebsiteSettingsActive = pathname.startsWith("/admin/settings/website");
 
   return (
@@ -206,6 +210,20 @@ function SuperAdminLayoutInner({
           >
             <CalendarHeart className="w-4 h-4" />
             <span>Weddings</span>
+          </Link>
+
+          {/* 4. Orders */}
+          <Link
+            href="/admin/orders"
+            onClick={() => setSidebarOpen(false)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition ${
+              isOrdersActive
+                ? "bg-zinc-800 text-amber-400 font-semibold border-l-2 border-amber-500"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+            }`}
+          >
+            <ShoppingBag className="w-4 h-4" />
+            <span>Orders</span>
           </Link>
 
           {/* 4. Master Templates */}
@@ -324,6 +342,20 @@ function SuperAdminLayoutInner({
                   <Globe className="w-3.5 h-3.5" />
                   <span>Website Settings</span>
                 </Link>
+
+                {/* 4.2 Payment Gateway Subpage */}
+                <Link
+                  href="/admin/settings/payment"
+                  onClick={() => setSidebarOpen(false)}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs transition ${
+                    isPaymentSettingsActive
+                      ? "bg-zinc-800 text-amber-400 font-semibold border-l-2 border-amber-500"
+                      : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                  }`}
+                >
+                  <CreditCard className="w-3.5 h-3.5" />
+                  <span>Payment Gateway</span>
+                </Link>
               </div>
             )}
           </div>
@@ -364,7 +396,11 @@ function SuperAdminLayoutInner({
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="text-sm font-bold text-white uppercase tracking-wider">
-              {isWebsiteSettingsActive
+              {isOrdersActive
+                ? "Customer Orders"
+                : isPaymentSettingsActive
+                ? "Settings / Payment Gateway"
+                : isWebsiteSettingsActive
                 ? "Settings / Website Settings"
                 : isClientsActive
                 ? "Clients"
