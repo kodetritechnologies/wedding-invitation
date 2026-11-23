@@ -138,7 +138,7 @@ export default function AdminOrdersPage() {
             <span className="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold block">
               Total Revenue
             </span>
-            <span className="text-xl font-bold font-serif text-white mt-0.5 block">
+            <span className="text-xl font-bold  text-white mt-0.5 block">
               ₹{stats.totalRevenue.toLocaleString("en-IN")}
             </span>
           </div>
@@ -266,7 +266,7 @@ export default function AdminOrdersPage() {
                 {orders.map((ord) => (
                   <tr key={ord._id} className="hover:bg-zinc-800/30 transition">
                     {/* Order ID */}
-                    <td className="py-3.5 px-4 font-mono font-semibold text-zinc-200">
+                    <td className="py-3.5 px-4  font-semibold text-zinc-200">
                       {ord.orderId}
                     </td>
 
@@ -277,7 +277,7 @@ export default function AdminOrdersPage() {
                         <div className="text-[11px] text-zinc-400">{ord.customerPhone}</div>
                       )}
                       {ord.customerEmail && (
-                        <div className="text-[10px] text-zinc-500 font-mono">
+                        <div className="text-[10px] text-zinc-500 ">
                           {ord.customerEmail}
                         </div>
                       )}
@@ -289,7 +289,7 @@ export default function AdminOrdersPage() {
                     </td>
 
                     {/* Amount */}
-                    <td className="py-3.5 px-4 font-serif font-bold text-amber-400">
+                    <td className="py-3.5 px-4  font-bold text-amber-400">
                       ₹{ord.amount}
                     </td>
 
@@ -331,7 +331,7 @@ export default function AdminOrdersPage() {
                     </td>
 
                     {/* Razorpay Payment ID */}
-                    <td className="py-3.5 px-4 font-mono text-[11px] text-zinc-400">
+                    <td className="py-3.5 px-4  text-[11px] text-zinc-400">
                       {ord.razorpayPaymentId || "—"}
                     </td>
 

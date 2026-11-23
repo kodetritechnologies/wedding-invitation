@@ -154,7 +154,7 @@ export default function DashboardLayout({
               <Heart className="w-4 h-4 fill-white" />
             </div>
             <div>
-              <span className="font-bold text-gray-900 tracking-tight text-lg font-serif">
+              <span className="font-bold text-gray-900 tracking-tight text-lg ">
                 Vivah<span className="text-rose-700">Vaani</span>
               </span>
               <span className="block text-[10px] text-gray-400 font-medium uppercase tracking-wider">

@@ -91,13 +91,13 @@ export default function HowItWorksPage() {
           <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
 
           <div className="max-w-4xl mx-auto text-center space-y-4 relative">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-cinzel">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs ">
               <span>✦</span>
               <span>4 Simple Steps &bull; 100% Frictionless</span>
               <span>✦</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.15]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl  font-bold text-stone-900 tracking-tight leading-[1.15]">
               Kaise Kaam Karta Hai{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
                 VivahVaani Digital Patrika?
@@ -141,7 +141,7 @@ export default function HowItWorksPage() {
                   <div className="space-y-4">
                     {/* Top Row */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-cinzel font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
+                      <span className="text-[11px]  font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
                         {st.stepNum}
                       </span>
                       <div
@@ -151,7 +151,7 @@ export default function HowItWorksPage() {
                       </div>
                     </div>
 
-                    <h3 className="text-lg font-serif font-bold text-stone-900 leading-snug">
+                    <h3 className="text-lg  font-bold text-stone-900 leading-snug">
                       {st.title}
                     </h3>
 
@@ -170,7 +170,7 @@ export default function HowItWorksPage() {
                     </div>
                   </div>
 
-                  <div className="pt-4 mt-4 border-t border-stone-100 text-[10px] font-bold text-stone-400 uppercase tracking-widest font-mono">
+                  <div className="pt-4 mt-4 border-t border-stone-100 text-[10px] font-bold text-stone-400 uppercase tracking-widest ">
                     Step {st.number} of 04
                   </div>
                 </div>
@@ -184,13 +184,13 @@ export default function HowItWorksPage() {
           <div className="bg-gradient-to-br from-stone-900 via-rose-950 to-stone-900 text-amber-50 rounded-3xl p-8 sm:p-14 shadow-xl border border-amber-400/30 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Story */}
             <div className="lg:col-span-7 space-y-5">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-cinzel font-semibold">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs  font-semibold">
                 <span>✦</span>
                 <span>The Grandfather Test &bull; Zero Friction</span>
                 <span>✦</span>
               </div>
 
-              <h2 className="text-2xl sm:text-4xl font-serif font-bold text-amber-100 leading-tight">
+              <h2 className="text-2xl sm:text-4xl  font-bold text-amber-100 leading-tight">
                 Dada Ji, Nani Ji Aur Door Ke Rishtedaar Bhi Aasani Se Khol Lete Hain
               </h2>
 
@@ -215,7 +215,7 @@ export default function HowItWorksPage() {
                 <div className="w-14 h-14 rounded-full bg-emerald-600 text-white flex items-center justify-center mx-auto shadow-md">
                   <Smartphone className="w-7 h-7" />
                 </div>
-                <h3 className="text-lg font-serif font-bold text-white">
+                <h3 className="text-lg  font-bold text-white">
                   Zero App Installation
                 </h3>
                 <p className="text-xs text-stone-300 leading-relaxed font-sans">
@@ -238,7 +238,7 @@ export default function HowItWorksPage() {
 
         {/* BOTTOM CTA */}
         <section className="max-w-4xl mx-auto px-6 py-12 text-center space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+          <h2 className="text-2xl sm:text-3xl  font-bold text-stone-900">
             Aapki Shaadi Ka Card Taiyar Hone Me Sirf 5 Minute Lagenge
           </h2>
           <p className="text-xs sm:text-sm text-stone-600 max-w-lg mx-auto font-sans leading-relaxed">

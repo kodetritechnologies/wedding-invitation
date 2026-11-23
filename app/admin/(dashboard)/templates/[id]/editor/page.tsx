@@ -307,7 +307,7 @@ function TemplateEditorContent({ id }: { id: string }) {
               <span className="font-bold text-white text-sm tracking-tight">
                 {template.name}
               </span>
-              <span className="text-[10px] font-mono text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">
+              <span className="text-[10px]  text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">
                 /{template.slug}
               </span>
               <span className="text-[10px] font-medium text-amber-300 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded capitalize">
@@ -318,7 +318,7 @@ function TemplateEditorContent({ id }: { id: string }) {
         </div>
 
         {/* Center: File Status */}
-        <div className="hidden md:flex items-center gap-2 text-xs text-zinc-400 font-mono bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
+        <div className="hidden md:flex items-center gap-2 text-xs text-zinc-400  bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800">
           <Code2 className="w-3.5 h-3.5 text-amber-500" />
           <span className="font-semibold text-zinc-200">Monaco IDE</span>
           <span className="text-zinc-600">•</span>
@@ -480,7 +480,7 @@ function TemplateEditorContent({ id }: { id: string }) {
                       <button
                         key={file.path}
                         onClick={() => loadFileContent(file.path)}
-                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-left transition font-mono text-[11px] cursor-pointer ${
+                        className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-left transition  text-[11px] cursor-pointer ${
                           isActive
                             ? "bg-amber-500/15 text-amber-300 font-semibold border-l-2 border-amber-500"
                             : "text-zinc-400 hover:text-white hover:bg-zinc-800/60"
@@ -504,7 +504,7 @@ function TemplateEditorContent({ id }: { id: string }) {
             <div className="flex-1 flex flex-col bg-[#1e1e1e] overflow-hidden">
               {/* Tab Bar */}
               <div className="h-9 bg-[#252526] border-b border-[#333333] px-3 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 font-mono text-zinc-300">
+                <div className="flex items-center gap-2  text-zinc-300">
                   {!isSidebarOpen && (
                     <button
                       onClick={() => setIsSidebarOpen(true)}
@@ -521,7 +521,7 @@ function TemplateEditorContent({ id }: { id: string }) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-[10px] text-zinc-500 font-mono hidden sm:inline">
+                  <span className="text-[10px] text-zinc-500  hidden sm:inline">
                     {lineCount} lines • UTF-8
                   </span>
 
@@ -568,7 +568,7 @@ function TemplateEditorContent({ id }: { id: string }) {
                     }}
                     options={{
                       fontSize: 13,
-                      fontFamily: "var(--font-mono, Menlo, Monaco, 'Courier New', monospace)",
+                      fontFamily: "var(--, Menlo, Monaco, 'Courier New', monospace)",
                       minimap: { enabled: true },
                       scrollBeyondLastLine: false,
                       wordWrap: "on",
@@ -608,7 +608,7 @@ function TemplateEditorContent({ id }: { id: string }) {
             >
               {/* Viewport Frame Header */}
               <div className="h-7 bg-zinc-900 border-b border-zinc-800 px-3 flex items-center justify-between text-[11px] text-zinc-500 shrink-0 select-none">
-                <span className="font-mono text-[10px]">
+                <span className=" text-[10px]">
                   {deviceMode === "mobile" ? "iPhone 15 • 380px" : deviceMode === "tablet" ? "iPad • 768px" : "Desktop View"}
                 </span>
                 <div className="flex items-center gap-1.5">

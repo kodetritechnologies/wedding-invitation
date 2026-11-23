@@ -178,7 +178,7 @@ export default function DashboardOverviewPage() {
               {recentAdmins.slice(0, 6).map((adm) => (
                 <tr key={adm._id} className="hover:bg-zinc-800/40">
                   <td className="py-3 px-4 font-medium text-white">{adm.name}</td>
-                  <td className="py-3 px-4 font-mono text-zinc-400">{adm.email}</td>
+                  <td className="py-3 px-4  text-zinc-400">{adm.email}</td>
                   <td className="py-3 px-4 text-zinc-300">{adm.businessName || "—"}</td>
                   <td className="py-3 px-4 uppercase text-[10px] font-bold text-amber-400">
                     {adm.subscription?.plan || "free"}

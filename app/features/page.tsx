@@ -86,13 +86,13 @@ export default function FeaturesPage() {
           <div className="absolute inset-0 bg-[radial-gradient(#C5A059_0.75px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
 
           <div className="max-w-4xl mx-auto text-center space-y-4 relative">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs font-cinzel">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-xs font-semibold shadow-2xs ">
               <span>✦</span>
               <span>Khandani Shaan &bull; Modern Technology</span>
               <span>✦</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.15]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl  font-bold text-stone-900 tracking-tight leading-[1.15]">
               Har Function Ka Pukhta Schedule,{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-1">
                 Zero Confusion Aur Zero Khana Barbaad.
@@ -126,11 +126,11 @@ export default function FeaturesPage() {
         <section className="max-w-5xl mx-auto px-6 py-12">
           <div className="bg-gradient-to-br from-amber-950 via-rose-950 to-stone-950 text-amber-50 rounded-3xl p-8 sm:p-12 shadow-xl border border-amber-400/30 relative overflow-hidden">
             <div className="max-w-2xl space-y-2 mb-8">
-              <span className="text-xs uppercase font-cinzel tracking-widest text-amber-300 font-bold inline-flex items-center gap-1.5">
+              <span className="text-xs uppercase  tracking-widest text-amber-300 font-bold inline-flex items-center gap-1.5">
                 <MdSavings className="w-4 h-4 text-amber-400" />
                 <span>Real Wedding Savings Calculator</span>
               </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-amber-100">
+              <h2 className="text-2xl sm:text-3xl  font-bold text-amber-100">
                 Dekhiye Live RSVP Se Aapka Kitna Kharcha Bachega
               </h2>
               <p className="text-xs sm:text-sm text-stone-300 leading-relaxed font-sans">
@@ -144,7 +144,7 @@ export default function FeaturesPage() {
                 <div>
                   <div className="flex justify-between items-center text-xs sm:text-sm font-semibold mb-2">
                     <span className="text-stone-200">Total Mehmaan (Guest Families):</span>
-                    <span className="text-amber-300 font-bold font-serif text-lg">{guestCount} Guests</span>
+                    <span className="text-amber-300 font-bold  text-lg">{guestCount} Guests</span>
                   </div>
                   <input
                     type="range"
@@ -155,7 +155,7 @@ export default function FeaturesPage() {
                     onChange={(e) => setGuestCount(Number(e.target.value))}
                     className="w-full accent-amber-400 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-stone-400 mt-1 font-mono">
+                  <div className="flex justify-between text-[10px] text-stone-400 mt-1 ">
                     <span>100</span>
                     <span>500</span>
                     <span>1000</span>
@@ -166,7 +166,7 @@ export default function FeaturesPage() {
                 <div>
                   <div className="flex justify-between items-center text-xs sm:text-sm font-semibold mb-2">
                     <span className="text-stone-200">Per Plate Catering Cost:</span>
-                    <span className="text-amber-300 font-bold font-serif text-lg">₹{plateCost} / plate</span>
+                    <span className="text-amber-300 font-bold  text-lg">₹{plateCost} / plate</span>
                   </div>
                   <input
                     type="range"
@@ -177,7 +177,7 @@ export default function FeaturesPage() {
                     onChange={(e) => setPlateCost(Number(e.target.value))}
                     className="w-full accent-amber-400 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-stone-400 mt-1 font-mono">
+                  <div className="flex justify-between text-[10px] text-stone-400 mt-1 ">
                     <span>₹600</span>
                     <span>₹1500</span>
                     <span>₹2500</span>
@@ -191,7 +191,7 @@ export default function FeaturesPage() {
                 <span className="text-[11px] uppercase tracking-wider text-emerald-300 font-bold block">
                   Aapki Estimated Direct Saving
                 </span>
-                <div className="text-3xl sm:text-5xl font-serif font-bold text-white tracking-tight">
+                <div className="text-3xl sm:text-5xl  font-bold text-white tracking-tight">
                   ₹{potentialSavings.toLocaleString("en-IN")}
                 </div>
                 <p className="text-xs text-emerald-200/90 leading-snug">
@@ -213,10 +213,10 @@ export default function FeaturesPage() {
         {/* 6 CORE PILLARS WITH INDIAN CONTEXT */}
         <section className=" mx-auto px-6 py-10 space-y-10">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs uppercase font-cinzel tracking-widest text-rose-800 font-bold">
+            <span className="text-xs uppercase  tracking-widest text-rose-800 font-bold">
               ✦ Built For Real Indian Weddings ✦
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900">
+            <h2 className="text-3xl sm:text-4xl  font-bold text-stone-900">
               6 Badi Musibatein, Ek Smart Solution
             </h2>
           </div>
@@ -228,7 +228,7 @@ export default function FeaturesPage() {
                 <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center border border-rose-200/60 shadow-2xs">
                   <Utensils className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-serif font-bold text-stone-900">
+                <h3 className="text-xl  font-bold text-stone-900">
                   Live Catering Headcount Tracker
                 </h3>
                 <p className="text-xs text-stone-600 leading-relaxed font-sans">
@@ -247,7 +247,7 @@ export default function FeaturesPage() {
                 <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center border border-blue-200/60 shadow-2xs">
                   <MapPin className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-serif font-bold text-stone-900">
+                <h3 className="text-xl  font-bold text-stone-900">
                   1-Click Direct Google Maps GPS
                 </h3>
                 <p className="text-xs text-stone-600 leading-relaxed font-sans">
@@ -266,7 +266,7 @@ export default function FeaturesPage() {
                 <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center border border-amber-200/60 shadow-2xs">
                   <CalendarHeart className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-serif font-bold text-stone-900">
+                <h3 className="text-xl  font-bold text-stone-900">
                   Haldi se Reception Ka Saaf Schedule
                 </h3>
                 <p className="text-xs text-stone-600 leading-relaxed font-sans">
@@ -285,7 +285,7 @@ export default function FeaturesPage() {
                 <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200/60 shadow-2xs">
                   <Share2 className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-serif font-bold text-stone-900">
+                <h3 className="text-xl  font-bold text-stone-900">
                   Personalized Mehmaan Aadar-Satkar
                 </h3>
                 <p className="text-xs text-stone-600 leading-relaxed font-sans">
@@ -304,7 +304,7 @@ export default function FeaturesPage() {
                 <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center border border-purple-200/60 shadow-2xs">
                   <Smartphone className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-serif font-bold text-stone-900">
+                <h3 className="text-xl  font-bold text-stone-900">
                   Dada Ji &amp; Nani Ji Ke Liye Super-Easy
                 </h3>
                 <p className="text-xs text-stone-600 leading-relaxed font-sans">
@@ -323,7 +323,7 @@ export default function FeaturesPage() {
                 <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center border border-rose-200/60 shadow-2xs">
                   <BellRing className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-serif font-bold text-stone-900">
+                <h3 className="text-xl  font-bold text-stone-900">
                   Instant Timing / Venue Updates
                 </h3>
                 <p className="text-xs text-stone-600 leading-relaxed font-sans">
@@ -341,10 +341,10 @@ export default function FeaturesPage() {
         {/* COMPARISON MATRIX */}
         <section className="max-w-6xl mx-auto px-6 py-14">
           <div className="text-center max-w-2xl mx-auto space-y-2 mb-10">
-            <span className="text-xs uppercase font-cinzel tracking-widest text-amber-800 font-bold">
+            <span className="text-xs uppercase  tracking-widest text-amber-800 font-bold">
               ✦ Honest Comparison ✦
             </span>
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900">
+            <h2 className="text-3xl sm:text-4xl  font-bold text-stone-900">
               Printed Card vs WhatsApp PDF vs VivahVaani
             </h2>
           </div>
@@ -353,7 +353,7 @@ export default function FeaturesPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs sm:text-sm">
                 <thead>
-                  <tr className="bg-stone-900 text-amber-100 font-cinzel text-[11px] sm:text-xs tracking-wider">
+                  <tr className="bg-stone-900 text-amber-100  text-[11px] sm:text-xs tracking-wider">
                     <th className="py-4 px-6 font-bold">Feature / Suvidha</th>
                     <th className="py-4 px-4 font-normal text-stone-300">Printed Physical Card</th>
                     <th className="py-4 px-4 font-normal text-stone-300">Generic WhatsApp PDF</th>
@@ -386,7 +386,7 @@ export default function FeaturesPage() {
         {/* BOTTOM CTA */}
         <section className="max-w-5xl mx-auto px-6 pb-16">
           <div className="bg-gradient-to-r from-rose-900 via-rose-950 to-amber-950 text-amber-50 rounded-3xl p-8 sm:p-12 text-center space-y-4 shadow-xl border border-amber-400/20">
-            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-amber-100">
+            <h2 className="text-2xl sm:text-4xl  font-bold text-amber-100">
               Apni Shaadi Ko Ek Royal Touch Dijiye
             </h2>
             <p className="text-xs sm:text-sm text-stone-300 max-w-xl mx-auto leading-relaxed font-sans">

@@ -7,7 +7,7 @@ import FloatingWhatsApp from "@/components/public/FloatingWhatsApp";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin", "devanagari"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -37,7 +37,7 @@ export default function RootLayout({
       lang="hi"
       className={`${poppins.variable} font-sans h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans antialiased text-stone-700 bg-white selection:bg-[#720E16] selection:text-white">
         {children}
         <Suspense fallback={null}>
           <FloatingWhatsApp />

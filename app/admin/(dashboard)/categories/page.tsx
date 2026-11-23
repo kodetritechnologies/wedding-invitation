@@ -410,7 +410,7 @@ export default function SuperAdminCategoriesPage() {
                 <div className="flex items-center justify-between">
                   {/* Sequence Order & Status */}
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono text-zinc-500">
+                    <span className="text-[11px]  text-zinc-500">
                       #{item.order ?? index + 1}
                     </span>
                     <button
@@ -453,7 +453,7 @@ export default function SuperAdminCategoriesPage() {
                 </div>
 
                 {/* Target Link & Slug */}
-                <div className="text-[11px] font-mono text-zinc-500 flex items-center gap-2">
+                <div className="text-[11px]  text-zinc-500 flex items-center gap-2">
                   <span className="bg-zinc-950 px-2 py-1 rounded-md border border-zinc-800 text-amber-400 flex items-center gap-1 truncate max-w-full">
                     <ExternalLink className="w-3 h-3 shrink-0" />
                     <span className="truncate">{item.href || `/${item.slug}`}</span>
@@ -546,7 +546,7 @@ export default function SuperAdminCategoriesPage() {
                     placeholder="e.g. baby-shower"
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 font-mono"
+                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 "
                   />
                 </div>
               </div>
@@ -575,7 +575,7 @@ export default function SuperAdminCategoriesPage() {
                   placeholder="e.g. /templates?category=wedding or /templates?category=baby-shower"
                   value={href}
                   onChange={(e) => setHref(e.target.value)}
-                  className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 font-mono"
+                  className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 "
                 />
                 <span className="text-[10px] text-zinc-500 block">
                   Where users are redirected when clicking this card on the homepage.

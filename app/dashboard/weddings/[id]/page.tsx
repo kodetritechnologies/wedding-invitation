@@ -727,7 +727,7 @@ function WeddingDetailContent({ weddingId }: { weddingId: string }) {
                       </p>
                     </div>
 
-                    <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400 font-mono">
+                    <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400 ">
                       <span>/{tmpl.slug}</span>
                       <div className="flex items-center gap-1.5 font-sans">
                         <span className="text-[10px] text-amber-800 bg-amber-50 px-2 py-0.5 rounded uppercase font-semibold">
@@ -790,7 +790,7 @@ function WeddingDetailContent({ weddingId }: { weddingId: string }) {
                       >
                         <label className="block text-xs font-semibold text-gray-700">
                           {field.label} {field.required && <span className="text-rose-500">*</span>}
-                          <span className="ml-1 text-[10px] font-normal text-gray-400 font-mono">
+                          <span className="ml-1 text-[10px] font-normal text-gray-400 ">
                             {`{{${field.key}}}`}
                           </span>
                         </label>

@@ -333,7 +333,7 @@ function TemplatesContent() {
       <div className="flex items-center justify-between border-b border-amber-900/10 pb-3">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-[#720E16]" />
-          <span className="font-serif font-bold text-sm text-stone-900 tracking-wide uppercase">
+          <span className=" font-bold text-sm text-stone-900 tracking-wide uppercase">
             Filter Collection
           </span>
         </div>
@@ -402,7 +402,7 @@ function TemplatesContent() {
                   <span>{cat.label}</span>
                 </div>
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-mono transition-colors ${
+                  className={`text-[10px] px-2 py-0.5 rounded-full  transition-colors ${
                     isSelected
                       ? "bg-white/20 text-[#FFF3DA]"
                       : "bg-stone-100 text-stone-500 group-hover:bg-amber-100/60 group-hover:text-amber-900"
@@ -452,7 +452,7 @@ function TemplatesContent() {
                     <div className="text-[10px] text-stone-500">{fmt.desc}</div>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono font-semibold text-stone-500">
+                <span className="text-[10px]  font-semibold text-stone-500">
                   ({fmt.count})
                 </span>
               </button>
@@ -465,7 +465,7 @@ function TemplatesContent() {
       <div className="p-4 rounded-2xl bg-gradient-to-br from-[#FAF4EB] to-[#F5ECE0] border border-[#EADBCE] space-y-2.5">
         <div className="flex items-center gap-2 text-[#720E16]">
           <MessageCircle className="w-4 h-4 shrink-0" />
-          <span className="font-serif font-bold text-xs tracking-tight">
+          <span className=" font-bold text-xs tracking-tight">
             Physical Card Replica
           </span>
         </div>
@@ -494,7 +494,7 @@ function TemplatesContent() {
         <div className="bg-[#FAF4EB] border border-[#EADBCE] rounded-2xl p-6 sm:p-8 mb-8 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-xs">
           {/* Left Title */}
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif text-stone-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl  text-stone-900 tracking-tight">
               Pick a design.{" "}
               <span className="italic text-[#720E16] font-normal">
                 Make it yours.
@@ -601,7 +601,7 @@ function TemplatesContent() {
                 </button>
 
                 <div className="flex items-center gap-1.5 text-xs text-stone-600">
-                  <span className="font-serif font-bold text-sm text-stone-900">
+                  <span className=" font-bold text-sm text-stone-900">
                     {filteredTemplates.length}
                   </span>{" "}
                   <span>
@@ -688,7 +688,7 @@ function TemplatesContent() {
                 <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto mb-3">
                   <Sparkles className="w-6 h-6 animate-spin text-[#720E16]" />
                 </div>
-                <p className="text-sm font-serif font-bold text-stone-800">Loading Invitation Collection...</p>
+                <p className="text-sm  font-bold text-stone-800">Loading Invitation Collection...</p>
                 <p className="text-xs text-stone-400 mt-1">Fetching live master templates from database</p>
               </div>
             ) : filteredTemplates.length === 0 ? (
@@ -697,7 +697,7 @@ function TemplatesContent() {
                   <Sparkles className="w-7 h-7" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-lg font-serif font-bold text-stone-900">
+                  <h3 className="text-lg  font-bold text-stone-900">
                     {activeCategory !== "all"
                       ? `No published designs for "${activeCategory.toUpperCase()}" yet`
                       : "No invitation templates published yet"}
@@ -757,12 +757,12 @@ function TemplatesContent() {
                         {/* Ornate Indian Card Center Motif */}
                         <div className="relative z-10 text-center py-3 space-y-1.5 my-auto">
                           {/* Auspicious Shlok */}
-                          <div className="text-[11px] font-serif font-bold tracking-widest text-amber-300/90 drop-shadow-xs">
+                          <div className="text-[11px]  font-bold tracking-widest text-amber-300/90 drop-shadow-xs">
                             || श्री गणेशाय नमः ||
                           </div>
 
                           {/* Grand Couple / Title */}
-                          <h3 className="font-serif text-2xl sm:text-[26px] font-bold tracking-tight text-[#FFF3DA] drop-shadow-md leading-tight line-clamp-2 px-2">
+                          <h3 className=" text-2xl sm:text-[26px] font-bold tracking-tight text-[#FFF3DA] drop-shadow-md leading-tight line-clamp-2 px-2">
                             {item.title}
                           </h3>
 
@@ -792,11 +792,11 @@ function TemplatesContent() {
                         <div className="flex items-start justify-between gap-2">
                           <Link
                             href={`/templates/${encodeURIComponent(item.slug)}`}
-                            className="font-serif font-bold text-base text-stone-900 group-hover:text-[#720E16] transition leading-snug line-clamp-1"
+                            className=" font-bold text-base text-stone-900 group-hover:text-[#720E16] transition leading-snug line-clamp-1"
                           >
                             {item.title}
                           </Link>
-                          <span className="font-serif font-bold text-base text-[#720E16] shrink-0">
+                          <span className=" font-bold text-base text-[#720E16] shrink-0">
                             ₹{item.price}
                           </span>
                         </div>
@@ -872,7 +872,7 @@ function TemplatesContent() {
               <div className="flex items-center justify-between border-b border-stone-200 pb-4 mb-5">
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="w-4 h-4 text-[#720E16]" />
-                  <h3 className="font-serif font-bold text-sm text-stone-900 uppercase tracking-wide">
+                  <h3 className=" font-bold text-sm text-stone-900 uppercase tracking-wide">
                     Filter Designs
                   </h3>
                 </div>

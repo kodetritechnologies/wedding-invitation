@@ -411,7 +411,7 @@ export default function SuperAdminFaqsPage() {
               {/* Question & Answer Content */}
               <div className="space-y-2 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-mono text-zinc-500">
+                  <span className="text-[11px]  text-zinc-500">
                     #{item.order ?? index + 1}
                   </span>
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-amber-400 border border-zinc-700">

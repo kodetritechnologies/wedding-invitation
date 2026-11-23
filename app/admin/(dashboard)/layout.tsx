@@ -367,7 +367,7 @@ function SuperAdminLayoutInner({
             <p className="text-xs font-semibold text-white truncate">
               {adminUser?.name || "Super Admin"}
             </p>
-            <p className="text-[11px] text-zinc-400 truncate font-mono">
+            <p className="text-[11px] text-zinc-400 truncate ">
               {adminUser?.email || "admin@vivahvaani.kodetri.com"}
             </p>
           </div>

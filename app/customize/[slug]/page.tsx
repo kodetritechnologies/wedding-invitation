@@ -572,7 +572,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
         <div className="w-16 h-16 rounded-2xl bg-[#5C0612] text-amber-300 flex items-center justify-center shadow-lg mb-4">
           <Loader2 className="w-8 h-8 animate-spin" />
         </div>
-        <h2 className="text-xl font-serif font-bold text-[#3D0A0E]">
+        <h2 className="text-xl  font-bold text-[#3D0A0E]">
           Loading Design Studio...
         </h2>
         <p className="text-xs text-stone-500 mt-1">Preparing your wedding template live customizer</p>
@@ -586,7 +586,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
         <div className="w-16 h-16 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center shadow-xs mb-3">
           <AlertCircle className="w-8 h-8" />
         </div>
-        <h1 className="text-2xl font-serif font-bold text-stone-900">Template Not Found</h1>
+        <h1 className="text-2xl  font-bold text-stone-900">Template Not Found</h1>
         <p className="text-stone-600 text-sm max-w-md mt-1 mb-6">
           {loadError || "The requested template does not exist or may have been unlisted."}
         </p>
@@ -626,12 +626,12 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
           <div className="h-5 w-[1px] bg-stone-200 hidden sm:block" />
 
           <div className="flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-[#5C0612] text-amber-300 font-serif font-bold text-xs flex items-center justify-center shadow-xs">
+            <span className="w-7 h-7 rounded-lg bg-[#5C0612] text-amber-300  font-bold text-xs flex items-center justify-center shadow-xs">
               V
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xs sm:text-sm font-serif font-bold text-[#3D0A0E] truncate max-w-[130px] sm:max-w-xs md:max-w-md">
+                <h1 className="text-xs sm:text-sm  font-bold text-[#3D0A0E] truncate max-w-[130px] sm:max-w-xs md:max-w-md">
                   {template.name}
                 </h1>
                 <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 hidden sm:inline-block">
@@ -798,7 +798,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
                   />
                   <span>{tab.label}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full  ${
                       isActive ? "bg-black/25 text-amber-100" : "bg-stone-200/70 text-stone-600"
                     }`}
                   >
@@ -930,7 +930,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
                         >
                           <label className="text-xs font-bold text-stone-700 flex items-center justify-between">
                             <span>{ds.label}</span>
-                            <span className="text-[11px] font-mono text-amber-800">{val}</span>
+                            <span className="text-[11px]  text-amber-800">{val}</span>
                           </label>
                           <div className="flex items-center gap-2">
                             <input
@@ -943,7 +943,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
                               type="text"
                               value={val}
                               onChange={(e) => handleStyleChange(ds.key, e.target.value)}
-                              className="flex-1 px-2.5 py-1 bg-white border border-stone-200 rounded-lg text-xs font-mono text-stone-800"
+                              className="flex-1 px-2.5 py-1 bg-white border border-stone-200 rounded-lg text-xs  text-stone-800"
                             />
                           </div>
                         </div>
@@ -1171,7 +1171,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
                   <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E] border border-[#DEA123] shadow-2xs" />
                   <div className="w-2.5 h-2.5 rounded-full bg-[#27C93F] border border-[#1AAB29] shadow-2xs" />
                 </div>
-                <div className="px-5 py-0.5 bg-white border border-stone-200/90 rounded-lg text-xs font-mono text-stone-600 flex items-center gap-2 shadow-2xs">
+                <div className="px-5 py-0.5 bg-white border border-stone-200/90 rounded-lg text-xs  text-stone-600 flex items-center gap-2 shadow-2xs">
                   <span className="text-emerald-600 text-[10px]">🔒</span>
                   <span className="truncate max-w-xs text-[11px]">vivahvaani.com/invitation/{template.slug}</span>
                 </div>
@@ -1227,7 +1227,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
               <div className="w-12 h-12 mx-auto rounded-2xl bg-[#5C0612] text-amber-300 flex items-center justify-center shadow-md mb-2">
                 <Sparkles className="w-6 h-6 fill-amber-300" />
               </div>
-              <h2 className="text-xl font-serif font-bold text-[#3D0A0E]">
+              <h2 className="text-xl  font-bold text-[#3D0A0E]">
                 Save Your Customized Invitation
               </h2>
               <p className="text-xs text-stone-500 max-w-xs mx-auto">
@@ -1246,7 +1246,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
                 <p className="text-[10px] text-stone-500 mt-0.5">Includes 1-Year Live Hosting, RSVP &amp; Maps</p>
               </div>
               <div className="text-right pl-3 shrink-0">
-                <span className="text-base font-serif font-bold text-[#5C0612] block">
+                <span className="text-base  font-bold text-[#5C0612] block">
                   ₹{template.price || 499}
                 </span>
                 <span className="text-[9px] font-semibold text-stone-400 uppercase tracking-wider">Total</span>
@@ -1397,7 +1397,7 @@ function TemplateCustomizeContent({ slug }: { slug: string }) {
             <div className="w-14 h-14 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h3 className="text-lg font-serif font-bold text-stone-900">Saved Successfully!</h3>
+            <h3 className="text-lg  font-bold text-stone-900">Saved Successfully!</h3>
             <p className="text-xs text-stone-600">{saveSuccessMsg}</p>
             <div className="pt-2 flex items-center justify-center gap-2 text-xs text-amber-800 font-medium">
               <Loader2 className="w-4 h-4 animate-spin" />

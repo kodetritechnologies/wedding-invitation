@@ -270,10 +270,10 @@ export default function PublicHeader() {
               />
             ) : (
               <div className="flex items-center gap-2.5">
-                <span className="w-10 h-10 rounded-xl bg-[#5C0612] text-amber-300 font-serif font-bold flex items-center justify-center text-xl shadow-md border border-amber-500/30">
+                <span className="w-10 h-10 rounded-xl bg-[#5C0612] text-amber-300  font-bold flex items-center justify-center text-xl shadow-md border border-amber-500/30">
                   {settings.siteName.slice(0, 1)}
                 </span>
-                <span className="font-serif font-bold text-stone-900 tracking-tight text-2xl sm:text-[26px]">
+                <span className=" font-bold text-stone-900 tracking-tight text-2xl sm:text-[26px]">
                   {settings.siteName}
                 </span>
               </div>
@@ -388,7 +388,7 @@ export default function PublicHeader() {
                   title={user.name}
                 >
                   {user.name ? (
-                    <span className="font-serif font-bold text-sm tracking-wide text-amber-100 uppercase">
+                    <span className=" font-bold text-sm tracking-wide text-amber-100 uppercase">
                       {user.name.trim().charAt(0)}
                     </span>
                   ) : (
@@ -502,7 +502,7 @@ export default function PublicHeader() {
                       className="h-9 w-auto max-w-[150px] object-contain"
                     />
                   ) : (
-                    <span className="font-serif font-bold text-stone-900 text-lg">
+                    <span className=" font-bold text-stone-900 text-lg">
                       {settings.siteName}
                     </span>
                   )}
