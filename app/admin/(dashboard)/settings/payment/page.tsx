@@ -214,7 +214,7 @@ export default function PaymentSettingsPage() {
               placeholder={isLive ? "rzp_live_..." : "rzp_test_..."}
               value={currentKeyId}
               onChange={(e) => handleKeyIdChange(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-100 text-xs font-mono placeholder:text-zinc-600 focus:outline-none focus:border-amber-500 transition"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-100 text-xs  placeholder:text-zinc-600 focus:outline-none focus:border-amber-500 transition"
             />
           </div>
 
@@ -230,7 +230,7 @@ export default function PaymentSettingsPage() {
                 placeholder="Enter secret key"
                 value={currentKeySecret}
                 onChange={(e) => handleKeySecretChange(e.target.value)}
-                className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-100 text-xs font-mono placeholder:text-zinc-600 focus:outline-none focus:border-amber-500 transition"
+                className="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-zinc-950 border border-zinc-800 text-zinc-100 text-xs  placeholder:text-zinc-600 focus:outline-none focus:border-amber-500 transition"
               />
               <button
                 type="button"

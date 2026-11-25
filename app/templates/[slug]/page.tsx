@@ -119,7 +119,7 @@ function TemplateDetailContent({
           <div className="w-14 h-14 rounded-full bg-amber-50 text-[#720E16] border border-amber-200 flex items-center justify-center mx-auto mb-4">
             <Sparkles className="w-7 h-7 animate-spin text-[#720E16]" />
           </div>
-          <h2 className="text-xl font-serif font-bold text-stone-800">
+          <h2 className="text-xl  font-bold text-stone-800">
             Loading Invitation Design...
           </h2>
           <p className="text-xs text-stone-500 mt-1.5">
@@ -139,7 +139,7 @@ function TemplateDetailContent({
           <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-700 border border-rose-200 flex items-center justify-center mx-auto">
             <Sparkles className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-serif font-bold text-stone-900">
+          <h2 className="text-2xl  font-bold text-stone-900">
             Template Not Found
           </h2>
           <p className="text-sm text-stone-600 max-w-md mx-auto">
@@ -315,7 +315,7 @@ function TemplateDetailContent({
                   <span className="text-[10px] font-bold tracking-widest text-[#720E16] uppercase">
                     {template.category || "Wedding"} Invitation
                   </span>
-                  <h1 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 leading-tight">
+                  <h1 className="text-2xl sm:text-3xl  font-bold text-stone-900 leading-tight">
                     {template.name}
                   </h1>
                 </div>
@@ -343,7 +343,7 @@ function TemplateDetailContent({
                   <div className="text-[11px] font-medium text-stone-600">
                     Direct Fixed Price &bull; No Subscription
                   </div>
-                  <div className="text-2xl sm:text-3xl font-serif font-bold text-[#720E16]">
+                  <div className="text-2xl sm:text-3xl  font-bold text-[#720E16]">
                     ₹{price}
                   </div>
                 </div>
@@ -575,7 +575,7 @@ function TemplateDetailContent({
                 <span className="text-[10px] font-bold text-[#720E16] tracking-widest uppercase">
                   Explore More
                 </span>
-                <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900">
+                <h3 className="text-xl sm:text-2xl  font-bold text-stone-900">
                   Similar Wedding Invitation Designs
                 </h3>
               </div>
@@ -606,10 +606,10 @@ function TemplateDetailContent({
                       />
                     ) : (
                       <div className="h-full flex flex-col items-center justify-center text-center p-4 text-[#FFF3DA]">
-                        <span className="text-xs font-serif font-bold tracking-widest text-amber-300">
+                        <span className="text-xs  font-bold tracking-widest text-amber-300">
                           || श्री गणेशाय नमः ||
                         </span>
-                        <h4 className="font-serif text-xl font-bold mt-2">
+                        <h4 className=" text-xl font-bold mt-2">
                           {sim.name}
                         </h4>
                       </div>
@@ -632,11 +632,11 @@ function TemplateDetailContent({
                       <div className="flex items-start justify-between gap-2">
                         <Link
                           href={`/templates/${encodeURIComponent(sim.slug)}`}
-                          className="font-serif font-bold text-base text-stone-900 hover:text-[#720E16] transition line-clamp-1"
+                          className=" font-bold text-base text-stone-900 hover:text-[#720E16] transition line-clamp-1"
                         >
                           {sim.name}
                         </Link>
-                        <span className="font-serif font-bold text-base text-[#720E16] shrink-0">
+                        <span className=" font-bold text-base text-[#720E16] shrink-0">
                           ₹{sim.price || 499}
                         </span>
                       </div>
@@ -701,7 +701,7 @@ export default function TemplateDetailPage({
           <div className="w-14 h-14 rounded-full bg-amber-50 text-[#720E16] border border-amber-200 flex items-center justify-center mb-4 shadow-sm">
             <Sparkles className="w-7 h-7 animate-spin text-[#720E16]" />
           </div>
-          <h2 className="text-xl font-serif font-bold text-stone-800">
+          <h2 className="text-xl  font-bold text-stone-800">
             Loading Invitation Design...
           </h2>
           <p className="text-xs text-stone-500 mt-1">

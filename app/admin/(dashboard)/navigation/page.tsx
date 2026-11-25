@@ -465,7 +465,7 @@ export default function SuperAdminNavigationPage() {
               {/* Item Info */}
               <div className="space-y-1.5 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-mono text-zinc-500">
+                  <span className="text-[11px]  text-zinc-500">
                     #{item.order ?? index + 1}
                   </span>
                   <span
@@ -511,7 +511,7 @@ export default function SuperAdminNavigationPage() {
                   <h3 className="text-base font-bold text-white tracking-tight">
                     {item.label}
                   </h3>
-                  <span className="text-xs font-mono text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
+                  <span className="text-xs  text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
                     {item.href}
                   </span>
                 </div>
@@ -634,7 +634,7 @@ export default function SuperAdminNavigationPage() {
                     placeholder="e.g. /engagement"
                     value={href}
                     onChange={(e) => setHref(e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 font-mono"
+                    className="w-full px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-600 focus:outline-hidden focus:border-amber-500 "
                   />
                 </div>
               </div>
@@ -688,7 +688,7 @@ export default function SuperAdminNavigationPage() {
                         >
                           <div className="flex items-center gap-2 truncate">
                             <span className="font-semibold text-white">{sub.label}</span>
-                            <span className="text-[11px] font-mono text-zinc-400">({sub.href})</span>
+                            <span className="text-[11px]  text-zinc-400">({sub.href})</span>
                           </div>
                           <button
                             type="button"
@@ -716,7 +716,7 @@ export default function SuperAdminNavigationPage() {
                       placeholder="Sub-item URL (e.g. /wedding/video)"
                       value={newSubHref}
                       onChange={(e) => setNewSubHref(e.target.value)}
-                      className="flex-1 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 font-mono"
+                      className="flex-1 px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 "
                     />
                     <button
                       type="button"

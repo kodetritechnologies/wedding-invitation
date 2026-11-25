@@ -12,8 +12,7 @@ export async function GET(req: NextRequest) {
       const search = searchParams.get("search")?.trim() || "";
       const status = searchParams.get("status") || "all";
       const mode = searchParams.get("mode") || "all";
-      const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-      const limit = Math.max(1, Math.min(100, parseInt(searchParams.get("limit") || "10", 10)));
+      const limit = parseInt(searchParams.get("limit") || "50", 10);
 
       const filter: Record<string, any> = {};
 
@@ -37,13 +36,9 @@ export async function GET(req: NextRequest) {
         ];
       }
 
-      const total = await Order.countDocuments(filter);
-      const skip = (page - 1) * limit;
-
       const orders = await Order.find(filter)
         .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
+        .limit(Math.min(limit, 200))
         .lean();
 
       // Aggregate statistics
@@ -61,12 +56,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({
         success: true,
         orders,
-        pagination: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit) || 1,
-        },
         stats: {
           totalRevenue,
           paidOrdersCount,

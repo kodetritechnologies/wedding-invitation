@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -20,6 +20,7 @@ import {
   Gift,
   Music,
   Baby,
+  MapPin,
 } from "lucide-react";
 import { GiRing, GiLotus } from "react-icons/gi";
 import { MdBolt, MdDescription, MdLink } from "react-icons/md";
@@ -69,7 +70,7 @@ function renderCategoryIcon(iconKey?: string, imageUrl?: string) {
       <img
         src={imageUrl}
         alt="Category icon"
-        className="w-7 h-7 object-contain"
+        className="w-7 h-7 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
       />
     );
   }
@@ -77,69 +78,83 @@ function renderCategoryIcon(iconKey?: string, imageUrl?: string) {
   switch (iconKey) {
     case "rings":
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="9" cy="14" r="5" />
-          <circle cx="15" cy="11" r="5" />
-          <path d="M15 6 L16 4 L14 4 Z" fill="currentColor" />
+        <svg className="w-8 h-8 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" viewBox="0 0 48 48" fill="none">
+          {/* Left Wedding Ring */}
+          <circle cx="20" cy="27" r="10.5" stroke="currentColor" strokeWidth="3.5" />
+          <circle cx="20" cy="27" r="7.5" stroke="#FFE9A8" strokeWidth="1" opacity="0.7" />
+          {/* Right Wedding Ring */}
+          <circle cx="28" cy="24" r="10.5" stroke="currentColor" strokeWidth="3.5" />
+          <circle cx="28" cy="24" r="7.5" stroke="#FFE9A8" strokeWidth="1" opacity="0.7" />
+          {/* Diamond on top */}
+          <path d="M28 9 L34 13 L28 17 L22 13 Z" fill="currentColor" stroke="#FFF7DE" strokeWidth="0.8" />
+          <circle cx="28" cy="13" r="1.5" fill="#FFFFFF" />
         </svg>
       );
     case "diamond":
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M8 21 L8 14 L5 8 L11 8 L8 14" />
-          <path d="M16 21 L16 14 L13 8 L19 8 L16 14" />
-          <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+        <svg className="w-8 h-8 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" viewBox="0 0 48 48" fill="none">
+          {/* Solitaire Ring */}
+          <circle cx="24" cy="28" r="12.5" stroke="currentColor" strokeWidth="3.5" />
+          <circle cx="24" cy="28" r="9" stroke="#FFE9A8" strokeWidth="1" opacity="0.7" />
+          {/* Big Sparkling Solitaire Diamond */}
+          <path d="M24 6 L32 12 L24 18 L16 12 Z" fill="currentColor" stroke="#FFF7DE" strokeWidth="1" />
+          <path d="M20 12 L24 6 L28 12 L24 18 Z" fill="#FFE9A8" opacity="0.85" />
+          <circle cx="24" cy="12" r="1.8" fill="#FFFFFF" />
+          <path d="M13 7 L16 10 M35 7 L32 10" stroke="#FFF7DE" strokeWidth="2" strokeLinecap="round" />
         </svg>
       );
     case "cake":
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="4" y="10" width="16" height="11" rx="2" />
-          <line x1="4" y1="15" x2="20" y2="15" />
-          <line x1="8" y1="10" x2="8" y2="6" />
-          <line x1="12" y1="10" x2="12" y2="6" />
-          <line x1="16" y1="10" x2="16" y2="6" />
+        <svg className="w-7 h-7 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" viewBox="0 0 48 48" fill="none">
+          <path d="M12 36 h24 v4 a2 2 0 0 1 -2 2 h-20 a2 2 0 0 1 -2 -2 Z" fill="currentColor" opacity="0.9" />
+          <path d="M14 26 h20 v8 h-20 Z" stroke="currentColor" strokeWidth="2.5" />
+          <path d="M18 18 h12 v7 h-12 Z" stroke="currentColor" strokeWidth="2.5" />
+          <line x1="24" y1="18" x2="24" y2="13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+          <path d="M24 8 C23 10 21 11 24 13 C27 11 25 10 24 8 Z" fill="#FFF7DE" stroke="currentColor" strokeWidth="0.8" />
+          <circle cx="12" cy="15" r="1.5" fill="currentColor" />
+          <circle cx="36" cy="16" r="1.5" fill="currentColor" />
         </svg>
       );
     case "heart":
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M5 14 C5 18 19 18 19 14 C19 12 12 11 12 11 C12 11 5 12 5 14 Z" />
-          <path d="M12 4 C12 4 10 7 10 9 C10 10.1 10.9 11 12 11 C13.1 11 14 10.1 14 9 C14 7 12 4 12 4 Z" fill="currentColor" />
-          <line x1="12" y1="18" x2="12" y2="21" />
-          <line x1="9" y1="21" x2="15" y2="21" />
+        <svg className="w-7 h-7 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" viewBox="0 0 48 48" fill="none">
+          <path d="M17 14 L21 24 C21 27 19 28 17 28 L17 38 M13 38 L21 38" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M31 14 L27 24 C27 27 29 28 31 28 L31 38 M27 38 L35 38" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M24 13 C22 10 18 11 18 14 C18 18 24 21 24 21 C24 21 30 18 30 14 C30 11 26 10 24 13 Z" fill="currentColor" stroke="#FFF7DE" strokeWidth="0.8" />
         </svg>
       );
     case "home":
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M3 10.5 L12 3 L21 10.5" />
-          <path d="M6 9.5 V20 H18 V9.5" />
-          <rect x="10" y="14" width="4" height="6" />
+        <svg className="w-7 h-7 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" viewBox="0 0 48 48" fill="none">
+          <path d="M24 10 L11 21 L14 21 L14 36 A2 2 0 0 0 16 38 L32 38 A2 2 0 0 0 34 36 L34 21 L37 21 Z" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M21 38 V26 H27 V38" stroke="currentColor" strokeWidth="2.2" />
+          <circle cx="24" cy="14" r="2.5" fill="currentColor" />
+          <path d="M24 7 L26 10 H22 Z" fill="#FFF7DE" />
         </svg>
       );
     case "glass":
       return (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <rect x="3" y="8" width="18" height="4" rx="1" />
-          <rect x="4" y="12" width="16" height="9" rx="1" />
-          <path d="M12 8 V21" />
-          <path d="M8 8 C8 5 12 5 12 8 C12 5 16 5 16 8" />
+        <svg className="w-7 h-7 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" viewBox="0 0 48 48" fill="none">
+          <path d="M14 34 L22 18 L28 24 L20 40 Z" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
+          <path d="M17 28 L25 34" stroke="currentColor" strokeWidth="2" />
+          <path d="M30 12 L34 8 M36 18 L41 18 M26 8 L27 4 M33 26 L38 29" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="34" cy="14" r="1.5" fill="#FFF7DE" />
+          <circle cx="28" cy="14" r="1.2" fill="#FFF7DE" />
         </svg>
       );
     case "baby":
-      return <Baby className="w-6 h-6" />;
+      return <Baby className="w-6 h-6 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />;
     case "flame":
-      return <Flame className="w-6 h-6" />;
+      return <Flame className="w-6 h-6 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />;
     case "party":
-      return <PartyPopper className="w-6 h-6" />;
+      return <PartyPopper className="w-6 h-6 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />;
     case "gift":
-      return <Gift className="w-6 h-6" />;
+      return <Gift className="w-6 h-6 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />;
     case "music":
-      return <Music className="w-6 h-6" />;
+      return <Music className="w-6 h-6 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />;
     case "sparkles":
     default:
-      return <Sparkles className="w-6 h-6" />;
+      return <Sparkles className="w-6 h-6 text-[#F5C86C] drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />;
   }
 }
 
@@ -151,6 +166,33 @@ export default function HomePage() {
   const [testimonials, setTestimonials] = useState<TestimonialItem[]>([]);
   const [sliderIndex, setSliderIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const [isCategoryHovered, setIsCategoryHovered] = useState(false);
+  const isDraggingCategory = useRef(false);
+  const dragStartX = useRef(0);
+  const dragScrollLeft = useRef(0);
+
+  // 3-second auto-slide interval for categories (seamless continuous cycle)
+  useEffect(() => {
+    const el = categoryScrollRef.current;
+    if (!el) return;
+
+    const interval = setInterval(() => {
+      if (isCategoryHovered || isDraggingCategory.current) return;
+      const card = el.firstElementChild as HTMLElement | null;
+      const cardWidth = card ? card.offsetWidth : 220;
+      const gap = 16;
+      const step = cardWidth + gap;
+
+      // If reached near the end of duplicated list, loop smoothly back to start
+      if (el.scrollLeft >= el.scrollWidth / 2) {
+        el.scrollLeft = 0;
+      }
+      el.scrollBy({ left: step, behavior: "smooth" });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isCategoryHovered]);
 
   const [dynamicTemplates, setDynamicTemplates] = useState<DynamicTemplateItem[]>([]);
   const [defaultTemplate, setDefaultTemplate] = useState<DynamicTemplateItem | null>(null);
@@ -267,21 +309,21 @@ export default function HomePage() {
     loadFaqs();
   }, []);
 
-  // Testimonials Auto-advance every 5 seconds (pauses on hover or focus)
+  // Testimonials Auto-advance every 3.5 seconds (pauses on hover or focus)
   useEffect(() => {
-    if (isPaused || testimonials.length === 0) return;
+    if (isPaused) return;
     const interval = setInterval(() => {
-      setSliderIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+      setSliderIndex((prev) => (prev + 1) % 4);
+    }, 3500);
     return () => clearInterval(interval);
-  }, [isPaused, testimonials.length]);
+  }, [isPaused]);
 
   const handlePrevSlide = () => {
-    setSliderIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+    setSliderIndex((prev) => (prev === 0 ? 3 : prev - 1));
   };
 
   const handleNextSlide = () => {
-    setSliderIndex((prev) => (prev + 1) % testimonials.length);
+    setSliderIndex((prev) => (prev + 1) % 4);
   };
 
   // Structured Data (JSON-LD) for SEO
@@ -363,7 +405,7 @@ export default function HomePage() {
               </div>
 
               {/* Royal Heading */}
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-serif font-bold text-amber-100 leading-[1.15] tracking-tight drop-shadow-md">
+              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem]  font-bold text-amber-100 leading-[1.15] tracking-tight drop-shadow-md">
                 Your Special Moments,<br />
                 <span className="text-[#FDF2D0]">Now Digital</span>
               </h1>
@@ -428,7 +470,7 @@ export default function HomePage() {
               </div>
 
               {/* Ornamental script line */}
-              <div className="pt-1 text-amber-300/85 italic font-serif text-sm tracking-wide">
+              <div className="pt-1 text-amber-300/85 italic  text-sm tracking-wide">
                 ✦ Make your celebrations more memorable ✦
               </div>
             </div>
@@ -441,8 +483,7 @@ export default function HomePage() {
         {/* ========================================================================= */}
         {/* SECTION 4.2: CATEGORIES (Royal Maroon Indian Arch Cards)                  */}
         {/* ========================================================================= */}
-        {categories.length > 0 && (
-          <section className="py-20 px-4 sm:px-8 bg-[#FDFBF7] relative">
+        <section className="py-20 px-4 sm:px-8 bg-[#FDFBF7] relative">
             <div className="max-w-7xl mx-auto space-y-12">
               {/* Header with Traditional Lotus divider */}
               <div className="text-center max-w-3xl mx-auto space-y-3">
@@ -464,7 +505,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Title */}
-                <h2 className="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-[#720E16]">
+                <h2 className="text-3xl sm:text-5xl  font-bold tracking-tight text-[#720E16]">
                   Invitations for Every <span className="text-[#D6A64B]">Celebration</span>
                 </h2>
 
@@ -488,60 +529,147 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Arch Categories Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-5">
-                {categories.map((cat, idx) => (
-                  <Link
-                    key={cat._id || idx}
-                    href={
-                      cat.href && cat.href.startsWith("/templates")
-                        ? cat.href
-                        : `/templates?category=${cat.slug || ""}`
-                    }
-                    className="group relative bg-[#720E16] text-center flex flex-col items-center justify-between p-5 pt-8 pb-6 transition-all duration-300 shadow-md hover:shadow-2xl hover:-translate-y-1.5 border-2 border-[#D6A64B] hover:border-[#F2C76E]"
-                    style={{
-                      borderRadius: "48px 48px 20px 20px",
-                    }}
-                  >
-                    {/* Subtle Inner Golden Hairline Arch (Double Border Effect) */}
+              {/* Realistic Arch Categories Auto-Slider */}
+              {(() => {
+                const displayCategories = (
+                  categories.length > 0
+                    ? categories
+                    : [
+                        { name: "Wedding", subtitle: "For your big day", slug: "wedding", icon: "rings", href: "/templates?category=wedding" },
+                        { name: "Engagement", subtitle: "Mark the beginning", slug: "engagement", icon: "diamond", href: "/templates?category=engagement" },
+                        { name: "Birthday", subtitle: "Celebrate life", slug: "birthday", icon: "cake", href: "/templates?category=birthday" },
+                        { name: "Anniversary", subtitle: "Cherish together", slug: "anniversary", icon: "heart", href: "/templates?category=anniversary" },
+                        { name: "House Warming", subtitle: "Welcome home", slug: "housewarming", icon: "home", href: "/templates?category=housewarming" },
+                        { name: "Reception", subtitle: "Share the joy", slug: "reception", icon: "glass", href: "/templates?category=reception" },
+                      ] as CategoryItem[]
+                );
+
+                return (
+                  <div className="relative w-full overflow-hidden">
+                    {/* Scrollable Container with Mouse Drag + 3s Auto-Slide + No Scrollbar */}
                     <div
-                      className="absolute inset-1.5 pointer-events-none border border-[#D6A64B]/60 group-hover:border-[#F2C76E] transition-colors"
-                      style={{ borderRadius: "42px 42px 16px 16px" }}
-                    />
+                      ref={categoryScrollRef}
+                      tabIndex={0}
+                      role="region"
+                      aria-label="Celebration Categories Carousel"
+                      onMouseEnter={() => setIsCategoryHovered(true)}
+                      onMouseLeave={() => {
+                        setIsCategoryHovered(false);
+                        isDraggingCategory.current = false;
+                        if (categoryScrollRef.current) {
+                          categoryScrollRef.current.style.cursor = "grab";
+                        }
+                      }}
+                      onMouseDown={(e) => {
+                        const el = categoryScrollRef.current;
+                        if (!el) return;
+                        isDraggingCategory.current = true;
+                        dragStartX.current = e.pageX;
+                        dragScrollLeft.current = el.scrollLeft;
+                        el.style.cursor = "grabbing";
+                      }}
+                      onMouseMove={(e) => {
+                        const el = categoryScrollRef.current;
+                        if (!el || !isDraggingCategory.current) return;
+                        e.preventDefault();
+                        const walk = (e.pageX - dragStartX.current) * 1.5;
+                        el.scrollLeft = dragScrollLeft.current - walk;
+                      }}
+                      onMouseUp={() => {
+                        isDraggingCategory.current = false;
+                        if (categoryScrollRef.current) {
+                          categoryScrollRef.current.style.cursor = "grab";
+                        }
+                      }}
+                      className="flex items-center gap-4 sm:gap-5 overflow-x-auto py-2 px-1 sm:px-2 scroll-smooth focus:outline-none select-none no-scrollbar cursor-grab"
+                      style={{
+                        scrollbarWidth: "none",
+                        msOverflowStyle: "none",
+                      }}
+                    >
+                      {[...displayCategories, ...displayCategories].map((cat, idx) => (
+                        <Link
+                          key={cat._id || idx}
+                          href={
+                            cat.href && cat.href.startsWith("/templates")
+                              ? cat.href
+                              : `/templates?category=${cat.slug || ""}`
+                          }
+                          draggable={false}
+                          className="group relative flex-shrink-0 flex flex-col items-center justify-between transition-transform duration-300 hover:-translate-y-1 select-none"
+                          style={{
+                            width: "clamp(205px, 18.2vw, 235px)",
+                            aspectRatio: "408 / 612",
+                          }}
+                        >
+                          {/* Background Arch Image provided by user - Clean without box shadows */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src="/assets/bg/category bg.png"
+                            alt={`${cat.name} Card Background`}
+                            draggable={false}
+                            className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                          />
 
-                    {/* Top Traditional Arch Crown Motif */}
-                    <div className="absolute top-2.5 left-1/2 -translate-x-1/2 text-[#D6A64B] group-hover:text-[#F2C76E] transition-colors">
-                      <svg className="w-6 h-3.5" viewBox="0 0 32 16" fill="currentColor">
-                        <path d="M16 1 C18 5 24 7 28 8 C22 9 18 12 16 16 C14 12 10 9 4 8 C8 7 14 5 16 1 Z" />
-                        <circle cx="16" cy="3" r="1.5" />
-                      </svg>
-                    </div>
+                          {/* Content Container: high top/bottom padding so icon and button breathe; tight center content */}
+                          <div className="relative z-10 w-full h-full flex flex-col items-center justify-between px-3 pt-[27%] pb-[25%]">
+                            {/* Top: Gold Circular Medallion */}
+                            <div className="relative flex items-center justify-center">
+                              {/* Golden Frame of the medallion without artificial glow */}
+                              <div className="relative w-13 h-13 sm:w-15 sm:h-15 rounded-full p-[2px] bg-gradient-to-b from-[#FDE8A5] via-[#C8923B] to-[#7A4B13]">
+                                {/* Inner bevel ring */}
+                                <div className="w-full h-full rounded-full p-[1.5px] bg-gradient-to-t from-[#F8D57E] via-[#854E18] to-[#FCE39E]">
+                                  {/* Dark Maroon Velvet Texture Inside */}
+                                  <div className="w-full h-full rounded-full bg-gradient-to-b from-[#4A0007] via-[#350004] to-[#200002] flex items-center justify-center">
+                                    {renderCategoryIcon(cat.icon, cat.imageUrl)}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
 
-                    {/* Circular Icon Container */}
-                    <div className="w-14 h-14 rounded-full bg-[#5A0910] text-[#D6A64B] group-hover:text-[#F2C76E] border-2 border-[#D6A64B] group-hover:border-[#F2C76E] flex items-center justify-center shadow-inner group-hover:scale-105 transition-all duration-300 mt-2">
-                      {renderCategoryIcon(cat.icon, cat.imageUrl)}
-                    </div>
+                            {/* Middle: Title, Divider & Subtitle grouped tightly together */}
+                            <div className="flex flex-col items-center text-center w-full px-1">
+                              {/* Category Name */}
+                              <h3 className=" text-lg sm:text-xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-b from-[#FFF5DA] via-[#FCE3A1] to-[#E5BE72] leading-tight">
+                                {cat.name}
+                              </h3>
 
-                    {/* Category Title & Description */}
-                    <div className="mt-4 mb-3">
-                      <h3 className="font-serif font-bold text-base sm:text-lg text-[#FFF3DA] tracking-tight">
-                        {cat.name}
-                      </h3>
-                      <p className="text-[11px] sm:text-xs text-[#FFF3DA]/80 mt-1 font-normal">
-                        {cat.subtitle || cat.line}
-                      </p>
-                    </div>
+                              {/* Traditional Golden Floral Divider */}
+                              <div className="flex items-center justify-center gap-1.5 w-full my-0.5 opacity-90">
+                                <div className="h-[1px] w-5 sm:w-8 bg-gradient-to-r from-transparent via-[#E8B860] to-[#E8B860]" />
+                                <svg className="w-3 h-3 text-[#F6CC75]" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M12 2 C13 7 17 11 22 12 C17 13 13 17 12 22 C11 17 7 13 2 12 C7 11 11 7 12 2 Z" />
+                                  <circle cx="12" cy="12" r="2" fill="#FFF8E7" />
+                                </svg>
+                                <div className="h-[1px] w-5 sm:w-8 bg-gradient-to-l from-transparent via-[#E8B860] to-[#E8B860]" />
+                              </div>
 
-                    {/* Button: View Designs -> */}
-                    <div className="w-full pt-1">
-                      <span className="w-full inline-flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-full border border-[#D6A64B] bg-[#5A0910]/60 text-[#FFF3DA] font-semibold text-[11px] sm:text-xs group-hover:bg-[#D6A64B] group-hover:text-[#720E16] group-hover:border-[#D6A64B] transition-all duration-300 shadow-2xs">
-                        <span>View Designs</span>
-                        <span className="text-xs transition-transform group-hover:translate-x-0.5">→</span>
-                      </span>
+                              {/* Subtitle / Tagline */}
+                              <p className=" text-[11px] sm:text-xs text-[#F3DEC3] tracking-wide italic font-medium line-clamp-1 leading-tight">
+                                {cat.subtitle || cat.line || "For your special day"}
+                              </p>
+                            </div>
+
+                            {/* Bottom: Royal Cream-Gold Pill Button */}
+                            <div className="w-[82%] max-w-[145px]">
+                              <div className="relative p-[1px] rounded-full bg-gradient-to-b from-[#FFF2CC] via-[#DDA850] to-[#8C5815]">
+                                <div className="w-full py-1.5 px-3 rounded-full bg-gradient-to-b from-[#FFFDF7] via-[#F8E8C8] to-[#EBD09F] flex items-center justify-center gap-1.5 group-hover:from-[#FFF9EA] group-hover:to-[#F7DEB0] transition-colors">
+                                  <span className=" font-bold text-[11px] sm:text-xs text-[#4A0007] tracking-tight">
+                                    View Designs
+                                  </span>
+                                  <span className="text-[#4A0007] text-[11px] font-bold transition-transform duration-300 group-hover:translate-x-1">
+                                    →
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
-                  </Link>
-                ))}
-              </div>
+                  </div>
+                );
+              })()}
 
               {/* Bottom Ornamental Ending */}
               <div className="flex items-center justify-center gap-3 text-[#D6A64B] pt-4">
@@ -561,7 +689,6 @@ export default function HomePage() {
               </div>
             </div>
           </section>
-        )}
 
         {/* ========================================================================= */}
         {/* SECTION 4.3: EASY STEPS (Royal Indian Wedding Step Cards)                */}
@@ -892,7 +1019,7 @@ export default function HomePage() {
                   <div className="w-12 h-12 mx-auto rounded-full bg-[#6E0C14]/10 text-[#6E0C14] flex items-center justify-center">
                     <Sparkles className="w-6 h-6 text-[#C98F32]" />
                   </div>
-                  <h3 className="font-serif text-lg font-bold text-[#6E0C14]">No Designs Found</h3>
+                  <h3 className=" text-lg font-bold text-[#6E0C14]">No Designs Found</h3>
                   <p className="text-xs sm:text-sm text-stone-600">
                     {themeFormat === "all"
                       ? "Currently no designs are published in the database."
@@ -960,7 +1087,7 @@ export default function HomePage() {
                                 <div className="w-14 h-14 rounded-full bg-amber-400/20 border border-amber-300/40 flex items-center justify-center mt-2 text-2xl text-amber-200">
                                   <GiLotus className="w-8 h-8 text-amber-300" />
                                 </div>
-                                <span className="text-xs font-serif font-bold text-[#FFF3DA] mt-2 line-clamp-1 px-2 drop-shadow-xs">
+                                <span className="text-xs  font-bold text-[#FFF3DA] mt-2 line-clamp-1 px-2 drop-shadow-xs">
                                   {template.name}
                                 </span>
                               </div>
@@ -1145,123 +1272,226 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* SECTION 4.6: TESTIMONIALS (FROM EXISTING API)                             */}
+        {/* SECTION 4.6: TESTIMONIALS (Exact Royal Wedding Design from Screenshot)   */}
         {/* ========================================================================= */}
-        <section className="py-20 px-4 sm:px-8 max-w-5xl mx-auto space-y-10">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-stone-200 pb-6">
-            <div className="space-y-2">
-              <span className="text-xs uppercase font-bold tracking-widest text-amber-800">
-                Real Customer Experiences
+        <section
+          className="relative py-24 px-4 sm:px-8 overflow-hidden bg-[#FAF6EE] text-[#4A0007]"
+          style={{
+            backgroundImage: "url('/assets/bg/testionial-bg.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          {/* Subtle Ambient Overlay if needed */}
+          <div className="max-w-6xl mx-auto space-y-12 relative z-10">
+            {/* Header: Lotus motif, subtitle, headline & description */}
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              {/* Top Golden Lotus Motif with Thin Flanking Rules */}
+              <div className="flex items-center justify-center gap-3 text-[#D6A64B]">
+                <div className="h-[1px] w-16 sm:w-24 bg-gradient-to-r from-transparent to-[#D6A64B]" />
+                <svg className="w-6 h-6 text-[#D6A64B]" viewBox="0 0 32 32" fill="currentColor">
+                  <path d="M16 4 C16 4 10 14 16 24 C22 14 16 4 16 4 Z" />
+                  <path d="M16 10 C11 14 7 19 9 24 C13 24 16 20 16 20 C16 20 19 24 23 24 C25 19 21 14 16 10 Z" opacity="0.75" />
+                  <path d="M6 22 C4 22 3 20 5 18 C7 18 9 20 9 22 Z" opacity="0.6" />
+                  <path d="M26 22 C28 22 29 20 27 18 C25 18 23 20 23 22 Z" opacity="0.6" />
+                </svg>
+                <div className="h-[1px] w-16 sm:w-24 bg-gradient-to-l from-transparent to-[#D6A64B]" />
+              </div>
+
+              {/* Sub-label: TESTIMONIALS */}
+              <span className="block text-[11px] sm:text-xs uppercase font-bold tracking-[0.25em] text-[#720E16]">
+                TESTIMONIALS
               </span>
-              <h2 className="text-2xl sm:text-4xl font-bold text-stone-900 tracking-tight">
-                What Families Say
+
+              {/* Heading: What Our Clients Say */}
+              <h2 className="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-[#720E16]">
+                What Our <span className="text-[#C8923B] font-serif">Clients</span> Say
               </h2>
-              <p className="text-xs sm:text-sm text-stone-600">
-                Hear from families and planners across India who simplified their celebration invitations.
+
+              {/* Subtitle */}
+              <p className="text-xs sm:text-sm text-[#6C534E] max-w-xl mx-auto leading-relaxed font-normal">
+                Real stories from real couples who made their special day even more memorable with our wedding invitation designs.
               </p>
             </div>
 
-            {/* Slider Controls */}
-            <div className="flex items-center gap-3 shrink-0">
-              <span className="text-xs font-mono text-stone-500 bg-stone-100 px-3 py-1.5 rounded-full border border-stone-200">
-                0{sliderIndex + 1} / 0{testimonials.length}
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handlePrevSlide}
-                  className="w-11 h-11 rounded-full border border-stone-200 bg-white hover:bg-stone-50 hover:border-amber-500 text-stone-700 flex items-center justify-center transition shadow-xs cursor-pointer"
-                  aria-label="Previous testimonial"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextSlide}
-                  className="w-11 h-11 rounded-full border border-stone-200 bg-white hover:bg-stone-50 hover:border-amber-500 text-stone-700 flex items-center justify-center transition shadow-xs cursor-pointer"
-                  aria-label="Next testimonial"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          </div>
+            {/* Testimonials Carousel Container with Left/Right Circular Arrow Controls */}
+            <div className="relative">
+              {/* Left Arrow Button */}
+              <button
+                type="button"
+                onClick={handlePrevSlide}
+                className="absolute -left-2 sm:-left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-[#720E16] border border-[#E8DCCF] shadow-[0_4px_12px_rgba(114,14,22,0.12)] flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-xs"
+                aria-label="Previous Testimonials"
+              >
+                <ChevronLeft className="w-5 h-5 text-[#720E16]" />
+              </button>
 
-          {/* Testimonial Card */}
-          {testimonials.length > 0 && (
-            <div
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-              onFocus={() => setIsPaused(true)}
-              onBlur={() => setIsPaused(false)}
-              tabIndex={0}
-              role="region"
-              aria-label="Testimonial slider card"
-              className="relative bg-white rounded-3xl border border-stone-200 p-8 sm:p-12 shadow-sm overflow-hidden focus:outline-none focus:ring-2 focus:ring-amber-500"
-            >
-              <Quote className="absolute right-6 -bottom-6 w-40 h-40 text-amber-500/10 pointer-events-none select-none rotate-12" />
+              {/* Right Arrow Button */}
+              <button
+                type="button"
+                onClick={handleNextSlide}
+                className="absolute -right-2 sm:-right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/90 hover:bg-white text-[#720E16] border border-[#E8DCCF] shadow-[0_4px_12px_rgba(114,14,22,0.12)] flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-xs"
+                aria-label="Next Testimonials"
+              >
+                <ChevronRight className="w-5 h-5 text-[#720E16]" />
+              </button>
 
-              <div className="relative z-10 space-y-6">
-                {/* Rating & City Tag */}
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full">
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: testimonials[sliderIndex]?.rating || 5 }).map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-amber-500 text-amber-500" />
+              {/* 3 Testimonial Cards Carousel with Smooth Sliding Animation */}
+              {(() => {
+                const sampleTestimonials = [
+                  {
+                    name: "Riya & Aman",
+                    city: "Indore, MP",
+                    avatar: "/assets/testimonials/avatar1.png",
+                    rating: 5,
+                    content:
+                      "The invitation design was absolutely stunning! It perfectly captured the tradition and elegance we wanted.",
+                  },
+                  {
+                    name: "Neha & Kunal",
+                    city: "Bhopal, MP",
+                    avatar: "/assets/testimonials/avatar2.png",
+                    rating: 5,
+                    content:
+                      "Amazing designs and very professional service. Our guests loved the invitation and we received so many compliments!",
+                  },
+                  {
+                    name: "Pooja & Rahul",
+                    city: "Ujjain, MP",
+                    avatar: "/assets/testimonials/avatar3.png",
+                    rating: 5,
+                    content:
+                      "The entire experience was smooth and the designs are simply beautiful. Highly recommended!",
+                  },
+                  {
+                    name: "Sneha & Varun",
+                    city: "Gwalior, MP",
+                    avatar: "/assets/testimonials/avatar1.png",
+                    rating: 5,
+                    content:
+                      "Exceptional service! The digital wedding card made it so easy for all our guests to find the venue and RSVP instantly.",
+                  },
+                  {
+                    name: "Ananya & Rohit",
+                    city: "Jabalpur, MP",
+                    avatar: "/assets/testimonials/avatar2.png",
+                    rating: 5,
+                    content:
+                      "Super elegant and royal look! Everyone in our family was impressed with the traditional design and music integration.",
+                  },
+                  {
+                    name: "Kavita & Aditya",
+                    city: "Ratlam, MP",
+                    avatar: "/assets/testimonials/avatar3.png",
+                    rating: 5,
+                    content:
+                      "Best decision for our wedding invites. Seamless WhatsApp sharing and stunning graphics. 10/10 recommended!",
+                  },
+                ];
+
+                const allCards = testimonials.length > 0
+                  ? [
+                      ...testimonials.map((t, i) => ({
+                        name: t.name,
+                        city: t.city || "Indore, MP",
+                        avatar: sampleTestimonials[i % sampleTestimonials.length].avatar,
+                        rating: t.rating || 5,
+                        content: t.content,
+                      })),
+                      ...sampleTestimonials,
+                    ]
+                  : sampleTestimonials;
+
+                const maxSlides = Math.max(1, allCards.length - 2);
+
+                return (
+                  <div
+                    onMouseEnter={() => setIsPaused(true)}
+                    onMouseLeave={() => setIsPaused(false)}
+                    className="overflow-hidden px-2 sm:px-6 py-2 select-none"
+                  >
+                    <div
+                      className="flex transition-transform duration-700 ease-in-out"
+                      style={{
+                        transform: `translateX(-${(sliderIndex % maxSlides) * (100 / 3)}%)`,
+                      }}
+                    >
+                      {allCards.map((card, idx) => (
+                        <div
+                          key={idx}
+                          className="w-full md:w-1/3 flex-shrink-0 px-3 sm:px-3.5"
+                        >
+                          <div className="relative bg-[#FFFDF9]/95 backdrop-blur-xs rounded-[28px] border border-[#F3E8DB] p-6 sm:p-7 shadow-[0_10px_28px_rgba(114,14,22,0.06)] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(114,14,22,0.12)] min-h-[310px] h-full">
+                            {/* Top Section: Absolute peach quotes on left, Centered Avatar with Stars directly underneath */}
+                            <div className="relative flex flex-col items-center justify-center mb-3">
+                              {/* Large Peach Quote Marks on top-left of card */}
+                              <span className="absolute left-0 top-0 font-serif text-3xl sm:text-4xl text-[#F2D7C8] font-bold leading-none select-none">
+                                “
+                              </span>
+
+                              {/* Center: Golden Ring Perfect 80x80 Circular Couple Avatar */}
+                              <div className="relative w-20 h-20 shrink-0 rounded-full p-[3px] bg-gradient-to-b from-[#FAD980] via-[#D6A64B] to-[#996D29] shadow-[0_3px_10px_rgba(114,14,22,0.18)]">
+                                <div className="w-full h-full rounded-full overflow-hidden bg-[#FFFDF9]">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img
+                                    src={card.avatar}
+                                    alt={card.name}
+                                    className="w-full h-full object-cover object-center rounded-full"
+                                  />
+                                </div>
+                              </div>
+
+                              {/* 5 Filled Golden Stars directly beneath the avatar */}
+                              <div className="flex items-center justify-center gap-1 text-[#D6A64B] mt-2.5">
+                                {Array.from({ length: 5 }).map((_, sIdx) => (
+                                  <svg key={sIdx} className="w-3.5 h-3.5 fill-[#D6A64B]" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                                  </svg>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Middle: Review Quote Text */}
+                            <p className="text-center text-xs sm:text-[13px] text-[#4A322C] font-normal leading-relaxed px-2 my-auto">
+                              &ldquo;{card.content}&rdquo;
+                            </p>
+
+                            {/* Bottom: Couple Names & City with Location Pin */}
+                            <div className="text-center pt-4 border-t border-[#F5EBE1] mt-3">
+                              <h4 className="font-serif font-bold text-sm sm:text-base text-[#720E16]">
+                                {card.name}
+                              </h4>
+                              <div className="flex items-center justify-center gap-1 text-[11px] sm:text-xs text-[#8A716A] mt-0.5">
+                                <MapPin className="w-3 h-3 text-[#C8923B]" />
+                                <span>{card.city}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       ))}
                     </div>
-                    <span className="text-xs font-bold text-amber-900 ml-1">
-                      {testimonials[sliderIndex]?.rating || 5}.0
-                    </span>
                   </div>
+                );
+              })()}
 
-                  <span className="text-xs font-semibold text-rose-900 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
-                    {testimonials[sliderIndex]?.city}
-                  </span>
-                </div>
-
-                <blockquote className="text-base sm:text-xl text-stone-900 leading-relaxed italic">
-                  &ldquo;{testimonials[sliderIndex]?.content}&rdquo;
-                </blockquote>
-
-                {/* Author Info */}
-                <div className="flex items-center gap-4 pt-4 border-t border-stone-100">
-                  <div className="w-12 h-12 rounded-full bg-rose-900 text-amber-200 flex items-center justify-center font-bold text-sm border-2 border-amber-300/40 shrink-0">
-                    {testimonials[sliderIndex]?.name
-                      ?.split(" ")
-                      .map((p) => p[0])
-                      .slice(0, 2)
-                      .join("")
-                      .toUpperCase() || "TN"}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm sm:text-base text-stone-900">
-                      {testimonials[sliderIndex]?.name}
-                    </h4>
-                    <p className="text-xs text-stone-500 mt-0.5">
-                      {testimonials[sliderIndex]?.role}
-                    </p>
-                  </div>
-                </div>
+              {/* Dots Pagination from Screenshot */}
+              <div className="flex justify-center items-center gap-2 pt-8" role="tablist" aria-label="Testimonial slider pagination">
+                {[0, 1, 2].map((dotIdx) => (
+                  <button
+                    key={dotIdx}
+                    type="button"
+                    onClick={() => setSliderIndex(dotIdx)}
+                    aria-label={`Go to slide group ${dotIdx + 1}`}
+                    className={`rounded-full transition-all duration-300 cursor-pointer ${
+                      sliderIndex % 3 === dotIdx
+                        ? "w-2.5 h-2.5 bg-[#720E16]"
+                        : "w-2 h-2 bg-[#E5D7CA] hover:bg-[#C8923B]"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
-          )}
-
-          {/* Dots Navigation with aria-label */}
-          <div className="flex justify-center items-center gap-2 pt-2" role="tablist" aria-label="Testimonial slider pagination">
-            {testimonials.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setSliderIndex(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                aria-selected={idx === sliderIndex}
-                role="tab"
-                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                  idx === sliderIndex ? "w-8 bg-amber-500" : "w-2 bg-stone-300 hover:bg-stone-400"
-                }`}
-              />
-            ))}
           </div>
         </section>
 
@@ -1378,7 +1608,7 @@ export default function HomePage() {
                     <Check className="w-8 h-8 stroke-[2.5]" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-serif font-bold text-stone-900">
+                    <h3 className="text-xl  font-bold text-stone-900">
                       Demo Purchase Successful! 🎉
                     </h3>
                     <p className="text-xs text-stone-600 mt-1 leading-relaxed">
@@ -1413,7 +1643,7 @@ export default function HomePage() {
                       <span className="text-[10px] uppercase font-bold tracking-wider text-amber-900 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
                         Direct Purchase
                       </span>
-                      <h3 className="text-lg font-serif font-bold text-stone-900 mt-0.5">
+                      <h3 className="text-lg  font-bold text-stone-900 mt-0.5">
                         {buyModalTemplate.name}
                       </h3>
                     </div>
@@ -1426,7 +1656,7 @@ export default function HomePage() {
                       <p className="text-[11px] text-stone-400">Zero subscription • 1 Year Live Validity</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-2xl font-serif font-bold text-[#720E16]">
+                      <span className="text-2xl  font-bold text-[#720E16]">
                         ₹{buyModalTemplate.price}
                       </span>
                       <span className="text-[10px] text-emerald-700 font-semibold block">Fixed Price</span>

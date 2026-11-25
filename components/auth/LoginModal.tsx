@@ -166,11 +166,11 @@ export default function LoginModal({
             className="h-12 w-auto mx-auto object-contain"
           />
 
-          <div className="inline-block px-3 py-0.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-[11px] font-cinzel font-semibold">
+          <div className="inline-block px-3 py-0.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-900 text-[11px]  font-semibold">
             ✦ Client Login &bull; Wedding Portal ✦
           </div>
 
-          <h2 id="modal-login-title" className="text-xl sm:text-2xl font-bold font-serif text-stone-900 tracking-tight">
+          <h2 id="modal-login-title" className="text-xl sm:text-2xl font-bold  text-stone-900 tracking-tight">
             Apne Account Me Login Karein
           </h2>
           <p className="text-xs text-stone-600 font-sans leading-relaxed">

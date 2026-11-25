@@ -248,7 +248,7 @@ export default function PricingPage() {
               <Sparkles className="w-3.5 h-3.5 text-rose-600" />
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 tracking-tight leading-[1.18]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl  font-bold text-stone-900 tracking-tight leading-[1.18]">
               Koi Package Nahi, Koi Monthly Fee Nahi —{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-800 via-rose-700 to-amber-700 block mt-2">
                 Jo Template Pasand Aaye, Sirf Uska Pay Karein!
@@ -280,10 +280,10 @@ export default function PricingPage() {
         {/* HOW PAY-PER-TEMPLATE WORKS (3 SIMPLE STEPS) */}
         <section className="max-w-6xl mx-auto px-6 py-12">
           <div className="text-center space-y-2 mb-10">
-            <span className="text-xs uppercase font-cinzel tracking-widest text-amber-800 font-bold">
+            <span className="text-xs uppercase  tracking-widest text-amber-800 font-bold">
               ✦ Aasaan &amp; Transparent Niyam ✦
             </span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+            <h2 className="text-2xl sm:text-3xl  font-bold text-stone-900">
               Kaise Kaam Karta Hai Hamara Pay-Per-Template Model?
             </h2>
             <p className="text-xs sm:text-sm text-stone-600 max-w-lg mx-auto">
@@ -301,16 +301,16 @@ export default function PricingPage() {
                 >
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-50 to-rose-50 border border-amber-200 flex items-center justify-center text-rose-800 font-serif font-bold text-lg">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-50 to-rose-50 border border-amber-200 flex items-center justify-center text-rose-800  font-bold text-lg">
                         <StepIcon className="w-6 h-6 text-amber-700" />
                       </div>
-                      <span className="text-2xl font-serif font-bold text-stone-200">
+                      <span className="text-2xl  font-bold text-stone-200">
                         {st.step}
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-serif font-bold text-stone-900">
+                      <h3 className="text-lg  font-bold text-stone-900">
                         {st.title}
                       </h3>
                       <p className="text-xs sm:text-sm text-stone-600 mt-2 leading-relaxed">
@@ -332,10 +332,10 @@ export default function PricingPage() {
         {/* TEMPLATE FORMATS & PRICE BREAKDOWN */}
         <section className="max-w-7xl mx-auto px-6 py-10">
           <div className="text-center space-y-2 mb-10">
-            <span className="text-xs uppercase font-cinzel tracking-widest text-amber-800 font-bold">
+            <span className="text-xs uppercase  tracking-widest text-amber-800 font-bold">
               ✦ Format Ke Hisaab Se Transparent Pricing ✦
             </span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+            <h2 className="text-2xl sm:text-3xl  font-bold text-stone-900">
               Pick Your Template Format
             </h2>
             <p className="text-xs sm:text-sm text-stone-600 max-w-xl mx-auto">
@@ -360,13 +360,13 @@ export default function PricingPage() {
                     >
                       {plan.badge}
                     </span>
-                    <span className="text-[10px] font-cinzel font-bold text-stone-500 uppercase tracking-wider">
+                    <span className="text-[10px]  font-bold text-stone-500 uppercase tracking-wider">
                       {plan.formatBadge}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-2xl font-serif font-bold text-stone-900">
+                    <h3 className="text-2xl  font-bold text-stone-900">
                       {plan.name}
                     </h3>
                     <p className="text-xs text-stone-600 mt-1 leading-relaxed">
@@ -376,7 +376,7 @@ export default function PricingPage() {
 
                   <div className="pt-2 border-t border-stone-100">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 tracking-tight">
+                      <span className="text-3xl sm:text-4xl  font-bold text-stone-900 tracking-tight">
                         {plan.price}
                       </span>
                       <span className="text-xs text-stone-500">/ per template</span>
@@ -428,10 +428,10 @@ export default function PricingPage() {
         <section className="max-w-6xl mx-auto px-6 py-12">
           <div className="bg-[#FAF7F2] rounded-3xl p-8 sm:p-12 border border-stone-200">
             <div className="text-center space-y-2 mb-10">
-              <span className="text-xs uppercase font-cinzel tracking-widest text-rose-800 font-bold">
+              <span className="text-xs uppercase  tracking-widest text-rose-800 font-bold">
                 ✦ Sabhi Templates Par Lagu ✦
               </span>
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900">
+              <h2 className="text-2xl sm:text-3xl  font-bold text-stone-900">
                 Har Ek Template Ke Sath Yeh Sabkuch Included Hai
               </h2>
               <p className="text-xs sm:text-sm text-stone-600 max-w-lg mx-auto">
@@ -450,7 +450,7 @@ export default function PricingPage() {
                     <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-800 flex items-center justify-center border border-amber-200">
                       <ItemIcon className="w-5 h-5" />
                     </div>
-                    <h4 className="text-sm font-serif font-bold text-stone-900">{item.title}</h4>
+                    <h4 className="text-sm  font-bold text-stone-900">{item.title}</h4>
                     <p className="text-xs text-stone-600 leading-relaxed">{item.desc}</p>
                   </div>
                 );
@@ -463,10 +463,10 @@ export default function PricingPage() {
         <section className="max-w-5xl mx-auto px-6 py-10">
           <div className="bg-white rounded-3xl p-8 sm:p-10 border border-stone-200/90 shadow-sm">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs uppercase font-cinzel tracking-widest text-amber-800 font-bold">
+              <span className="text-xs uppercase  tracking-widest text-amber-800 font-bold">
                 ✦ Asli Bachat &bull; Asli Suvidha ✦
               </span>
-              <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900">
+              <h3 className="text-xl sm:text-2xl  font-bold text-stone-900">
                 Pay-Per-Template Model Kyun Hai Sabse Kifayati?
               </h3>
             </div>
@@ -474,7 +474,7 @@ export default function PricingPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs sm:text-sm">
                 <thead>
-                  <tr className="border-b border-stone-200 text-stone-500 font-serif">
+                  <tr className="border-b border-stone-200 text-stone-500 ">
                     <th className="py-3 px-4 font-semibold">Suvidha (Features)</th>
                     <th className="py-3 px-4 font-semibold text-rose-800 bg-rose-50/60 rounded-t-lg">
                       VivahVaani (Pay-Per-Template)
@@ -538,10 +538,10 @@ export default function PricingPage() {
         <section className="max-w-5xl mx-auto px-6 py-10">
           <div className="bg-[#FAF7F2] rounded-3xl p-8 sm:p-10 border border-stone-200">
             <div className="text-center space-y-2 mb-8">
-              <span className="text-xs uppercase font-cinzel tracking-widest text-rose-800 font-bold">
+              <span className="text-xs uppercase  tracking-widest text-rose-800 font-bold">
                 ✦ Optional Power-Ups ✦
               </span>
-              <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900">
+              <h3 className="text-xl sm:text-2xl  font-bold text-stone-900">
                 Aapke Card Ko Aur Khaas Banane Ke Liye Add-Ons
               </h3>
               <p className="text-xs text-stone-600 max-w-md mx-auto">
@@ -579,10 +579,10 @@ export default function PricingPage() {
         {/* FAQ SECTION */}
         <section className="max-w-4xl mx-auto px-6 py-12">
           <div className="text-center space-y-2 mb-8">
-            <span className="text-xs uppercase font-cinzel tracking-widest text-amber-800 font-bold">
+            <span className="text-xs uppercase  tracking-widest text-amber-800 font-bold">
               ✦ Aapke Sawaal, Hamare Jawaab ✦
             </span>
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 flex items-center justify-center gap-2">
+            <h2 className="text-2xl sm:text-3xl  font-bold text-stone-900 flex items-center justify-center gap-2">
               <HelpCircle className="w-6 h-6 text-amber-700" />
               <span>Frequently Asked Questions</span>
             </h2>
@@ -597,7 +597,7 @@ export default function PricingPage() {
                 key={i}
                 className="bg-white rounded-2xl p-6 border border-stone-200/90 shadow-xs space-y-2"
               >
-                <h4 className="text-sm sm:text-base font-serif font-bold text-stone-900 flex items-start gap-2">
+                <h4 className="text-sm sm:text-base  font-bold text-stone-900 flex items-start gap-2">
                   <span className="text-rose-700 font-sans font-bold">Q.</span>
                   <span>{faq.q}</span>
                 </h4>
@@ -613,10 +613,10 @@ export default function PricingPage() {
         <section className="max-w-5xl mx-auto px-6 pb-16">
           <div className="bg-gradient-to-r from-stone-900 via-rose-950 to-stone-900 text-amber-50 rounded-3xl p-8 sm:p-12 shadow-xl border border-amber-400/20 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 text-center md:text-left">
-              <span className="text-[11px] font-cinzel uppercase tracking-widest text-amber-300 font-bold">
+              <span className="text-[11px]  uppercase tracking-widest text-amber-300 font-bold">
                 Indore Design Desk Support
               </span>
-              <h3 className="text-2xl font-serif font-bold text-amber-100">
+              <h3 className="text-2xl  font-bold text-amber-100">
                 Shaadi Me Bas 2-3 Din Bache Hain?
               </h3>
               <p className="text-xs text-stone-300 max-w-lg">

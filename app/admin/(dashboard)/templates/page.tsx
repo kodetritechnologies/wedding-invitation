@@ -623,7 +623,7 @@ export default function AdminTemplatesPage() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <p className="text-[11px] text-zinc-500 font-mono">
+                        <p className="text-[11px] text-zinc-500 ">
                           /{template.slug}
                         </p>
                         <span className="text-[11px] text-amber-400 font-medium">
@@ -819,7 +819,7 @@ export default function AdminTemplatesPage() {
                   placeholder="e.g. royal-palace-wedding"
                   value={newTemplateSlug}
                   onChange={(e) => setNewTemplateSlug(e.target.value.toLowerCase())}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs  text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
@@ -900,7 +900,7 @@ export default function AdminTemplatesPage() {
                     placeholder="Enter custom category slug (e.g. sangeet, haldi, birthday)"
                     value={newTemplateCustomCat}
                     onChange={(e) => setNewTemplateCustomCat(e.target.value)}
-                    className="mt-2 w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-500"
+                    className="mt-2 w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 text-xs  text-white focus:outline-none focus:border-amber-500"
                   />
                 )}
                 <p className="text-[11px] text-zinc-500 mt-1">

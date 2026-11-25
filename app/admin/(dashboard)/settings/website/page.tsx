@@ -276,7 +276,7 @@ export default function WebsiteSettingsPage() {
                     setSiteSettings({ ...siteSettings, logoUrl: e.target.value })
                   }
                   placeholder="https://example.com/logo.png (Leave blank to use default text logo)"
-                  className="flex-1 px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-white text-xs focus:outline-none focus:border-amber-500 font-mono"
+                  className="flex-1 px-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-white text-xs focus:outline-none focus:border-amber-500 "
                 />
                 {siteSettings.logoUrl && (
                   <div className="h-9 px-2 bg-zinc-950 border border-zinc-800 rounded-lg flex items-center">
@@ -466,7 +466,7 @@ export default function WebsiteSettingsPage() {
                     })
                   }
                   placeholder="919826012345"
-                  className="w-full pl-8 pr-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-white text-xs focus:outline-none focus:border-amber-500 font-mono"
+                  className="w-full pl-8 pr-3 py-2 bg-zinc-950 border border-zinc-800 rounded-lg text-white text-xs focus:outline-none focus:border-amber-500 "
                 />
               </div>
             </div>

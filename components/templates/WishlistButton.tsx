@@ -127,7 +127,7 @@ export default function WishlistButton({
       />
       {showCount && (
         <span
-          className={`font-semibold font-mono tabular-nums leading-none ${textSizes[size]} ${
+          className={`font-semibold  tabular-nums leading-none ${textSizes[size]} ${
             hasLiked ? "text-rose-600 font-bold" : "text-stone-500"
           }`}
         >

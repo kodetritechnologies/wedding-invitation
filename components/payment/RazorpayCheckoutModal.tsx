@@ -264,7 +264,7 @@ export default function RazorpayCheckoutModal({
               <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
                 Payment Verified &amp; Confirmed
               </span>
-              <h3 className="font-serif font-bold text-xl text-stone-900 mt-2">
+              <h3 className=" font-bold text-xl text-stone-900 mt-2">
                 Shubh Aarambh! Order Confirmed
               </h3>
               <p className="text-xs text-stone-600 mt-1 leading-relaxed">
@@ -277,19 +277,19 @@ export default function RazorpayCheckoutModal({
             <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-left text-xs space-y-1.5 font-sans">
               <div className="flex justify-between text-stone-600">
                 <span>Order Ref:</span>
-                <span className="font-mono font-bold text-stone-900">
+                <span className=" font-bold text-stone-900">
                   {completedOrder.orderId}
                 </span>
               </div>
               <div className="flex justify-between text-stone-600">
                 <span>Razorpay Payment ID:</span>
-                <span className="font-mono text-stone-900 text-[11px]">
+                <span className=" text-stone-900 text-[11px]">
                   {completedOrder.razorpayPaymentId}
                 </span>
               </div>
               <div className="flex justify-between text-stone-600">
                 <span>Paid Amount:</span>
-                <span className="font-serif font-bold text-emerald-700">
+                <span className=" font-bold text-emerald-700">
                   ₹{completedOrder.amount || price}
                 </span>
               </div>
@@ -340,7 +340,7 @@ export default function RazorpayCheckoutModal({
                   </span>
                 )}
               </div>
-              <h3 className="text-lg font-serif font-bold text-stone-900 mt-1">
+              <h3 className="text-lg  font-bold text-stone-900 mt-1">
                 {template.title}
               </h3>
               <p className="text-xs text-stone-500 mt-0.5">
@@ -354,7 +354,7 @@ export default function RazorpayCheckoutModal({
                 <span className="text-[11px] font-semibold text-stone-500 block">
                   Total Payable Amount
                 </span>
-                <span className="text-2xl font-serif font-bold text-[#720E16]">
+                <span className="text-2xl  font-bold text-[#720E16]">
                   ₹{price}
                 </span>
                 <span className="text-[11px] text-stone-500 ml-1">all taxes incl.</span>
