@@ -12,6 +12,8 @@ import {
   Clock,
   XCircle,
   ExternalLink,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 interface OrderItem {
@@ -46,6 +48,9 @@ export default function AdminOrdersPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [modeFilter, setModeFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const getAuthHeaders = () => {
     const token =
@@ -59,13 +64,15 @@ export default function AdminOrdersPage() {
     return headers;
   };
 
-  const loadOrders = async (isManualRefresh = false) => {
+  const loadOrders = async (pageNumber = page, isManualRefresh = false) => {
     try {
       if (isManualRefresh) setRefreshing(true);
       else setLoading(true);
 
       const headers = getAuthHeaders();
       const params = new URLSearchParams();
+      params.set("page", String(pageNumber));
+      params.set("limit", "10");
       if (search.trim()) params.set("search", search.trim());
       if (statusFilter !== "all") params.set("status", statusFilter);
       if (modeFilter !== "all") params.set("mode", modeFilter);
@@ -78,6 +85,11 @@ export default function AdminOrdersPage() {
       const data = await res.json();
       if (data.success) {
         setOrders(data.orders || []);
+        if (data.pagination) {
+          setPage(data.pagination.page);
+          setTotalPages(data.pagination.totalPages);
+          setTotalRecords(data.pagination.total);
+        }
         if (data.stats) {
           setStats(data.stats);
         }
@@ -92,11 +104,22 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      loadOrders();
+      setPage(1);
+      loadOrders(1);
     }, 300);
 
     return () => clearTimeout(debounceTimer);
   }, [search, statusFilter, modeFilter]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
+      setPage(newPage);
+      loadOrders(newPage);
+    }
+  };
+
+  const startRecord = totalRecords > 0 ? (page - 1) * 10 + 1 : 0;
+  const endRecord = Math.min(page * 10, totalRecords);
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6 font-sans">
@@ -110,15 +133,12 @@ export default function AdminOrdersPage() {
             <h1 className="text-xl font-bold text-white tracking-tight">
               Customer Orders
             </h1>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              Live records of all template purchases, payment confirmations, and customer details
-            </p>
           </div>
         </div>
 
         <button
           type="button"
-          onClick={() => loadOrders(true)}
+          onClick={() => loadOrders(page, true)}
           disabled={refreshing}
           className="px-3.5 py-2 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-2 transition cursor-pointer self-start sm:self-auto"
         >
@@ -248,8 +268,9 @@ export default function AdminOrdersPage() {
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-zinc-800 text-[11px] uppercase tracking-wider text-zinc-400 bg-zinc-900/90">
                   <th className="py-3.5 px-4 font-semibold">Order ID</th>
@@ -350,7 +371,43 @@ export default function AdminOrdersPage() {
               </tbody>
             </table>
           </div>
-        )}
+
+          {/* Pagination Controls */}
+          <div className="px-4 py-3 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400 bg-zinc-950/60">
+            <span>
+              Showing <span className="font-semibold text-white">{startRecord}</span> to{" "}
+              <span className="font-semibold text-white">{endRecord}</span> of{" "}
+              <span className="font-semibold text-white">{totalRecords}</span> orders
+            </span>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page <= 1}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition text-xs"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Previous</span>
+              </button>
+
+              <span className="px-2 text-zinc-300 font-medium">
+                Page {page} of {totalPages}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page >= totalPages}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition text-xs"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </>
+      )}
       </div>
     </div>
   );

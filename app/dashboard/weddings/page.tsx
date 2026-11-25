@@ -9,6 +9,7 @@ import {
   MapPin,
   ExternalLink,
   ChevronRight,
+  ChevronLeft,
   Loader2,
   X,
 } from "lucide-react";
@@ -41,6 +42,9 @@ export default function WeddingsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   // Form State
   const [brideName, setBrideName] = useState("");
@@ -54,11 +58,11 @@ export default function WeddingsPage() {
   const [templateId, setTemplateId] = useState("");
   const [templatesList, setTemplatesList] = useState<{ _id: string; name: string; slug: string; category?: string }[]>([]);
 
-  const loadData = async () => {
+  const loadData = async (targetPage = page) => {
     try {
       setLoading(true);
       const [resW, resC, resT] = await Promise.all([
-        fetch("/api/admin/weddings"),
+        fetch(`/api/admin/weddings?page=${targetPage}&limit=10`),
         fetch("/api/admin/clients"),
         fetch("/api/templates"),
       ]);
@@ -67,7 +71,14 @@ export default function WeddingsPage() {
       const dataC = await resC.json();
       const dataT = await resT.json();
 
-      if (dataW.success) setWeddings(dataW.weddings || []);
+      if (dataW.success) {
+        setWeddings(dataW.weddings || []);
+        if (dataW.pagination) {
+          setPage(dataW.pagination.page);
+          setTotalPages(dataW.pagination.totalPages);
+          setTotalRecords(dataW.pagination.total);
+        }
+      }
       if (dataC.success) setClients(dataC.clients || []);
       if (dataT.success) setTemplatesList(dataT.templates || []);
     } catch (err) {
@@ -78,8 +89,18 @@ export default function WeddingsPage() {
   };
 
   useEffect(() => {
-    loadData();
+    loadData(1);
   }, []);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
+      setPage(newPage);
+      loadData(newPage);
+    }
+  };
+
+  const startRecord = totalRecords > 0 ? (page - 1) * 10 + 1 : 0;
+  const endRecord = Math.min(page * 10, totalRecords);
 
   const handleCreateWedding = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,9 +156,6 @@ export default function WeddingsPage() {
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
             Wedding Projects
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Create, manage itineraries, and track live RSVPs for each wedding.
-          </p>
         </div>
 
         <button
@@ -233,6 +251,38 @@ export default function WeddingsPage() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="bg-white rounded-xl border border-gray-200 px-4 py-3 flex items-center justify-between text-xs text-gray-500 shadow-xs">
+          <span>
+            Showing <span className="font-semibold text-gray-800">{startRecord}</span> to{" "}
+            <span className="font-semibold text-gray-800">{endRecord}</span> of{" "}
+            <span className="font-semibold text-gray-800">{totalRecords}</span> wedding cards
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page <= 1}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition text-xs font-medium"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Previous</span>
+            </button>
+            <span className="px-2 font-medium text-gray-700">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page >= totalPages}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition text-xs font-medium"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       )}
 

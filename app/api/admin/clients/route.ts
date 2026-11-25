@@ -16,6 +16,8 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search");
     const status = searchParams.get("status") || "active";
+    const pageParam = searchParams.get("page");
+    const limitParam = searchParams.get("limit");
 
     // Strict tenant isolation: query MUST include adminId
     const query: Record<string, unknown> = {
@@ -34,12 +36,41 @@ export async function GET(req: NextRequest) {
       ];
     }
 
-    const clients = await Client.find(query).sort({ createdAt: -1 });
+    const total = await Client.countDocuments(query);
+    let clientQuery = Client.find(query).sort({ createdAt: -1 });
+
+    if (pageParam || limitParam) {
+      const page = Math.max(1, parseInt(pageParam || "1", 10));
+      const limit = Math.max(1, Math.min(100, parseInt(limitParam || "10", 10)));
+      const skip = (page - 1) * limit;
+      clientQuery = clientQuery.skip(skip).limit(limit);
+
+      const clients = await clientQuery;
+      return NextResponse.json({
+        success: true,
+        count: clients.length,
+        clients,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit) || 1,
+        },
+      });
+    }
+
+    const clients = await clientQuery;
 
     return NextResponse.json({
       success: true,
       count: clients.length,
       clients,
+      pagination: {
+        total,
+        page: 1,
+        limit: clients.length,
+        totalPages: 1,
+      },
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to fetch clients";

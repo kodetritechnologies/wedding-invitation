@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Mail,
   Trash2,
@@ -13,6 +13,8 @@ import {
   Calendar,
   Clock,
   Inbox,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 interface EnquiryItem {
@@ -33,9 +35,18 @@ export default function SuperAdminEnquiriesPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [counts, setCounts] = useState({
+    total: 0,
+    unread: 0,
+    replied: 0,
+  });
 
-  const fetchEnquiries = async () => {
+  const fetchEnquiries = useCallback(async (targetPage = page) => {
     try {
+      setLoading(true);
       const token =
         typeof window !== "undefined"
           ? localStorage.getItem("shaadi_super_admin_token")
@@ -44,7 +55,14 @@ export default function SuperAdminEnquiriesPage() {
       const headers: Record<string, string> = {};
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
-      const res = await fetch("/api/super-admin/enquiries", {
+      const params = new URLSearchParams({
+        page: String(targetPage),
+        limit: "10",
+        status: statusFilter,
+        search: searchQuery,
+      });
+
+      const res = await fetch(`/api/super-admin/enquiries?${params.toString()}`, {
         headers,
         credentials: "include",
       });
@@ -52,19 +70,36 @@ export default function SuperAdminEnquiriesPage() {
       if (res.ok) {
         const data = await res.json();
         setEnquiries(data.enquiries || []);
+        if (data.pagination) {
+          setPage(data.pagination.page);
+          setTotalPages(data.pagination.totalPages);
+          setTotalRecords(data.pagination.total);
+        }
+        if (data.counts) {
+          setCounts(data.counts);
+        }
       }
     } catch (err) {
       console.error("Failed to load enquiries", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, statusFilter, searchQuery]);
 
+  // Debounced search & filter
   useEffect(() => {
-    fetchEnquiries();
-  }, []);
+    const timer = setTimeout(() => {
+      setPage(1);
+      fetchEnquiries(1);
+    }, 300);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, statusFilter]);
 
-  const handleUpdateStatus = async (id: string, newStatus: "unread" | "read" | "replied") => {
+  const handleUpdateStatus = async (
+    id: string,
+    newStatus: "unread" | "read" | "replied"
+  ) => {
     try {
       const token =
         typeof window !== "undefined"
@@ -119,33 +154,19 @@ export default function SuperAdminEnquiriesPage() {
         setEnquiries((prev) => prev.filter((item) => item._id !== id));
         setSuccessMsg("Enquiry deleted successfully!");
         setTimeout(() => setSuccessMsg(""), 3000);
+        fetchEnquiries(page);
       }
     } catch (err) {
       console.error("Delete failed", err);
     }
   };
 
-  const filteredEnquiries = useMemo(() => {
-    return enquiries.filter((item) => {
-      const matchesStatus =
-        statusFilter === "all" || (item.status || "unread") === statusFilter;
-      const q = searchQuery.toLowerCase().trim();
-      const matchesSearch =
-        q === "" ||
-        item.name.toLowerCase().includes(q) ||
-        item.phone.toLowerCase().includes(q) ||
-        (item.email && item.email.toLowerCase().includes(q)) ||
-        item.message.toLowerCase().includes(q) ||
-        (item.role && item.role.toLowerCase().includes(q));
-
-      return matchesStatus && matchesSearch;
-    });
-  }, [enquiries, statusFilter, searchQuery]);
-
-  // Statistics
-  const totalCount = enquiries.length;
-  const unreadCount = enquiries.filter((e) => (e.status || "unread") === "unread").length;
-  const repliedCount = enquiries.filter((e) => e.status === "replied").length;
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
+      setPage(newPage);
+      fetchEnquiries(newPage);
+    }
+  };
 
   const formatDate = (dateStr: string) => {
     try {
@@ -168,13 +189,8 @@ export default function SuperAdminEnquiriesPage() {
     return digits;
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20 text-zinc-400">
-        <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
-      </div>
-    );
-  }
+  const startRecord = totalRecords > 0 ? (page - 1) * 10 + 1 : 0;
+  const endRecord = Math.min(page * 10, totalRecords);
 
   return (
     <div className="space-y-6">
@@ -185,9 +201,6 @@ export default function SuperAdminEnquiriesPage() {
             <Mail className="w-5 h-5 text-amber-400" />
             Client Enquiries &amp; Messages
           </h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
-            Review incoming leads, connect via WhatsApp or Phone, and manage inquiries from the Contact form.
-          </p>
         </div>
       </div>
 
@@ -203,15 +216,15 @@ export default function SuperAdminEnquiriesPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
           <span className="text-xs text-zinc-400 block font-medium">Total Inquiries</span>
-          <span className="text-xl font-bold text-white mt-1 block">{totalCount}</span>
+          <span className="text-xl font-bold text-white mt-1 block">{counts.total}</span>
         </div>
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
           <span className="text-xs text-zinc-400 block font-medium">Unread Leads</span>
-          <span className="text-xl font-bold text-rose-400 mt-1 block">{unreadCount}</span>
+          <span className="text-xl font-bold text-rose-400 mt-1 block">{counts.unread}</span>
         </div>
         <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
           <span className="text-xs text-zinc-400 block font-medium">Contacted / Replied</span>
-          <span className="text-xl font-bold text-emerald-400 mt-1 block">{repliedCount}</span>
+          <span className="text-xl font-bold text-emerald-400 mt-1 block">{counts.replied}</span>
         </div>
       </div>
 
@@ -220,10 +233,10 @@ export default function SuperAdminEnquiriesPage() {
         {/* Status Filters */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
           {[
-            { id: "all", label: "All", count: totalCount },
-            { id: "unread", label: "Unread", count: unreadCount },
-            { id: "read", label: "Read", count: enquiries.filter((e) => e.status === "read").length },
-            { id: "replied", label: "Replied", count: repliedCount },
+            { id: "all", label: "All" },
+            { id: "unread", label: "Unread" },
+            { id: "read", label: "Read" },
+            { id: "replied", label: "Replied" },
           ].map((tab) => {
             const isSelected = statusFilter === tab.id;
             return (
@@ -233,33 +246,24 @@ export default function SuperAdminEnquiriesPage() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
                   isSelected
                     ? "bg-amber-500 text-zinc-950 font-bold"
-                    : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
+                    : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800"
                 }`}
               >
                 <span>{tab.label}</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                    isSelected
-                      ? "bg-zinc-950/20 text-zinc-950 font-bold"
-                      : "bg-zinc-800 text-zinc-400"
-                  }`}
-                >
-                  {tab.count}
-                </span>
               </button>
             );
           })}
         </div>
 
-        {/* Search */}
-        <div className="relative min-w-[260px]">
-          <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+        {/* Search Input */}
+        <div className="relative min-w-[240px]">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
           <input
             type="text"
-            placeholder="Search by name, phone, message..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-white placeholder-zinc-500 focus:outline-hidden focus:border-amber-500"
+            placeholder="Search by name, phone, email..."
+            className="w-full pl-9 pr-8 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-zinc-200 placeholder-zinc-500 focus:outline-hidden focus:border-amber-500 transition"
           />
           {searchQuery && (
             <button
@@ -274,134 +278,178 @@ export default function SuperAdminEnquiriesPage() {
 
       {/* Enquiries List */}
       <div className="space-y-3">
-        {filteredEnquiries.length === 0 ? (
+        {loading ? (
+          <div className="p-16 flex flex-col items-center justify-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
+            <p className="text-xs text-zinc-400">Loading enquiries...</p>
+          </div>
+        ) : enquiries.length === 0 ? (
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-12 text-center text-zinc-500 text-xs flex flex-col items-center justify-center gap-2">
             <Inbox className="w-8 h-8 text-zinc-600" />
             <p>No enquiries found for the selected filter.</p>
           </div>
         ) : (
-          filteredEnquiries.map((item) => {
-            const currentStatus = item.status || "unread";
-            const waNumber = cleanPhoneForWa(item.phone);
+          <>
+            {enquiries.map((item) => {
+              const currentStatus = item.status || "unread";
+              const waNumber = cleanPhoneForWa(item.phone);
 
-            return (
-              <div
-                key={item._id}
-                className={`bg-zinc-900 border rounded-2xl p-5 space-y-3 transition ${
-                  currentStatus === "unread"
-                    ? "border-amber-500/40 bg-zinc-900/90 shadow-sm"
-                    : "border-zinc-800 hover:border-zinc-700"
-                }`}
-              >
-                {/* Header Row: Client Info, Role, Time, Status */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-bold text-white text-sm sm:text-base">
-                      {item.name}
-                    </span>
-                    {item.role && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-amber-400 border border-zinc-700 capitalize">
-                        {item.role}
+              return (
+                <div
+                  key={item._id}
+                  className={`bg-zinc-900 border rounded-2xl p-5 space-y-3 transition ${
+                    currentStatus === "unread"
+                      ? "border-amber-500/40 bg-zinc-900/90 shadow-sm"
+                      : "border-zinc-800 hover:border-zinc-700"
+                  }`}
+                >
+                  {/* Header Row: Client Info, Role, Time, Status */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-bold text-white text-sm sm:text-base">
+                        {item.name}
                       </span>
-                    )}
-                    {item.eventDate && (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded-md border border-zinc-800">
-                        <Calendar className="w-3 h-3 text-amber-500" />
-                        <span>Event: {item.eventDate}</span>
+                      {item.role && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-amber-400 border border-zinc-700 capitalize">
+                          {item.role}
+                        </span>
+                      )}
+                      {item.eventDate && (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded-md border border-zinc-800">
+                          <Calendar className="w-3 h-3 text-amber-500" />
+                          <span>Event: {item.eventDate}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] text-zinc-500 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        <span>{formatDate(item.createdAt)}</span>
                       </span>
-                    )}
-                  </div>
 
-                  <div className="flex items-center gap-3">
-                    <span className="text-[11px] text-zinc-500 flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{formatDate(item.createdAt)}</span>
-                    </span>
-
-                    {/* Status Select */}
-                    <select
-                      value={currentStatus}
-                      onChange={(e) =>
-                        handleUpdateStatus(
-                          item._id,
-                          e.target.value as "unread" | "read" | "replied"
-                        )
-                      }
-                      className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border cursor-pointer focus:outline-hidden ${
-                        currentStatus === "unread"
-                          ? "bg-rose-950 text-rose-300 border-rose-800"
-                          : currentStatus === "replied"
-                          ? "bg-emerald-950 text-emerald-300 border-emerald-800"
-                          : "bg-zinc-800 text-zinc-300 border-zinc-700"
-                      }`}
-                    >
-                      <option value="unread">Unread</option>
-                      <option value="read">Read</option>
-                      <option value="replied">Replied</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Message Content */}
-                <div className="bg-zinc-950/70 rounded-xl p-3.5 border border-zinc-800/80 text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans whitespace-pre-wrap">
-                  {item.message}
-                </div>
-
-                {/* Contact Bar & Actions */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-300">
-                    <span className="font-semibold text-white">Contact:</span>
-
-                    {/* Phone */}
-                    <a
-                      href={`tel:${item.phone}`}
-                      className="inline-flex items-center gap-1 text-zinc-300 hover:text-white transition bg-zinc-800/80 px-2.5 py-1 rounded-lg border border-zinc-700"
-                    >
-                      <Phone className="w-3 h-3 text-emerald-400" />
-                      <span>{item.phone}</span>
-                    </a>
-
-                    {/* Direct WhatsApp */}
-                    <a
-                      href={`https://wa.me/${waNumber}?text=Namaste%20${encodeURIComponent(
-                        item.name
-                      )},%20we%20received%20your%20inquiry%20regarding%20digital%20invitation.`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => handleUpdateStatus(item._id, "replied")}
-                      className="inline-flex items-center gap-1 text-emerald-300 hover:text-emerald-200 transition bg-emerald-950/80 px-2.5 py-1 rounded-lg border border-emerald-800 font-semibold"
-                    >
-                      <MessageSquare className="w-3 h-3 text-emerald-400" />
-                      <span>WhatsApp Chat</span>
-                    </a>
-
-                    {/* Email if provided */}
-                    {item.email && (
-                      <a
-                        href={`mailto:${item.email}`}
-                        className="inline-flex items-center gap-1 text-zinc-300 hover:text-white transition bg-zinc-800/80 px-2.5 py-1 rounded-lg border border-zinc-700 truncate max-w-[200px]"
+                      {/* Status Select */}
+                      <select
+                        value={currentStatus}
+                        onChange={(e) =>
+                          handleUpdateStatus(
+                            item._id,
+                            e.target.value as "unread" | "read" | "replied"
+                          )
+                        }
+                        className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border cursor-pointer focus:outline-hidden ${
+                          currentStatus === "unread"
+                            ? "bg-rose-950 text-rose-300 border-rose-800"
+                            : currentStatus === "replied"
+                            ? "bg-emerald-950 text-emerald-300 border-emerald-800"
+                            : "bg-zinc-800 text-zinc-300 border-zinc-700"
+                        }`}
                       >
-                        <Mail className="w-3 h-3 text-amber-400 shrink-0" />
-                        <span className="truncate">{item.email}</span>
-                      </a>
-                    )}
+                        <option value="unread" className="bg-zinc-900">
+                          Unread
+                        </option>
+                        <option value="read" className="bg-zinc-900">
+                          Read
+                        </option>
+                        <option value="replied" className="bg-zinc-900">
+                          Replied
+                        </option>
+                      </select>
+
+                      {/* Delete */}
+                      <button
+                        onClick={() => handleDelete(item._id, item.name)}
+                        className="p-1.5 text-zinc-500 hover:text-rose-400 hover:bg-rose-950/40 rounded-lg transition"
+                        title="Delete enquiry"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Delete button */}
-                  <div className="self-end sm:self-center">
-                    <button
-                      onClick={() => handleDelete(item._id, item.name)}
-                      className="p-1.5 rounded-lg bg-zinc-800 hover:bg-rose-950/80 hover:text-rose-400 text-zinc-400 transition cursor-pointer flex items-center gap-1 text-xs"
-                      title="Delete enquiry"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      <span className="text-[11px] sm:hidden">Delete</span>
-                    </button>
+                  {/* Message Body */}
+                  <p className="text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap bg-zinc-950/60 p-3.5 rounded-xl border border-zinc-800/80">
+                    {item.message}
+                  </p>
+
+                  {/* Footer Action Row: Contacts & Instant WhatsApp / Call */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-1 text-xs">
+                    <div className="flex flex-wrap items-center gap-4 text-zinc-400 text-xs">
+                      <span className="flex items-center gap-1.5 font-mono">
+                        <Phone className="w-3.5 h-3.5 text-amber-500" />
+                        {item.phone}
+                      </span>
+                      {item.email && (
+                        <span className="flex items-center gap-1.5 font-mono">
+                          <Mail className="w-3.5 h-3.5 text-zinc-400" />
+                          {item.email}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {/* WhatsApp Button */}
+                      <a
+                        href={`https://wa.me/${waNumber}?text=${encodeURIComponent(
+                          `Namaste ${item.name}, thank you for reaching out to VivahVaani regarding your wedding invitation inquiry.`
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-medium transition cursor-pointer"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        <span>WhatsApp Reply</span>
+                      </a>
+
+                      {/* Call Button */}
+                      <a
+                        href={`tel:${item.phone}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 text-xs font-medium transition cursor-pointer"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>Call</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
+              );
+            })}
+
+            {/* Pagination Controls */}
+            <div className="p-4 rounded-xl border border-zinc-800 flex items-center justify-between text-xs text-zinc-400 bg-zinc-900">
+              <span>
+                Showing <span className="font-semibold text-white">{startRecord}</span> to{" "}
+                <span className="font-semibold text-white">{endRecord}</span> of{" "}
+                <span className="font-semibold text-white">{totalRecords}</span> enquiries
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(page - 1)}
+                  disabled={page <= 1}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition text-xs"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Previous</span>
+                </button>
+
+                <span className="px-2 text-zinc-300 font-medium">
+                  Page {page} of {totalPages}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(page + 1)}
+                  disabled={page >= totalPages}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition text-xs"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
               </div>
-            );
-          })
+            </div>
+          </>
         )}
       </div>
     </div>

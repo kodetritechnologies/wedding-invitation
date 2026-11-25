@@ -11,6 +11,8 @@ import {
   FileText,
   Loader2,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 interface ClientItem {
@@ -31,6 +33,9 @@ export default function ClientsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   // New Client Form State
   const [name, setName] = useState("");
@@ -39,13 +44,20 @@ export default function ClientsPage() {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
 
-  const loadClients = async () => {
+  const loadClients = async (targetPage = page) => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/admin/clients?search=${encodeURIComponent(search)}`);
+      const res = await fetch(
+        `/api/admin/clients?search=${encodeURIComponent(search)}&page=${targetPage}&limit=10`
+      );
       const data = await res.json();
       if (data.success) {
         setClients(data.clients || []);
+        if (data.pagination) {
+          setPage(data.pagination.page);
+          setTotalPages(data.pagination.totalPages);
+          setTotalRecords(data.pagination.total);
+        }
       }
     } catch (err) {
       console.error("Failed to load clients", err);
@@ -56,11 +68,22 @@ export default function ClientsPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      loadClients();
+      setPage(1);
+      loadClients(1);
     }, 300);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
+      setPage(newPage);
+      loadClients(newPage);
+    }
+  };
+
+  const startRecord = totalRecords > 0 ? (page - 1) * 10 + 1 : 0;
+  const endRecord = Math.min(page * 10, totalRecords);
 
   const handleCreateClient = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,9 +140,6 @@ export default function ClientsPage() {
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
             Client Directory
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Organize bride, groom, and family clients under your Admin account.
-          </p>
         </div>
 
         <button
@@ -207,6 +227,38 @@ export default function ClientsPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="bg-white rounded-xl border border-gray-200 px-4 py-3 flex items-center justify-between text-xs text-gray-500 shadow-xs">
+          <span>
+            Showing <span className="font-semibold text-gray-800">{startRecord}</span> to{" "}
+            <span className="font-semibold text-gray-800">{endRecord}</span> of{" "}
+            <span className="font-semibold text-gray-800">{totalRecords}</span> clients
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page <= 1}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition text-xs font-medium"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Previous</span>
+            </button>
+            <span className="px-2 font-medium text-gray-700">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page >= totalPages}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition text-xs font-medium"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       )}
 

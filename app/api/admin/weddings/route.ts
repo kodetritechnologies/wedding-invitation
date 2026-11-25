@@ -27,6 +27,8 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const clientId = searchParams.get("clientId");
     const status = searchParams.get("status");
+    const pageParam = searchParams.get("page");
+    const limitParam = searchParams.get("limit");
 
     const query: Record<string, unknown> = {
       adminId: auth.userId,
@@ -35,14 +37,44 @@ export async function GET(req: NextRequest) {
     if (clientId) query.clientId = clientId;
     if (status && status !== "all") query.status = status;
 
-    const weddings = await Wedding.find(query)
+    const total = await Wedding.countDocuments(query);
+
+    let weddingQuery = Wedding.find(query)
       .populate("clientId", "name phone email")
-      .sort({ weddingDate: 1 });
+      .sort({ createdAt: -1 });
+
+    if (pageParam || limitParam) {
+      const page = Math.max(1, parseInt(pageParam || "1", 10));
+      const limit = Math.max(1, Math.min(100, parseInt(limitParam || "10", 10)));
+      const skip = (page - 1) * limit;
+      weddingQuery = weddingQuery.skip(skip).limit(limit);
+
+      const weddings = await weddingQuery;
+      return NextResponse.json({
+        success: true,
+        count: weddings.length,
+        weddings,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit) || 1,
+        },
+      });
+    }
+
+    const weddings = await weddingQuery;
 
     return NextResponse.json({
       success: true,
       count: weddings.length,
       weddings,
+      pagination: {
+        total,
+        page: 1,
+        limit: weddings.length,
+        totalPages: 1,
+      },
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to fetch weddings";

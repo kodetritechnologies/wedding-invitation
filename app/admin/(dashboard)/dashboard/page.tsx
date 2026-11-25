@@ -83,25 +83,7 @@ export default function DashboardOverviewPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-base font-bold text-white">Platform Overview</h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
-            Key metrics for registered clients, active invitations, and guest RSVPs.
-          </p>
-        </div>
-
-        <button
-          onClick={handleRefresh}
-          disabled={refreshing}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-300 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition cursor-pointer"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin" : ""}`} />
-          <span>Refresh</span>
-        </button>
-      </div>
-
-      {/* KPI Cards */}
+      {/* Metric Cards */}
       {stats && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-2">
@@ -112,7 +94,6 @@ export default function DashboardOverviewPage() {
               <Users className="w-4 h-4 text-amber-500" />
             </div>
             <p className="text-2xl font-bold text-white">{stats.totalAdmins}</p>
-            <p className="text-[11px] text-zinc-500">Registered wedding planners</p>
           </div>
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-2">
@@ -123,7 +104,6 @@ export default function DashboardOverviewPage() {
               <CalendarHeart className="w-4 h-4 text-rose-500" />
             </div>
             <p className="text-2xl font-bold text-white">{stats.totalWeddings}</p>
-            <p className="text-[11px] text-zinc-500">Invitations created</p>
           </div>
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-2">
@@ -134,7 +114,6 @@ export default function DashboardOverviewPage() {
               <UserCheck className="w-4 h-4 text-emerald-500" />
             </div>
             <p className="text-2xl font-bold text-white">{stats.totalGuests}</p>
-            <p className="text-[11px] text-zinc-500">Tracked guest responses</p>
           </div>
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-2">
@@ -145,7 +124,6 @@ export default function DashboardOverviewPage() {
               <Building className="w-4 h-4 text-blue-500" />
             </div>
             <p className="text-2xl font-bold text-white">{stats.totalClients}</p>
-            <p className="text-[11px] text-zinc-500">Couple accounts</p>
           </div>
         </div>
       )}
@@ -154,12 +132,23 @@ export default function DashboardOverviewPage() {
       <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
         <div className="p-4 border-b border-zinc-800 flex items-center justify-between">
           <h3 className="text-sm font-bold text-white">Recent Clients</h3>
-          <Link
-            href="/admin/clients"
-            className="text-xs text-amber-500 hover:text-amber-400 font-medium"
-          >
-            View All Clients →
-          </Link>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium text-zinc-400 hover:text-zinc-200 bg-zinc-800/60 hover:bg-zinc-800 border border-zinc-700/50 transition cursor-pointer"
+              title="Refresh"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? "animate-spin" : ""}`} />
+              <span>Refresh</span>
+            </button>
+            <Link
+              href="/admin/clients"
+              className="text-xs text-amber-500 hover:text-amber-400 font-medium"
+            >
+              View All Clients →
+            </Link>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -175,28 +164,36 @@ export default function DashboardOverviewPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800">
-              {recentAdmins.slice(0, 6).map((adm) => (
-                <tr key={adm._id} className="hover:bg-zinc-800/40">
-                  <td className="py-3 px-4 font-medium text-white">{adm.name}</td>
-                  <td className="py-3 px-4 font-mono text-zinc-400">{adm.email}</td>
-                  <td className="py-3 px-4 text-zinc-300">{adm.businessName || "—"}</td>
-                  <td className="py-3 px-4 uppercase text-[10px] font-bold text-amber-400">
-                    {adm.subscription?.plan || "free"}
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-emerald-950 text-emerald-400 border border-emerald-800">
-                      {adm.status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-right text-zinc-400">
-                    {new Date(adm.createdAt).toLocaleDateString("en-IN", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
+              {recentAdmins.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-zinc-500 text-xs">
+                    No clients found
                   </td>
                 </tr>
-              ))}
+              ) : (
+                recentAdmins.slice(0, 10).map((adm) => (
+                  <tr key={adm._id} className="hover:bg-zinc-800/40">
+                    <td className="py-3 px-4 font-medium text-white">{adm.name}</td>
+                    <td className="py-3 px-4 font-mono text-zinc-400">{adm.email}</td>
+                    <td className="py-3 px-4 text-zinc-300">{adm.businessName || "—"}</td>
+                    <td className="py-3 px-4 uppercase text-[10px] font-bold text-amber-400">
+                      {adm.subscription?.plan || "free"}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-emerald-950 text-emerald-400 border border-emerald-800">
+                        {adm.status}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-right text-zinc-400">
+                      {new Date(adm.createdAt).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
