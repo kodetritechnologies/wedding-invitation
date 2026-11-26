@@ -194,7 +194,7 @@ export default function PublicFooter() {
         )}
 
         {/* 4 COLUMNS CONTENT */}
-        <div className="pt-14  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 relative z-10">
+        <div className="pt-14 pb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 relative z-10">
           {/* COLUMN 1 — BRAND */}
           <div className="space-y-4">
             <Link href="/" className="inline-flex items-center gap-2 group focus:outline-none">
@@ -313,11 +313,10 @@ export default function PublicFooter() {
       </div>
 
       {/* BOTTOM DECORATIVE PANORAMIC INDIAN HERITAGE PALACE ARCHITECTURE */}
-      {/* Uses /assets/bg/footer-bg.png blending seamlessly into the maroon footer */}
-      <div className="relative w-full overflow-hidden pointer-events-none select-none -mb-1 flex justify-center items-end">
-        {/* Soft gradient fade so the image top transitions smoothly */}
+      {/* Uses /assets/bg/footer-bg.png blending seamlessly behind the maroon footer text */}
+      <div className="absolute inset-x-0 bottom-14 sm:bottom-12 z-0 overflow-hidden pointer-events-none select-none flex justify-center items-end">
         <div
-          className="w-full h-32 sm:h-44 md:h-56 lg:h-64 bg-repeat-x bg-bottom opacity-25"
+          className="w-full h-36 sm:h-48 md:h-56 lg:h-64 bg-repeat-x bg-bottom opacity-20"
           style={{
             backgroundImage: "url('/assets/bg/footer-bg.png')",
             backgroundSize: "contain",

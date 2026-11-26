@@ -18,10 +18,9 @@ import {
   Pencil,
   Share2,
   Check,
-  ShoppingBag,
-  Zap,
   MessageCircle,
   ChevronDown,
+  Play,
 } from "lucide-react";
 import PublicHeader from "@/components/public/Header";
 import PublicFooter from "@/components/public/Footer";
@@ -62,10 +61,8 @@ const DEFAULT_CATEGORIES: CategoryTab[] = [
   { id: "reception", label: "Reception (स्वागत समारोह)" },
 ];
 
-// Rich SVG category icons matching Indian traditional ceremonies
 function getCategoryIcon(catId: string, isSelected: boolean) {
-  const strokeClass = isSelected ? "text-[#FFF3DA]" : "text-amber-700";
-
+  const strokeClass = isSelected ? "text-[#FFF3DA]" : "text-[#720E16]";
   switch (catId) {
     case "wedding":
       return (
@@ -119,6 +116,23 @@ function getCategoryIcon(catId: string, isSelected: boolean) {
   }
 }
 
+// Format badge helper
+function FormatBadge({ format }: { format: "website" | "video" | "pdf" }) {
+  const map = {
+    website: { label: "Website", icon: Globe, color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+    video: { label: "Video", icon: Play, color: "bg-purple-100 text-purple-700 border-purple-200" },
+    pdf: { label: "PDF", icon: FileText, color: "bg-blue-100 text-blue-700 border-blue-200" },
+  };
+  const cfg = map[format];
+  const Icon = cfg.icon;
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${cfg.color}`}>
+      <Icon className="w-2.5 h-2.5" />
+      {cfg.label}
+    </span>
+  );
+}
+
 function TemplatesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -140,17 +154,14 @@ function TemplatesContent() {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [buyModalTemplate, setBuyModalTemplate] = useState<TemplateCardItem | null>(null);
 
-  // Sync category state when URL searchParams change
   useEffect(() => {
     const cat = (searchParams?.get("category") || "all").toLowerCase();
     setActiveCategory(cat);
-
     const raw = (searchParams?.get("format") || "all").toLowerCase();
     const fmt = raw === "website" || raw === "video" || raw === "pdf" ? raw : "all";
     setSelectedFormat(fmt as "all" | "website" | "video" | "pdf");
   }, [searchParams]);
 
-  // Load dynamic categories from database
   useEffect(() => {
     async function loadCategories() {
       try {
@@ -175,7 +186,6 @@ function TemplatesContent() {
     loadCategories();
   }, []);
 
-  // Load purely dynamic database master templates
   useEffect(() => {
     async function loadDb() {
       try {
@@ -199,7 +209,7 @@ function TemplatesContent() {
               category: (t.category || "wedding").toLowerCase(),
               format: (t.format || "website") as "website" | "video" | "pdf",
               price: t.price || 399,
-              badge: idx === 0 ? "POPULAR MASTER" : "LIVE THEME",
+              badge: idx === 0 ? "POPULAR" : idx < 3 ? "NEW" : undefined,
               thumbnail: t.thumbnail,
               description:
                 t.description ||
@@ -233,10 +243,8 @@ function TemplatesContent() {
     loadDb();
   }, []);
 
-  // Strictly dynamic from MongoDB
   const allTemplates: TemplateCardItem[] = dbTemplates;
 
-  // Handle category switch and update URL
   const handleSelectCategory = (catId: string) => {
     setActiveCategory(catId);
     const params = new URLSearchParams();
@@ -263,41 +271,32 @@ function TemplatesContent() {
     router.push("/templates", { scroll: false });
   };
 
-  // Filter and sort templates
   const filteredTemplates = useMemo(() => {
     let list = allTemplates.filter((t) => {
       const matchesCategory =
         activeCategory === "all" ||
         t.category.toLowerCase() === activeCategory.toLowerCase();
-
-      const matchesFormat =
-        selectedFormat === "all" || t.format === selectedFormat;
-
+      const matchesFormat = selectedFormat === "all" || t.format === selectedFormat;
       const matchesSearch =
         searchQuery.trim() === "" ||
         t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         t.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
         t.category.toLowerCase().includes(searchQuery.toLowerCase());
-
       return matchesCategory && matchesFormat && matchesSearch;
     });
 
-    if (sortBy === "priceAsc") {
-      list = [...list].sort((a, b) => a.price - b.price);
-    } else if (sortBy === "priceDesc") {
-      list = [...list].sort((a, b) => b.price - a.price);
-    } else if (sortBy === "newest") {
+    if (sortBy === "priceAsc") list = [...list].sort((a, b) => a.price - b.price);
+    else if (sortBy === "priceDesc") list = [...list].sort((a, b) => b.price - a.price);
+    else if (sortBy === "newest") {
       list = [...list].sort((a, b) => {
         const d1 = a.createdAt ? new Date(a.createdAt).getTime() : 0;
         const d2 = b.createdAt ? new Date(b.createdAt).getTime() : 0;
         return d2 - d1;
       });
     }
-
     return list;
   }, [allTemplates, activeCategory, selectedFormat, searchQuery, sortBy]);
 
-  // Counts per category
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = { all: allTemplates.length };
     for (const t of allTemplates) {
@@ -307,14 +306,11 @@ function TemplatesContent() {
     return counts;
   }, [allTemplates]);
 
-  // Counts per format
   const formatCounts = useMemo(() => {
     const list =
       activeCategory === "all"
         ? allTemplates
-        : allTemplates.filter(
-            (t) => t.category.toLowerCase() === activeCategory.toLowerCase()
-          );
+        : allTemplates.filter((t) => t.category.toLowerCase() === activeCategory.toLowerCase());
     return {
       all: list.length,
       website: list.filter((t) => t.format === "website").length,
@@ -326,46 +322,44 @@ function TemplatesContent() {
   const hasActiveFilters =
     activeCategory !== "all" || selectedFormat !== "all" || searchQuery.trim() !== "";
 
-  // Luxury Studio Filter Sidebar
+  // ─── Filter Sidebar ───────────────────────────────────────────────
   const FilterSidebar = () => (
-    <div className="space-y-6">
-      {/* Studio Filter Header */}
-      <div className="flex items-center justify-between border-b border-amber-900/10 pb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#720E16]" />
-          <span className=" font-bold text-sm text-stone-900 tracking-wide uppercase">
-            Filter Collection
-          </span>
+    <div className="space-y-0">
+
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-stone-100">
+        <div className="flex items-center gap-2.5">
+          <svg className="w-5 h-5 text-[#720E16]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4.5 3h15a1 1 0 0 1 .8 1.6l-5.3 7.07V19a1 1 0 0 1-1.45.9l-4-2A1 1 0 0 1 9 17v-5.33L3.7 4.6A1 1 0 0 1 4.5 3Z"/>
+          </svg>
+          <span className="font-bold text-xl text-stone-900">Filters</span>
         </div>
         {hasActiveFilters && (
           <button
             onClick={handleResetFilters}
-            className="text-[11px] font-semibold text-[#720E16] hover:text-[#911620] flex items-center gap-1 transition cursor-pointer"
+            className="w-8 h-8 flex items-center justify-center rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer transition"
+            title="Clear all filters"
           >
-            <RotateCcw className="w-3 h-3" />
-            <span>Reset</span>
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      {/* Luxury Search Box */}
-      <div>
-        <label className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block mb-2">
-          Search Designs
-        </label>
+      {/* ── Search ── */}
+      <div className="px-5 py-4 border-b border-stone-100">
         <div className="relative">
           <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search theme, city, or style..."
+            placeholder="Search theme, style..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-8 py-2.5 bg-stone-50/80 border border-stone-200 rounded-xl text-xs text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#720E16]/15 focus:border-[#720E16] transition"
+            className="w-full pl-9 pr-8 py-2.5 bg-[#FAF4EB] border border-[#EADBCE] rounded-xl text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#720E16]/20 focus:border-[#720E16]/40 transition"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 cursor-pointer p-0.5"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -373,11 +367,12 @@ function TemplatesContent() {
         </div>
       </div>
 
-      {/* Celebration Occasions */}
-      <div>
-        <label className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block mb-2.5">
-          Occasion / Category
-        </label>
+      {/* ── Occasion / Category ── */}
+      <div className="px-5 py-4 border-b border-stone-100">
+        <div className="flex items-center justify-between mb-3">
+          <span className="font-bold text-base text-stone-900">Tradition &amp; Culture</span>
+          <span className="w-6 h-6 rounded-full bg-[#FCECEE] text-[#720E16] flex items-center justify-center text-sm font-bold leading-none select-none">−</span>
+        </div>
         <div className="space-y-1">
           {categoryTabs.map((cat) => {
             const isSelected = activeCategory === cat.id;
@@ -385,514 +380,386 @@ function TemplatesContent() {
             return (
               <button
                 key={cat.id}
-                onClick={() => {
-                  handleSelectCategory(cat.id);
-                  setMobileFilterOpen(false);
-                }}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-all duration-200 cursor-pointer text-left group ${
-                  isSelected
-                    ? "bg-[#720E16] text-[#FFF3DA] font-bold shadow-md scale-[1.01]"
-                    : "text-stone-700 hover:bg-amber-50/60 hover:text-stone-900 font-medium"
-                }`}
+                type="button"
+                onClick={() => { handleSelectCategory(cat.id); setMobileFilterOpen(false); }}
+                className="w-full flex items-center gap-3 py-2 px-1 cursor-pointer group text-left"
               >
-                <div className="flex items-center gap-2.5">
-                  <span className={`transition-transform duration-200 ${isSelected ? "scale-110" : "group-hover:scale-105"}`}>
-                    {getCategoryIcon(cat.id, isSelected)}
-                  </span>
-                  <span>{cat.label}</span>
+                {/* Custom checkbox box */}
+                <div className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 transition-all ${
+                  isSelected
+                    ? "bg-[#720E16] border-[#720E16]"
+                    : "border-stone-300 bg-white group-hover:border-[#720E16]/60"
+                }`}>
+                  {isSelected && (
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
                 </div>
-                <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full  transition-colors ${
-                    isSelected
-                      ? "bg-white/20 text-[#FFF3DA]"
-                      : "bg-stone-100 text-stone-500 group-hover:bg-amber-100/60 group-hover:text-amber-900"
-                  }`}
-                >
-                  {count}
+                <span className={`text-sm flex-1 transition-colors ${isSelected ? "text-stone-900 font-semibold" : "text-stone-600 group-hover:text-stone-900"}`}>
+                  {cat.label}
                 </span>
+                <span className="text-xs text-stone-400">({count})</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Format Selector (Website / Video / PDF) */}
-      <div className="pt-3 border-t border-amber-900/10">
-        <label className="text-[11px] font-bold text-stone-600 uppercase tracking-wider block mb-2.5">
-          Invitation Format
-        </label>
-        <div className="grid grid-cols-1 gap-1.5">
+      {/* ── Format ── */}
+      <div className="px-5 py-4 border-b border-stone-100">
+        <div className="flex items-center justify-between mb-3">
+          <span className="font-bold text-base text-stone-900">Format</span>
+          <span className="w-6 h-6 rounded-full bg-[#FCECEE] text-[#720E16] flex items-center justify-center text-sm font-bold leading-none select-none">−</span>
+        </div>
+        <div className="space-y-1">
           {[
-            { id: "all", label: "All Formats", icon: SlidersHorizontal, desc: "Website, Video & PDF", count: formatCounts.all },
-            { id: "website", label: "Website Invite", icon: Globe, desc: "Interactive RSVP & GPS", count: formatCounts.website },
-            { id: "video", label: "Video Invite", icon: Video, desc: "HD WhatsApp Animated", count: formatCounts.video },
-            { id: "pdf", label: "Printable PDF", icon: FileText, desc: "High-Res Vector Card", count: formatCounts.pdf },
+            { id: "all", label: "All Formats", count: formatCounts.all },
+            { id: "website", label: "Website", count: formatCounts.website },
+            { id: "video", label: "Video", count: formatCounts.video },
+            { id: "pdf", label: "PDF / Printable", count: formatCounts.pdf },
           ].map((fmt) => {
             const isSelected = selectedFormat === fmt.id;
-            const IconComp = fmt.icon;
             return (
               <button
                 key={fmt.id}
-                onClick={() => {
-                  handleSelectFormat(fmt.id as any);
-                  setMobileFilterOpen(false);
-                }}
-                className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition cursor-pointer ${
-                  isSelected
-                    ? "bg-[#FAF4EB] border-[#D6A64B] shadow-2xs"
-                    : "bg-white border-stone-200/80 hover:border-amber-300 hover:bg-stone-50/50"
-                }`}
+                type="button"
+                onClick={() => { handleSelectFormat(fmt.id as any); setMobileFilterOpen(false); }}
+                className="w-full flex items-center gap-3 py-2 px-1 cursor-pointer group text-left"
               >
-                <div className="flex items-center gap-2.5">
-                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${isSelected ? "bg-[#720E16] text-[#FFF3DA]" : "bg-stone-100 text-stone-600"}`}>
-                    <IconComp className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-stone-900">{fmt.label}</div>
-                    <div className="text-[10px] text-stone-500">{fmt.desc}</div>
-                  </div>
+                <div className={`w-5 h-5 rounded flex items-center justify-center border-2 shrink-0 transition-all ${
+                  isSelected
+                    ? "bg-[#720E16] border-[#720E16]"
+                    : "border-stone-300 bg-white group-hover:border-[#720E16]/60"
+                }`}>
+                  {isSelected && (
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
                 </div>
-                <span className="text-[10px]  font-semibold text-stone-500">
-                  ({fmt.count})
+                <span className={`text-sm flex-1 transition-colors ${isSelected ? "text-stone-900 font-semibold" : "text-stone-600 group-hover:text-stone-900"}`}>
+                  {fmt.label}
                 </span>
+                <span className="text-xs text-stone-400">({fmt.count})</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Custom Card Concierge Card */}
-      <div className="p-4 rounded-2xl bg-gradient-to-br from-[#FAF4EB] to-[#F5ECE0] border border-[#EADBCE] space-y-2.5">
-        <div className="flex items-center gap-2 text-[#720E16]">
-          <MessageCircle className="w-4 h-4 shrink-0" />
-          <span className=" font-bold text-xs tracking-tight">
-            Physical Card Replica
-          </span>
+      {/* ── WhatsApp CTA ── */}
+      <div className="px-5 py-4 border-b border-stone-100">
+        <div className="p-4 rounded-2xl bg-[#FAF4EB] border border-[#EADBCE]">
+          <div className="flex items-center gap-2 text-[#720E16] mb-1.5">
+            <MessageCircle className="w-4 h-4 shrink-0" />
+            <span className="font-bold text-sm">Custom Card Replica</span>
+          </div>
+          <p className="text-xs text-stone-500 leading-relaxed mb-2.5">
+            Already have a printed card? Get exact digital replica in 24h.
+          </p>
+          <a
+            href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20apne%20printed%20card%20ka%20digital%20replica%20banvana%20hai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs font-bold text-[#720E16] hover:underline"
+          >
+            Chat on WhatsApp <ArrowRight className="w-3 h-3" />
+          </a>
         </div>
-        <p className="text-[11px] text-stone-600 leading-relaxed font-normal">
-          Already printed your card? WhatsApp its photo for an exact 1:1 digital replica within 24h.
-        </p>
-        <a
-          href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20apne%20printed%20card%20ka%20digital%20replica%20banvana%20hai"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#720E16] hover:underline pt-1"
+      </div>
+
+      {/* ── Bottom Action Buttons ── */}
+      <div className="px-5 py-4 flex gap-3">
+        <button
+          onClick={handleResetFilters}
+          className="flex-1 py-2.5 rounded-full border-2 border-[#720E16] text-[#720E16] font-bold text-sm hover:bg-[#FAF4EB] transition cursor-pointer"
         >
-          <span>Chat on WhatsApp</span>
-          <ArrowRight className="w-3 h-3" />
-        </a>
+          Clear All
+        </button>
+        <button
+          onClick={() => setMobileFilterOpen(false)}
+          className="flex-1 py-2.5 rounded-full bg-gradient-to-r from-[#720E16] to-[#5A0910] text-white font-bold text-sm shadow-sm hover:shadow-md transition cursor-pointer"
+        >
+          Apply Filters
+        </button>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-[#FAF4EB]/60 via-[#FDFBF7] to-white text-stone-900 font-sans flex flex-col">
       <PublicHeader />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* Banner Section: Pick a design. Make it yours. */}
-        <div className="bg-[#FAF4EB] border border-[#EADBCE] rounded-2xl p-6 sm:p-8 mb-8 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-xs">
-          {/* Left Title */}
-          <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl  text-stone-900 tracking-tight">
-              Pick a design.{" "}
-              <span className="italic text-[#720E16] font-normal">
-                Make it yours.
-              </span>
-            </h1>
-            <p className="text-xs sm:text-sm text-stone-600 font-sans mt-1.5">
-              Open any invitation website before you buy &bull; Direct Fixed Pricing &bull; Zero Subscription
-            </p>
-          </div>
+      <main className="flex-1 w-full">
 
-          {/* Right Steps Indicator */}
-          <div className="flex items-center justify-center gap-1 sm:gap-2.5 shrink-0">
-            {/* Step 1: Choose */}
-            <div className="flex flex-col items-center">
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#FCECEE] flex items-center justify-center text-[#720E16] relative shadow-xs">
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect width="18" height="14" x="3" y="5" rx="2" />
-                  <path d="M7 12h8" />
-                  <path d="m11 8 4 4-4 4" />
-                </svg>
-                <span className="w-4 h-4 rounded-full bg-[#720E16] text-white text-[10px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 shadow-xs">
-                  1
-                </span>
-              </div>
-              <span className="text-[11px] sm:text-xs font-bold text-stone-800 mt-1.5">Choose</span>
-            </div>
-
-            {/* Connector */}
-            <div className="w-4 sm:w-8 md:w-10 border-t-2 border-dashed border-[#D6A64B]/60 mb-5 shrink-0" />
-
-            {/* Step 2: Edit */}
-            <div className="flex flex-col items-center">
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#FCECEE] flex items-center justify-center text-[#720E16] relative shadow-xs">
-                <Pencil className="w-5 h-5" />
-                <span className="w-4 h-4 rounded-full bg-[#720E16] text-white text-[10px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 shadow-xs">
-                  2
-                </span>
-              </div>
-              <span className="text-[11px] sm:text-xs font-bold text-stone-800 mt-1.5">Edit</span>
-            </div>
-
-            {/* Connector */}
-            <div className="w-4 sm:w-8 md:w-10 border-t-2 border-dashed border-[#D6A64B]/60 mb-5 shrink-0" />
-
-            {/* Step 3: Pay */}
-            <div className="flex flex-col items-center">
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#FCECEE] flex items-center justify-center text-[#720E16] relative shadow-xs">
-                <CreditCard className="w-5 h-5" />
-                <span className="w-4 h-4 rounded-full bg-[#720E16] text-white text-[10px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 shadow-xs">
-                  3
-                </span>
-              </div>
-              <span className="text-[11px] sm:text-xs font-bold text-stone-800 mt-1.5">Pay</span>
-            </div>
-
-            {/* Connector */}
-            <div className="w-4 sm:w-8 md:w-10 border-t-2 border-dashed border-[#D6A64B]/60 mb-5 shrink-0" />
-
-            {/* Step 4: Share */}
-            <div className="flex flex-col items-center">
-              <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#FCECEE] flex items-center justify-center text-[#720E16] relative shadow-xs">
-                <Share2 className="w-5 h-5" />
-                <span className="w-4 h-4 rounded-full bg-[#720E16] text-white text-[10px] font-bold flex items-center justify-center absolute -top-0.5 -right-0.5 shadow-xs">
-                  4
-                </span>
-              </div>
-              <span className="text-[11px] sm:text-xs font-bold text-stone-800 mt-1.5">Share</span>
-            </div>
-          </div>
+        {/* ── HERO BANNER ── */}
+        <div className="w-full border-b border-[#c9a96e]/30">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/Elegant Indian Wedding Invitations.png"
+            alt="Wedding Invitation Templates Banner"
+            className="w-full object-cover max-h-[280px] sm:max-h-[340px] lg:max-h-[400px]"
+          />
         </div>
 
-        {/* 2-COLUMN LAYOUT: Left Filter Section + Right Templates Display */}
-        <div className="flex gap-8 items-start">
-          {/* LEFT SIDEBAR (Desktop) */}
-          <aside className="hidden lg:block w-72 shrink-0 sticky top-24">
-            <div className="bg-white border border-stone-200/90 rounded-2xl p-5 shadow-xs">
-              <FilterSidebar />
-            </div>
-          </aside>
+        {/* ── MAIN CONTENT AREA ── */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+          <div className="flex gap-7 items-start">
 
-          {/* RIGHT SIDE MAIN TEMPLATES GRID */}
-          <div className="flex-1 min-w-0">
-            {/* Top Toolbar: Count, Active Filter Chips, and Sorting */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white border border-stone-200/80 rounded-2xl p-4 shadow-2xs">
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setMobileFilterOpen(true)}
-                  className="lg:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 border border-stone-200 text-xs font-bold text-stone-800 cursor-pointer"
-                >
-                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#720E16]" />
-                  <span>Filters</span>
-                  {hasActiveFilters && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#720E16]" />
-                  )}
-                </button>
-
-                <div className="flex items-center gap-1.5 text-xs text-stone-600">
-                  <span className=" font-bold text-sm text-stone-900">
-                    {filteredTemplates.length}
-                  </span>{" "}
-                  <span>
-                    {filteredTemplates.length === 1 ? "design available" : "designs available"}
-                  </span>
-                </div>
+            {/* LEFT SIDEBAR (Desktop) */}
+            <aside className="hidden lg:block w-64 xl:w-72 shrink-0 sticky top-24">
+              <div className="bg-white border border-[#EADBCE] rounded-2xl shadow-sm">
+                <FilterSidebar />
               </div>
+            </aside>
 
-              {/* Sorting & Active Chips */}
-              <div className="flex items-center gap-3">
-                {/* Sort Dropdown */}
-                <div className="flex items-center gap-1.5 text-xs">
-                  <span className="text-stone-400 text-[11px]">Sort:</span>
+            {/* RIGHT: Templates Grid */}
+            <div className="flex-1 min-w-0">
+
+              {/* Toolbar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white border border-[#EADBCE] rounded-2xl px-4 py-3 shadow-sm">
+                <div className="flex items-center gap-3">
+                  {/* Mobile Filter Button */}
+                  <button
+                    type="button"
+                    onClick={() => setMobileFilterOpen(true)}
+                    className="lg:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FAF4EB] hover:bg-[#FCECEE] border border-[#EADBCE] text-xs font-bold text-stone-800 cursor-pointer"
+                  >
+                    <SlidersHorizontal className="w-3.5 h-3.5 text-[#720E16]" />
+                    Filters
+                    {hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-[#720E16]" />}
+                  </button>
+
+                  <div className="text-xs text-stone-500">
+                    <span className="font-bold text-base text-stone-900 mr-1">{filteredTemplates.length}</span>
+                    {filteredTemplates.length === 1 ? "design found" : "designs found"}
+                  </div>
+                </div>
+
+                {/* Sort */}
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="text-stone-400 text-[11px]">Sort by:</span>
                   <div className="relative">
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value as any)}
-                      aria-label="Sort designs by"
-                      className="bg-stone-50 border border-stone-200 rounded-lg px-2.5 py-1.5 text-xs text-stone-800 font-semibold focus:outline-none focus:border-[#720E16] cursor-pointer pr-7 appearance-none"
+                      aria-label="Sort designs"
+                      className="bg-[#FAF4EB] border border-[#EADBCE] rounded-xl px-3 py-1.5 text-xs text-stone-800 font-semibold focus:outline-none focus:border-[#720E16]/40 cursor-pointer pr-7 appearance-none"
                     >
-                      <option value="featured">Featured / Popular</option>
-                      <option value="newest">Newest Releases</option>
-                      <option value="priceAsc">Price: Low to High</option>
-                      <option value="priceDesc">Price: High to Low</option>
+                      <option value="featured">Featured</option>
+                      <option value="newest">Newest</option>
+                      <option value="priceAsc">Price: Low → High</option>
+                      <option value="priceDesc">Price: High → Low</option>
                     </select>
-                    <ChevronDown className="w-3 h-3 text-stone-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <ChevronDown className="w-3 h-3 text-stone-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Active Filter Chips Bar */}
-            {hasActiveFilters && (
-              <div className="flex flex-wrap items-center gap-2 mb-6">
-                <span className="text-[11px] font-semibold text-stone-400">Active Filters:</span>
-                {activeCategory !== "all" && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#720E16]/10 text-xs font-bold text-[#720E16] border border-[#720E16]/20 capitalize">
-                    {activeCategory}
-                    <button
-                      onClick={() => handleSelectCategory("all")}
-                      className="hover:text-red-700 cursor-pointer"
-                      title="Remove category filter"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                )}
-                {selectedFormat !== "all" && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-xs font-bold text-amber-900 border border-amber-300/80 uppercase">
-                    {selectedFormat}
-                    <button
-                      onClick={() => handleSelectFormat("all")}
-                      className="hover:text-red-700 cursor-pointer"
-                      title="Remove format filter"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                )}
-                {searchQuery.trim() !== "" && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 text-xs font-semibold text-stone-700 border border-stone-300">
-                    &ldquo;{searchQuery}&rdquo;
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="hover:text-red-700 cursor-pointer"
-                      title="Clear search"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                )}
-                <button
-                  onClick={handleResetFilters}
-                  className="text-[11px] font-semibold text-stone-500 hover:text-[#720E16] underline cursor-pointer ml-1"
-                >
-                  Clear all
-                </button>
-              </div>
-            )}
+              {/* Active Filter Chips */}
+              {hasActiveFilters && (
+                <div className="flex flex-wrap items-center gap-2 mb-5">
+                  <span className="text-[11px] font-semibold text-stone-400">Active:</span>
+                  {activeCategory !== "all" && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#720E16]/10 text-xs font-bold text-[#720E16] border border-[#720E16]/20 capitalize">
+                      {activeCategory}
+                      <button onClick={() => handleSelectCategory("all")} className="hover:text-red-700 cursor-pointer" title="Remove">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {selectedFormat !== "all" && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF4EB] text-xs font-bold text-[#720E16] border border-[#EADBCE] uppercase">
+                      {selectedFormat}
+                      <button onClick={() => handleSelectFormat("all")} className="hover:text-red-700 cursor-pointer" title="Remove">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {searchQuery.trim() !== "" && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-stone-100 text-xs font-semibold text-stone-700 border border-stone-200">
+                      &ldquo;{searchQuery}&rdquo;
+                      <button onClick={() => setSearchQuery("")} className="hover:text-red-700 cursor-pointer" title="Clear">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  <button onClick={handleResetFilters} className="text-[11px] font-semibold text-stone-400 hover:text-[#720E16] underline cursor-pointer">
+                    Clear all
+                  </button>
+                </div>
+              )}
 
-            {/* Content State: Loading / Empty / Luxury Cards Grid */}
-            {loading ? (
-              <div className="text-center py-28 bg-white rounded-3xl border border-stone-200/90 shadow-2xs">
-                <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto mb-3">
-                  <Sparkles className="w-6 h-6 animate-spin text-[#720E16]" />
+              {/* ── TEMPLATE CARDS GRID ── */}
+              {loading ? (
+                <div className="text-center py-28 bg-white rounded-3xl border border-[#EADBCE] shadow-sm">
+                  <div className="w-14 h-14 rounded-full bg-[#FAF4EB] flex items-center justify-center mx-auto mb-4 border border-[#EADBCE]">
+                    <Sparkles className="w-7 h-7 animate-spin text-[#720E16]" />
+                  </div>
+                  <p className="text-sm font-bold text-stone-800">Loading Invitation Collection...</p>
+                  <p className="text-xs text-stone-400 mt-1">Fetching beautiful designs for you</p>
                 </div>
-                <p className="text-sm  font-bold text-stone-800">Loading Invitation Collection...</p>
-                <p className="text-xs text-stone-400 mt-1">Fetching live master templates from database</p>
-              </div>
-            ) : filteredTemplates.length === 0 ? (
-              <div className="text-center py-20 px-8 bg-white rounded-3xl border border-stone-200/90 shadow-2xs space-y-4">
-                <div className="w-16 h-16 rounded-full bg-[#FAF4EB] text-[#720E16] border border-[#EADBCE] flex items-center justify-center mx-auto shadow-inner">
-                  <Sparkles className="w-7 h-7" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-lg  font-bold text-stone-900">
+              ) : filteredTemplates.length === 0 ? (
+                <div className="text-center py-20 px-8 bg-white rounded-3xl border border-[#EADBCE] shadow-sm space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-[#FAF4EB] flex items-center justify-center mx-auto border border-[#EADBCE]">
+                    <Sparkles className="w-7 h-7 text-[#720E16]" />
+                  </div>
+                  <h3 className="text-lg font-bold text-stone-900">
                     {activeCategory !== "all"
-                      ? `No published designs for "${activeCategory.toUpperCase()}" yet`
+                      ? `No designs for "${activeCategory}" yet`
                       : "No invitation templates published yet"}
                   </h3>
                   <p className="text-xs text-stone-500 max-w-md mx-auto leading-relaxed">
-                    Super Admin can upload and publish real invitation themes from the dashboard. Alternatively, our Indore studio can convert any printed physical card into a digital master link.
+                    Our team is working on beautiful designs. Meanwhile, WhatsApp us your printed card for a custom digital replica.
                   </p>
-                </div>
-                <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-                  {hasActiveFilters && (
-                    <button
-                      onClick={handleResetFilters}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition cursor-pointer"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                      <span>View All Available Designs</span>
-                    </button>
-                  )}
-                  <a
-                    href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20custom%20invitation%20design%20banvana%20hai"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#720E16] hover:bg-[#5A0910] text-[#FFF3DA] text-xs font-bold transition shadow-xs"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" />
-                    <span>Request Custom Design (WhatsApp)</span>
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredTemplates.map((item) => (
-                  <div
-                    key={item.id}
-                    className="bg-white rounded-3xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-2xl hover:border-[#D6A64B]/60 transition-all duration-300 flex flex-col justify-between group relative"
-                  >
-                    {/* Visual Invitation Preview Card (Click leads to detail page) */}
-                    <div className="relative">
-                      <Link
-                        href={`/templates/${encodeURIComponent(item.slug)}`}
-                        className={`h-64 sm:h-72 bg-gradient-to-b ${item.bgGradient} p-5 flex flex-col justify-between text-white relative overflow-hidden select-none block`}
+                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    {hasActiveFilters && (
+                      <button
+                        onClick={handleResetFilters}
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition cursor-pointer"
                       >
-                        {/* Background photo thumbnail if present */}
-                        {item.thumbnail ? (
-                          // eslint-disable-next-line @next/next/no-img-element
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        View All Designs
+                      </button>
+                    )}
+                    <a
+                      href="https://wa.me/919826012345?text=Namaste!%20Mujhe%20custom%20invitation%20design%20banvana%20hai"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#720E16] hover:bg-[#5A0910] text-white text-xs font-bold transition shadow-sm"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      Request Custom Design
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+                  {filteredTemplates.map((item) => (
+                    <div
+                      key={item.id}
+                      className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col group relative border border-stone-100"
+                    >
+                      {/* ── CARD THUMBNAIL (Full bleed cover image) ── */}
+                      <div className="relative overflow-hidden">
+                        <Link href={`/templates/${encodeURIComponent(item.slug)}`} className="block">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={item.thumbnail}
+                            src={item.thumbnail || "/images/ganesh-cover.jpg"}
                             alt={item.title}
-                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            className="w-full aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-700"
                           />
-                        ) : null}
+                          {/* Dark overlay at bottom of image for readability */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                        </Link>
 
-                        {/* Delicate Golden Filigree Arch Border */}
-                        <div className="absolute inset-2.5 border border-[#D6A64B]/35 rounded-2xl pointer-events-none group-hover:border-[#D6A64B]/70 transition-colors" />
-                        <div className="absolute inset-3 border border-white/10 rounded-xl pointer-events-none" />
-
-                        {/* Ornate Indian Card Center Motif */}
-                        <div className="relative z-10 text-center py-3 space-y-1.5 my-auto">
-                          {/* Auspicious Shlok */}
-                          <div className="text-[11px]  font-bold tracking-widest text-amber-300/90 drop-shadow-xs">
-                            || श्री गणेशाय नमः ||
-                          </div>
-
-                          {/* Grand Couple / Title */}
-                          <h3 className=" text-2xl sm:text-[26px] font-bold tracking-tight text-[#FFF3DA] drop-shadow-md leading-tight line-clamp-2 px-2">
-                            {item.title}
-                          </h3>
-
-                          {/* Subtle Arch Ornament */}
-                          <div className="flex items-center justify-center gap-2 pt-1 text-amber-300/60">
-                            <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-amber-300/60" />
-                            <span className="text-[10px]">✦</span>
-                            <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-amber-300/60" />
-                          </div>
-                        </div>
-                      </Link>
-
-                      {/* Wishlist Like Button in Thumbnail Corner */}
-                      <div className="absolute top-3 right-3 z-20">
-                        <WishlistButton
-                          slug={item.slug}
-                          initialCount={item.likesCount || 0}
-                          className="bg-black/50 hover:bg-black/70 text-white backdrop-blur-md px-2.5 py-1 border border-white/20 shadow-xs"
-                          size="sm"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Card Content & Details */}
-                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                      <div className="space-y-1.5">
-                        <div className="flex items-start justify-between gap-2">
-                          <Link
-                            href={`/templates/${encodeURIComponent(item.slug)}`}
-                            className=" font-bold text-base text-stone-900 group-hover:text-[#720E16] transition leading-snug line-clamp-1"
-                          >
-                            {item.title}
-                          </Link>
-                          <span className=" font-bold text-base text-[#720E16] shrink-0">
-                            ₹{item.price}
+                        {/* Top-right: Format badge */}
+                        <div className="absolute top-2.5 right-2.5 z-10">
+                          <span className="px-2.5 py-1 rounded-full bg-white text-[10px] font-black text-stone-800 shadow-sm tracking-wide uppercase">
+                            {item.format}
                           </span>
                         </div>
 
-                        <p className="text-xs text-stone-600 line-clamp-2 leading-relaxed font-sans">
-                          {item.description}
-                        </p>
-                      </div>
+                        {/* Center: Play icon (for video format, or always as UX hint) */}
+                        <Link
+                          href={`/templates/${encodeURIComponent(item.slug)}`}
+                          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                        >
+                          <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                            <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+                          </div>
+                        </Link>
 
-                      {/* Card Action Row */}
-                      <div className="pt-3 border-t border-stone-100 space-y-2">
-                        <div className="flex items-center gap-2">
-                          {item.previewUrl ? (
+                        {/* Bottom-right: Preview pill */}
+                        {item.previewUrl && (
+                          <div className="absolute bottom-3 right-3 z-10">
                             <Link
                               href={item.previewUrl}
                               target="_blank"
-                              className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold text-stone-700 hover:text-[#720E16] transition py-2 px-2.5 rounded-xl border border-stone-200 hover:bg-stone-50"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-sm text-white text-[11px] font-bold hover:bg-black/90 transition shadow-md"
+                              onClick={(e) => e.stopPropagation()}
                             >
-                              <Eye className="w-3.5 h-3.5 text-[#720E16]" />
-                              <span>Preview</span>
+                              <Eye className="w-3 h-3" />
+                              Preview
                             </Link>
-                          ) : null}
+                          </div>
+                        )}
+                      </div>
 
-                          <Link
-                            href={`/customize/${encodeURIComponent(item.slug)}`}
-                            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold rounded-xl border border-stone-200/80 transition cursor-pointer"
-                          >
-                            <Pencil className="w-3.5 h-3.5 text-stone-600" />
-                            <span>Customize</span>
-                          </Link>
-                        </div>
-
-                        {/* DIRECT BUY NOW BUTTON */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setBuyModalTemplate(item);
-                          }}
-                          className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-amber-50 font-bold text-xs sm:text-sm shadow-xs hover:shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                      {/* ── CARD BODY ── */}
+                      <div className="p-4 flex flex-col gap-2.5">
+                        {/* Title */}
+                        <Link
+                          href={`/templates/${encodeURIComponent(item.slug)}`}
+                          className="font-bold text-sm sm:text-[15px] text-stone-900 hover:text-[#720E16] transition leading-snug line-clamp-1"
                         >
-                          <ShoppingBag className="w-4 h-4 text-amber-200" />
-                          <span>Buy Now</span>
-                        </button>
+                          {item.title}
+                        </Link>
+
+                        {/* Category • Format subtitle */}
+                        <p className="text-[11px] text-stone-400 capitalize">
+                          {item.category} &bull; {item.format === "website" ? "English" : item.format === "video" ? "Video" : "PDF"}
+                        </p>
+
+                        {/* Price */}
+                        <p className="text-base font-black text-[#720E16]">
+                          ₹{item.price}
+                        </p>
+
+                        {/* Primary CTA: Edit This Template */}
+                        <Link
+                          href={`/customize/${encodeURIComponent(item.slug)}`}
+                          className="w-full py-2.5 rounded-full bg-gradient-to-r from-[#720E16] to-[#5A0910] hover:from-[#5A0910] hover:to-[#42060B] text-white font-bold text-sm shadow-sm hover:shadow-md transition cursor-pointer flex items-center justify-center"
+                        >
+                          Edit This Template
+                        </Link>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </main>
 
-      {/* RAZORPAY BUY NOW CHECKOUT MODAL */}
+      {/* Razorpay Modal */}
       <RazorpayCheckoutModal
         isOpen={Boolean(buyModalTemplate)}
         onClose={() => setBuyModalTemplate(null)}
         template={buyModalTemplate}
       />
 
-      {/* MOBILE FILTER DRAWER */}
+      {/* Mobile Filter Drawer */}
       {mobileFilterOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
-          {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setMobileFilterOpen(false)}
           />
-
-          {/* Drawer Sheet */}
-          <div className="relative ml-auto w-full max-w-xs bg-white h-full shadow-2xl p-6 overflow-y-auto z-10 flex flex-col justify-between">
+          <div className="relative ml-auto w-full max-w-xs bg-white h-full shadow-2xl p-5 overflow-y-auto z-10 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between border-b border-stone-200 pb-4 mb-5">
+              <div className="flex items-center justify-between border-b border-[#EADBCE] pb-4 mb-5">
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="w-4 h-4 text-[#720E16]" />
-                  <h3 className=" font-bold text-sm text-stone-900 uppercase tracking-wide">
-                    Filter Designs
-                  </h3>
+                  <h3 className="font-bold text-sm text-stone-900">Filter Designs</h3>
                 </div>
                 <button
                   onClick={() => setMobileFilterOpen(false)}
-                  className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100"
+                  className="p-1 rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
-
               <FilterSidebar />
             </div>
-
-            <div className="pt-6 border-t border-stone-200 mt-6">
+            <div className="pt-5 border-t border-[#EADBCE] mt-5">
               <button
                 onClick={() => setMobileFilterOpen(false)}
-                className="w-full py-2.5 rounded-xl bg-[#720E16] text-[#FFF3DA] text-xs font-bold shadow-xs cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-[#720E16] text-white text-xs font-bold shadow-sm cursor-pointer"
               >
-                Apply Filters ({filteredTemplates.length} results)
+                Show {filteredTemplates.length} Results
               </button>
             </div>
           </div>
@@ -908,8 +775,8 @@ export default function TemplatesPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#FDFBF7] flex items-center justify-center">
-          <Sparkles className="w-6 h-6 animate-spin text-[#720E16]" />
+        <div className="min-h-screen bg-gradient-to-b from-[#FAF4EB] to-white flex items-center justify-center">
+          <Sparkles className="w-7 h-7 animate-spin text-[#720E16]" />
         </div>
       }
     >
