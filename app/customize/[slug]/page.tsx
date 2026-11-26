@@ -1256,12 +1256,20 @@ function CustomizeContent({ slug }: { slug: string }) {
   );
 }
 
-export default function CustomizePage({
+function CustomizeContentWrapper({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  return <CustomizeContent slug={slug} />;
+}
+
+export default function CustomizePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   return (
     <Suspense
       fallback={
@@ -1270,7 +1278,7 @@ export default function CustomizePage({
         </div>
       }
     >
-      <CustomizeContent slug={slug} />
+      <CustomizeContentWrapper params={params} />
     </Suspense>
   );
 }
